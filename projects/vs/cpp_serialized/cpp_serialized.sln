@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33801.447
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpp_serialized", "cpp_serialized.vcxproj", "{F5B2E972-DD8D-40F9-98CA-8088E63247BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Debug|x64.ActiveCfg = Debug|x64
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Debug|x64.Build.0 = Debug|x64
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Debug|x86.ActiveCfg = Debug|Win32
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Debug|x86.Build.0 = Debug|Win32
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Release|x64.ActiveCfg = Release|x64
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Release|x64.Build.0 = Release|x64
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Release|x86.ActiveCfg = Release|Win32
+		{F5B2E972-DD8D-40F9-98CA-8088E63247BE}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9CBCD5F-FE4B-4AA8-95E6-56080431A65A}
+	EndGlobalSection
+EndGlobal
