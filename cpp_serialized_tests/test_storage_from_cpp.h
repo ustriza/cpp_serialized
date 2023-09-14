@@ -69,7 +69,7 @@ public:
 	float asFloat() const {
 		return std::get<float>(m_value.value());
 	}
-	float asDouble() const {
+	double asDouble() const {
 		return std::get<double>(m_value.value());
 	}
 
