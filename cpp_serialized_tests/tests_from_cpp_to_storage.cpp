@@ -40,6 +40,42 @@ TValue get_set_value(const TValue& value, const TMap& map) {
 	return find_it->second.template asValue<TValue>();
 }
 
+TEST(TestsFromStl, fromInt_Test) {
+	const int value{12345};
+	
+	yb::from_cpp::TestStorage storage;
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	ASSERT_EQ(storage.isInt(), true);
+	EXPECT_EQ(storage.asValue<int>(), 12345);
+}
+
+TEST(TestsFromStl, fromFloatMax_Test) {
+	const float value{std::numeric_limits<float>::max()};
+	
+	yb::from_cpp::TestStorage storage;
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	ASSERT_EQ(storage.isFloat(), true);
+	EXPECT_EQ(storage.asValue<float>(), std::numeric_limits<float>::max());
+}
+
+TEST(TestsFromStl, fromDoubleMax_Test) {
+	const double value{std::numeric_limits<double>::max()};
+	
+	yb::from_cpp::TestStorage storage;
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	ASSERT_EQ(storage.isFloat(), true);
+	EXPECT_EQ(storage.asValue<double>(), std::numeric_limits<double>::max());
+}
+
 TEST(TestsFromStl, fromVectorInt_Test) {
 	const std::vector<int> vec{1, 2, 3};
 	

@@ -14,7 +14,7 @@
 namespace yb::from_cpp {
 
 class TestStorage {
-	using Value_type = std::variant<int, unsigned int, float, std::string, bool>;
+	using Value_type = std::variant<int, unsigned int, float, double, std::string, bool>;
 	using Map = std::map<tests::MapKey, TestStorage>;
 	
 	std::optional<Value_type> m_value;
@@ -69,6 +69,9 @@ public:
 	float asFloat() const {
 		return std::get<float>(m_value.value());
 	}
+	float asDouble() const {
+		return std::get<double>(m_value.value());
+	}
 
 	template<typename T1>
 	T1 asValue() const {
@@ -80,6 +83,9 @@ public:
 		}
 		else if constexpr(std::is_same_v<T1, float>) {
 			return asFloat();
+		}
+		else if constexpr(std::is_same_v<T1, double>) {
+			return asDouble();
 		}
 		else if constexpr(std::is_same_v<T1, bool>) {
 			return asBool();
@@ -99,7 +105,7 @@ public:
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<unsigned int>(m_value.value());
 	}
 	bool isFloat() const {
-		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<float>(m_value.value());
+		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && (std::holds_alternative<float>(m_value.value()) || std::holds_alternative<double>(m_value.value()));
 	}
 	bool isBool() const {
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<bool>(m_value.value());
