@@ -110,6 +110,11 @@ constexpr inline bool is_allowed_type() {
 	std::is_same_v<T, bool>;
 }
 
+template<typename T>
+bool numbers_equal(T a, T b) {
+	return std::abs(a - b) <= std::numeric_limits<T>::epsilon();
+}
+
 constexpr unsigned ANY_STL_METATABLE_ITEM_INDEX_FLAGS    = 0;
 constexpr unsigned ANY_STL_METATABLE_ITEM_INDEX_NAME     = 1;
 constexpr unsigned ANY_STL_METATABLE_ITEM_INDEX_LAMBDA   = 2;

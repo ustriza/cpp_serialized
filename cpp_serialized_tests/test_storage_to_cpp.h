@@ -12,7 +12,7 @@
 namespace yb::to_cpp {
 
 class TestStorage {
-	using Value_type = std::variant<int, unsigned int, float, std::string, bool>;
+	using Value_type = std::variant<int, unsigned int, float, double, std::string, bool>;
 	using Map = std::map<tests::MapKey, TestStorage>;
 	
 	std::optional<Value_type> m_value;
@@ -55,14 +55,14 @@ public:
 		else if constexpr(std::is_same_v<T1, unsigned int>) {
 			return std::get<unsigned int>(m_value.value());
 		}
-		else if constexpr(std::is_same_v<T1, float>) {
+		else if constexpr(std::is_same_v<T1, float> || std::is_same_v<T1, double>) {
 			if(isInt()) {
-				return static_cast<float>(std::get<int>(m_value.value()));
+				return static_cast<T1>(std::get<int>(m_value.value()));
 			}
 			if(isUInt()) {
-				return static_cast<float>(std::get<unsigned int>(m_value.value()));
+				return static_cast<T1>(std::get<unsigned int>(m_value.value()));
 			}
-			return std::get<float>(m_value.value());
+			return std::get<T1>(m_value.value());
 		}
 		else if constexpr(std::is_same_v<T1, bool>) {
 			return std::get<bool>(m_value.value());
@@ -133,6 +133,7 @@ public:
 	TestStorage(int value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(unsigned int value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(float value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
+	TestStorage(double value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(bool value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(const std::string& value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(std::string_view value): m_value(std::string(value)), m_storage_type(Value_subtype::SCALAR){};
@@ -186,7 +187,7 @@ private:
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<unsigned int>(m_value.value());
 	}
 	bool isFloat() const {
-		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<float>(m_value.value());
+		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && (std::holds_alternative<float>(m_value.value()) || std::holds_alternative<double>(m_value.value()));
 	}
 	bool isBool() const {
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<bool>(m_value.value());
