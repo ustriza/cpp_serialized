@@ -178,24 +178,7 @@ namespace yb::to_cpp {
 
 template<typename T, Storage_concept_to_cpp Storage>
 T get_storage_value(const Storage& storage) {
-	if constexpr(std::is_same_v<T, std::string>) {
-		return storage.template interface_get_value<std::string>();
-	}
-	else if constexpr(std::is_same_v<T, int>) {
-		return storage.template interface_get_value<int>();
-	}
-	else if constexpr(std::is_same_v<T, unsigned int>) {
-		return storage.template interface_get_value<unsigned int>();
-	}
-	else if constexpr(std::is_same_v<T, float>) {
-		return storage.template interface_get_value<float>();
-	}
-	else if constexpr(std::is_same_v<T, bool>) {
-		return storage.template interface_get_value<bool>();
-	}
-	else {
-		return storage;
-	}
+	return storage.template interface_get_value<T>();
 };
 
 template<typename T, Storage_concept_to_cpp Storage>
@@ -207,7 +190,7 @@ inline bool is_right_type(const Storage& storage) {
 	else if constexpr (std::is_same_v<T, int> || std::is_same_v<T, unsigned> || std::is_same_v<T, long> || std::is_same_v<T, long long> || std::is_same_v<T, unsigned long>) {
 		rightType = storage.interface_get_type() == Type::int_value || storage.interface_get_type() == Type::uint_value;
 	}
-	else if constexpr (std::is_same_v<T, float>/* || std::is_same_v<T, double>*/) {
+	else if constexpr (std::is_same_v<T, float> || std::is_same_v<T, double>) {
 		rightType = storage.interface_get_type() == Type::float_value || storage.interface_get_type() == Type::int_value || storage.interface_get_type() == Type::uint_value;
 	}
 	else if constexpr (std::is_same_v<T, bool>) {

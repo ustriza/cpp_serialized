@@ -17,6 +17,72 @@
 #include "enum_string.h"
 #include "access_assist.h"
 
+TEST(TestsToStl, toInt_Test) {
+	int value{};
+	
+	yb::to_cpp::TestStorage storage;
+	storage = 12345;
+	
+	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
+	
+	const bool success {deser.read_from()};
+	ASSERT_EQ(success, true);
+	EXPECT_EQ(value, 12345);
+}
+
+TEST(TestsToStl, toFloat_Test) {
+	float value{};
+	
+	yb::to_cpp::TestStorage storage;
+	storage = 12345.55f;
+	
+	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
+	
+	const bool success {deser.read_from()};
+	ASSERT_EQ(success, true);
+	EXPECT_EQ(yb::numbers_equal(value, 12345.55f), true);
+}
+
+TEST(TestsToStl, toFloatMax_Test) {
+	float value{};
+	
+	yb::to_cpp::TestStorage storage;
+	storage = std::numeric_limits<float>::max();
+	
+	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
+	
+	const bool success {deser.read_from()};
+	ASSERT_EQ(success, true);
+	EXPECT_EQ(yb::numbers_equal(value, std::numeric_limits<float>::max()), true);
+}
+
+TEST(TestsToStl, toDouble_Test) {
+	double value{};
+
+	yb::to_cpp::TestStorage storage;
+	storage = 12345.55;
+
+	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
+
+	const bool success {deser.read_from()};
+	ASSERT_EQ(success, true);
+	EXPECT_EQ(yb::numbers_equal(value, 12345.55), true);
+}
+
+TEST(TestsToStl, toDoubleMax_Test) {
+	double value{};
+	
+	yb::to_cpp::TestStorage storage;
+	storage = std::numeric_limits<double>::max();
+	
+	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
+	
+	const bool success {deser.read_from()};
+	ASSERT_EQ(success, true);
+	EXPECT_EQ(yb::numbers_equal(value, std::numeric_limits<double>::max()), true);
+}
+
+
 TEST(TestsToStl, toVectorInt_Test) {
 	std::vector<int> vec;
 	
