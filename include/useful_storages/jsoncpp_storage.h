@@ -36,7 +36,7 @@ static_assert(yb::to_cpp::Const_iterator_concept<Const_value_iterator>);
 #endif
 // end of Iterators
 
-class Json_storage_wrapper_to_cpp {
+class Json_storage_adapter_to_cpp {
 public:
 	
 	//----Methods for Storage_concept_to_cpp
@@ -92,17 +92,17 @@ public:
 	}
 
 	template<typename T1>
-	Json_storage_wrapper_to_cpp interface_get_storage_by_key(const T1& key) const {
+	Json_storage_adapter_to_cpp interface_get_storage_by_key(const T1& key) const {
 		return m_json_storage[std::string{key}];
 	}
 	
-	static Json_storage_wrapper_to_cpp interface_get_storage_from_iterator(const Const_value_iterator& iter) {
-		return Json_storage_wrapper_to_cpp{iter.get_json()};
+	static Json_storage_adapter_to_cpp interface_get_storage_from_iterator(const Const_value_iterator& iter) {
+		return Json_storage_adapter_to_cpp{iter.get_json()};
 	}
 	//----End of Methods for Storage_concept_to_cpp
 	
 		//For tests
-	Json_storage_wrapper_to_cpp(const Json::Value& storage): m_json_storage{storage}{}
+	Json_storage_adapter_to_cpp(const Json::Value& storage): m_json_storage{storage}{}
 	
 	const Json::Value& get_json_value() const {
 		return m_json_storage;
@@ -137,10 +137,10 @@ private:
 	const Json::Value& m_json_storage;
 };
 #if __cplusplus >= 202002L
-static_assert(Storage_concept_to_cpp<Json_storage_wrapper_to_cpp>);
+static_assert(Storage_concept_to_cpp<Json_storage_adapter_to_cpp>);
 #endif
 
-class Json_storage_wrapper_from_cpp {
+class Json_storage_adapter_from_cpp {
 public:
 	
 	//Interface implementation. Methods for Storage_concept_from_cpp concept.
@@ -165,19 +165,19 @@ public:
 	}
 	
 	
-	Json_storage_wrapper_from_cpp interface_append_array_item() {
+	Json_storage_adapter_from_cpp interface_append_array_item() {
 		assert(m_json_storage.type() == Json::ValueType::arrayValue);
-		return Json_storage_wrapper_from_cpp{m_json_storage.append({})};
+		return Json_storage_adapter_from_cpp{m_json_storage.append({})};
 	}
 	
 	template<typename TKey>
-	Json_storage_wrapper_from_cpp interface_append_map_item(const TKey& key) {
+	Json_storage_adapter_from_cpp interface_append_map_item(const TKey& key) {
 		assert(m_json_storage.type() == Json::ValueType::objectValue || m_json_storage.type() == Json::ValueType::nullValue);
-		return Json_storage_wrapper_from_cpp{m_json_storage[yb::string_utils::val_to_string(key)]};
+		return Json_storage_adapter_from_cpp{m_json_storage[yb::string_utils::val_to_string(key)]};
 	}
 	//End if Interface implementation
 	
-	Json_storage_wrapper_from_cpp(Json::Value& storage): m_json_storage{storage}{}
+	Json_storage_adapter_from_cpp(Json::Value& storage): m_json_storage{storage}{}
 	
 	bool isString() const {
 		return m_json_storage.isString();

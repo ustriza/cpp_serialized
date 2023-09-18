@@ -165,7 +165,7 @@ TEST(jsonToStl, read) {
 		return;
 	}
 	
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage{autoJsonDeserUnitTestJson};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage{autoJsonDeserUnitTestJson};
 
 	autoJsonDeserUnitTestStruct autoJsonDeserUnitTestData;
 
@@ -243,7 +243,7 @@ TEST(jsonToStl, readEnum) {
 	[[maybe_unused]] const auto parseJsonResult = reader.parse(srcJson, json);
 	ASSERT_EQ(parseJsonResult, true);
 	
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage{json};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage{json};
 
 	myReadEnum enumVar;
 	const auto getResult = yb::assist::get_value_to(yb::assist::find_storage(storage, "1"), enumVar);
@@ -263,7 +263,7 @@ TEST(jsonToStl, readEnumFail) {
 	[[maybe_unused]] const auto parseJsonResult = reader.parse(srcJson, json);
 	ASSERT_EQ(parseJsonResult, true);
 	
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage{json};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage{json};
 
 	myReadEnum enumVar;
 	const auto getResult = yb::assist::get_value_to(yb::assist::find_storage(storage, "1"), enumVar);
@@ -279,7 +279,7 @@ TEST(jsonToStl, readIntToFloat) {
 	[[maybe_unused]] const auto parseJsonResult = reader.parse(srcJson, json);
 	ASSERT_EQ(parseJsonResult, true);
 	
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage{json};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage{json};
 	
 	float myVar;
 	
@@ -302,7 +302,7 @@ TEST(jsonToStl, readFloatToInt) {
 	
 	int myVar;
 	
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage_adapter{json};
 	auto deser = yb::to_cpp::storage_to_cpp_instance(myVar, storage_adapter);
 	const bool getResult = deser.read_from();
 	
@@ -315,7 +315,7 @@ TEST(jsonToStlUtils, timePointFromJson) {
 	std::chrono::time_point<std::chrono::system_clock> value;
 	Json::Value curNode = std::to_string(data);
 	
-	const auto result = yb::assist::get_value_to(yb::jsoncpp::Json_storage_wrapper_to_cpp(curNode), value);
+	const auto result = yb::assist::get_value_to(yb::jsoncpp::Json_storage_adapter_to_cpp(curNode), value);
 
 	ASSERT_EQ(result, true);
 	ASSERT_EQ(std::chrono::system_clock::to_time_t(value), data);
@@ -325,7 +325,7 @@ TEST(jsonToStlUtils, timePointFromJsonFail) {
 	std::chrono::time_point<std::chrono::system_clock> value;
 	Json::Value curNode = 98989333; //wrong data type
 	
-	const auto result = yb::assist::get_value_to(yb::jsoncpp::Json_storage_wrapper_to_cpp(curNode), value);
+	const auto result = yb::assist::get_value_to(yb::jsoncpp::Json_storage_adapter_to_cpp(curNode), value);
 
 	ASSERT_EQ(result, false);
 }
@@ -343,7 +343,7 @@ TEST(jsonToStl, readPairKeyString) {
 	ASSERT_EQ(parseJsonResult, true);
 	
 	std::pair<std::string, int> pairVar;
-	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_wrapper_to_cpp(json), pairVar);
+	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_adapter_to_cpp(json), pairVar);
 	ASSERT_EQ(getResult, true);
 	
 	const std::pair<std::string, int> standardValue{"key", 1234};
@@ -363,7 +363,7 @@ TEST(jsonToStl, readPairKeyInt) {
 	ASSERT_EQ(parseJsonResult, true);
 	
 	std::pair<int, int> pairVar;
-	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_wrapper_to_cpp(json), pairVar);
+	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_adapter_to_cpp(json), pairVar);
 	ASSERT_EQ(getResult, true);
 	
 	const std::pair<int, int> standardValue{98765, 1234};
@@ -383,7 +383,7 @@ TEST(jsonToStl, readTupleStringInt) {
 	ASSERT_EQ(parseJsonResult, true);
 	
 	std::tuple<std::string, int> tupleVar;
-	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_wrapper_to_cpp(json), tupleVar);
+	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_adapter_to_cpp(json), tupleVar);
 	ASSERT_EQ(getResult, true);
 	
 	const std::tuple<std::string, int> standardValue{"98765", 1234};
@@ -416,7 +416,7 @@ TEST(jsonToStl, readTupleComplex) {
 	ASSERT_EQ(parseJsonResult, true);
 	
 	testType tupleVar;
-	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_wrapper_to_cpp(json), tupleVar);
+	const auto getResult = yb::assist::get_value_to(yb::jsoncpp::Json_storage_adapter_to_cpp(json), tupleVar);
 	ASSERT_EQ(getResult, true);
 	
 	testType standardValue;
@@ -465,7 +465,7 @@ TEST(jsonToStl, readStruct0) {
 	
 	testDeserializeStruct value;
 	
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
 	const bool success = deser.read_from();
 
