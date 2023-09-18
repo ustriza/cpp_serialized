@@ -16,7 +16,7 @@ TEST(stlToJson, writeNumbersInt) {
 	constexpr std::array values {0, -1, -100, 1, 100, 123456789, -123456789};
 	for(const int value: values) {
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 
@@ -29,7 +29,7 @@ TEST(stlToJson, writeNumbersFloat) {
 	constexpr std::array values {0.f, -1.f, -100.f, 1.f, 100.f, 123456789.f, -123456789.f};
 	for(const float value: values) {
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 
@@ -42,7 +42,7 @@ TEST(stlToJson, writeNumbersBool) {
 	constexpr std::array values {true, false};
 	for(const bool value: values) {
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 
@@ -55,7 +55,7 @@ TEST(stlToJson, writeStrings) {
 	constexpr std::array values {"", "str123456", "87879879879osklsnlsdnksjdksdbsdmn,smdns,dbsmndsmndbsmndbsm"};
 	for(const std::string value: values) {
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 		
@@ -69,7 +69,7 @@ template<class T>
 void toJsonTestArrays(const T& values) {
 	for(const auto& value: values) {
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 
@@ -80,7 +80,7 @@ void toJsonTestArrays(const T& values) {
 			std::advance(it, i);
 			const auto& v = (*it);
 			
-			yb::jsoncpp::Json_storage_wrapper_to_cpp storage_item{json[Json::Value::ArrayIndex{static_cast<Json::ArrayIndex>(i)}]};
+			yb::jsoncpp::Json_storage_adapter_to_cpp storage_item{json[Json::Value::ArrayIndex{static_cast<Json::ArrayIndex>(i)}]};
 			const auto result = yb::assist::get_value<typename T::value_type::value_type>(storage_item);
 
 			ASSERT_EQ(result.has_value(), true);
@@ -154,7 +154,7 @@ template<class T>
 void testPairs(const T& values) {
 	for(const auto& value: values) {
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 
@@ -201,14 +201,14 @@ template<class T>
 void toJsonTestMaps(const T& values) {
 	for(const auto& value: values) {
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 
 		ASSERT_EQ(json.isObject(), true);
 		ASSERT_EQ(json.size(), value.size());
 		for(auto it = begin(value); it != end(value); ++it) {
-			const auto result = yb::assist::get_value<typename T::value_type::mapped_type>(yb::jsoncpp::Json_storage_wrapper_to_cpp{json[yb::string_utils::val_to_string(it->first)]});
+			const auto result = yb::assist::get_value<typename T::value_type::mapped_type>(yb::jsoncpp::Json_storage_adapter_to_cpp{json[yb::string_utils::val_to_string(it->first)]});
 
 			ASSERT_EQ(result.has_value(), true);
 			EXPECT_EQ(result.value(), it->second);
@@ -330,7 +330,7 @@ TEST(stlToJson, writeStruct0) {
 
 	{
 		Json::Value json;
-		yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+		yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 		inst.write_to();
 
@@ -339,14 +339,14 @@ TEST(stlToJson, writeStruct0) {
 
 	{
 		Json::Value json;
-		yb::assist::set_value(yb::jsoncpp::Json_storage_wrapper_from_cpp{json}, value);
+		yb::assist::set_value(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
 		
 		check(json);
 	}
 
 	{
 		Json::Value json;
-		yb::assist::set_value(yb::assist::create_storage(yb::jsoncpp::Json_storage_wrapper_from_cpp{json}, "key"), value);
+		yb::assist::set_value(yb::assist::create_storage(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, "key"), value);
 
 		check(json["key"]);
 	}
@@ -370,7 +370,7 @@ TEST(stlToJson, writeArrayContainerItem) {
 	}();
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -400,7 +400,7 @@ TEST(stlToJson, readStruct1) {
 
 	testSerializeStruct1 value;
 
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
 	const bool getResult = inst.read_from();
 
@@ -440,7 +440,7 @@ TEST(stlToJson, writeStruct2) {
 	}();
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
 	inst.write_to();
 
@@ -464,7 +464,7 @@ TEST(stlToJson, writeEnum) {
 	const myWriteEnum value = myWriteEnum::ME_2;
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -476,7 +476,7 @@ TEST(stlToJson, writeEnumFail) {
 	const myWriteEnum value = myWriteEnum(123456);
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -504,7 +504,7 @@ TEST(stlToJson, readStructEmpty) {
 
 	testSerializeDeserializeEmptyStruct value;
 
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
 	const bool getResult = inst.read_from();
 
@@ -517,7 +517,7 @@ TEST(stlToJson, writeStructEmpty) {
 	value.item = 10;
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -544,7 +544,7 @@ TEST(stlToJson, readStructDefault) {
 
 	testSerializeDeserializeDefaultStruct value;
 
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
 	const bool getResult = inst.read_from();
 
@@ -557,7 +557,7 @@ TEST(stlToJson, writeStructDefault) {
 	value.item = 10;
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -584,7 +584,7 @@ TEST(stlToJson, readJsonStruct) {
 
 	testSerializeDeserializeJsonStruct value;
 
-	yb::jsoncpp::Json_storage_wrapper_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
+	yb::jsoncpp::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
 	const bool getResult = inst.read_from();
 
@@ -601,7 +601,7 @@ TEST(stlToJson, writeJsonStruct) {
 	value.item.append("xyz");
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -628,7 +628,7 @@ TEST(stlToJson, writeEmptyArrayMapStruct) {
 	testSerializeDeserializeEmptyArrayMapStruct value;
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -643,7 +643,7 @@ TEST(stlToJson, writePairKeyString) {
 	std::pair<std::string, int> value {"key", 12345};
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -657,7 +657,7 @@ TEST(stlToJson, writePairKeyInt) {
 	std::pair<int, int> value {98765, 12345};
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -671,7 +671,7 @@ TEST(stlToJson, writeTupleStringInt) {
 	std::tuple<std::string, int> value {"key", 12345};
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
@@ -711,7 +711,7 @@ TEST(stlToJson, writeTupleComplex) {
 
 
 	Json::Value json;
-	yb::jsoncpp::Json_storage_wrapper_from_cpp storage_adapter{json};
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
 	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
 	inst.write_to();
 
