@@ -745,3 +745,18 @@ TEST(stlToJson, writeTupleComplex) {
 	EXPECT_EQ(json[4u]["item2"].isString(), true);
 	EXPECT_EQ(json[4u]["item2"].asString(), "200");
 }
+
+TEST(stlToJson, write_AssistVectorMapStringInt) {
+	const std::vector<std::map<int, std::string>> value{{{12345, "string_test0"}, {98765, "string_test1"}}, {{54321, "string_test11"}, {1234321, "string_test12"}}};
+	Json::Value json;
+	yb::assist::set_value(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
+	
+	ASSERT_EQ(json.isArray(), true);
+	ASSERT_EQ(json.size(), 2);
+	
+	EXPECT_EQ(json[0u]["12345"].asString(), "string_test0");
+	EXPECT_EQ(json[0u]["98765"].asString(), "string_test1");
+
+	EXPECT_EQ(json[1u]["54321"].asString(), "string_test11");
+	EXPECT_EQ(json[1u]["1234321"].asString(), "string_test12");
+}

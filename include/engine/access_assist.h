@@ -56,8 +56,8 @@ decltype(auto) create_storage(Storage&& storage, std::string_view key) {
 
 
 template <Storage_concept_from_cpp Storage, typename T>
-void set_value(Storage&& storage, const T& myVar) {
-	auto inst = yb::from_cpp::cpp_to_storage_instance(myVar, storage);
+void set_value(Storage&& storage, const T& my_var) {
+	auto inst = yb::from_cpp::cpp_to_storage_instance(my_var, storage);
 	inst.write_to();
 }
 
