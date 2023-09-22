@@ -49,13 +49,13 @@ TEST(TestsBoth, writeStruct0) {
 	
 	{
 		yb::both::TestStorage storage;
-		yb::assist::set_value(storage, value);
+		yb::assist::serialize(storage, value);
 		check(storage);
 	}
 	
 	{
 		yb::both::TestStorage storage;
-		yb::assist::set_value(yb::assist::create_storage(storage, "key"), value);
+		yb::assist::serialize(yb::assist::create_storage(storage, "key"), value);
 		check(storage.test_get_by_key("key"));
 	}
 	

@@ -198,9 +198,9 @@ static_assert(Storage_concept_from_cpp<TextStorage>);
 namespace yb::assist {
 
 template<typename T>
-std::string to_string(const T& value) {
+std::string to_string(const T& from_value) {
 	yb::text_from_cpp::TextStorage storage;
-	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	auto inst = yb::from_cpp::cpp_to_storage_instance(from_value, storage);
 	inst.write_to();
 	return std::move(storage.get_text());
 }

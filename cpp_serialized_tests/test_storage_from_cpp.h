@@ -140,13 +140,13 @@ private:
 			return -1;
 		}
 		const auto& max_elm = std::max_element(m_map.begin(), m_map.end(), [](const auto& item1, const auto& item2) -> bool {
-			if(!std::holds_alternative<size_t>(item1.first.get_value()) || !std::holds_alternative<size_t>(item2.first.get_value())) {
+			if(!std::holds_alternative<size_t>(item1.first.deserialize()) || !std::holds_alternative<size_t>(item2.first.deserialize())) {
 				return false;
 			}
-			return std::get<size_t>(item1.first.get_value()) < std::get<size_t>(item2.first.get_value());
+			return std::get<size_t>(item1.first.deserialize()) < std::get<size_t>(item2.first.deserialize());
 		});
 		
-		return static_cast<int>(std::get<size_t>(max_elm->first.get_value()));
+		return static_cast<int>(std::get<size_t>(max_elm->first.deserialize()));
 	}
 	
 	enum class Value_subtype {NONE, SCALAR, ARRAY, OBJECT};

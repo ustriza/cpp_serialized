@@ -385,6 +385,7 @@ class Engine_to_cpp {
 		
 		const auto& jValue = std::decay_t<decltype(m_storage)>::interface_get_storage_from_iterator(curNodeIterator);
 		if(!read(tupleItem, jValue)) {
+			success = false;
 			return false;
 		}
 		

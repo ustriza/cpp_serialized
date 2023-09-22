@@ -81,7 +81,7 @@ void toJsonTestArrays(const T& values) {
 			const auto& v = (*it);
 			
 			yb::jsoncpp::Json_storage_adapter_to_cpp storage_item{json[Json::Value::ArrayIndex{static_cast<Json::ArrayIndex>(i)}]};
-			const auto result = yb::assist::get_value<typename T::value_type::value_type>(storage_item);
+			const auto result = yb::assist::deserialize<typename T::value_type::value_type>(storage_item);
 
 			ASSERT_EQ(result.has_value(), true);
 			ASSERT_EQ(result.value(), v);
@@ -208,7 +208,7 @@ void toJsonTestMaps(const T& values) {
 		ASSERT_EQ(json.isObject(), true);
 		ASSERT_EQ(json.size(), value.size());
 		for(auto it = begin(value); it != end(value); ++it) {
-			const auto result = yb::assist::get_value<typename T::value_type::mapped_type>(yb::jsoncpp::Json_storage_adapter_to_cpp{json[yb::string_utils::val_to_string(it->first)]});
+			const auto result = yb::assist::deserialize<typename T::value_type::mapped_type>(yb::jsoncpp::Json_storage_adapter_to_cpp{json[yb::string_utils::val_to_string(it->first)]});
 
 			ASSERT_EQ(result.has_value(), true);
 			EXPECT_EQ(result.value(), it->second);
@@ -339,14 +339,14 @@ TEST(stlToJson, writeStruct0) {
 
 	{
 		Json::Value json;
-		yb::assist::set_value(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
+		yb::assist::serialize(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
 		
 		check(json);
 	}
 
 	{
 		Json::Value json;
-		yb::assist::set_value(yb::assist::create_storage(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, "key"), value);
+		yb::assist::serialize(yb::assist::create_storage(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, "key"), value);
 
 		check(json["key"]);
 	}
@@ -749,7 +749,7 @@ TEST(stlToJson, writeTupleComplex) {
 TEST(stlToJson, write_AssistVectorMapStringInt) {
 	const std::vector<std::map<int, std::string>> value{{{12345, "string_test0"}, {98765, "string_test1"}}, {{54321, "string_test11"}, {1234321, "string_test12"}}};
 	Json::Value json;
-	yb::assist::set_value(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
+	yb::assist::serialize(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
 	
 	ASSERT_EQ(json.isArray(), true);
 	ASSERT_EQ(json.size(), 2);

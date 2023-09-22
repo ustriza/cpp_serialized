@@ -53,7 +53,7 @@ bool test_check_get_value(const T& value) {
 		yb::to_cpp::TestStorage storage;
 		test_assign_to_storage(storage, value);
 
-		const auto result = yb::assist::get_value<Clear_type>(storage);
+		const auto result = yb::assist::deserialize<Clear_type>(storage);
 		if(!result.has_value()) {
 			return false;
 		}
@@ -67,7 +67,7 @@ bool test_check_get_value(const T& value) {
 		test_assign_to_storage(storage, value);
 
 		Clear_type result{};
-		const bool success{yb::assist::get_value_to<Clear_type>(storage, result)};
+		const bool success{yb::assist::deserialize_to<Clear_type>(storage, result)};
 		
 		if(!success) {
 			return false;
@@ -109,14 +109,14 @@ TEST(TestsAssist, getValueFail) {
 	{
 		yb::to_cpp::TestStorage storage;
 		
-		const auto result0 = yb::assist::get_value<int>(storage);
+		const auto result0 = yb::assist::deserialize<int>(storage);
 		EXPECT_EQ(result0.has_value(), false);
 	}
 	{
 		yb::to_cpp::TestStorage storage;
 		storage = "123456";
 		
-		const auto result0 = yb::assist::get_value<int>(storage);
+		const auto result0 = yb::assist::deserialize<int>(storage);
 		EXPECT_EQ(result0.has_value(), false);
 	}
 }
@@ -125,14 +125,14 @@ TEST(TestsAssist, getValueDef) {
 	{
 		yb::to_cpp::TestStorage storage;
 
-		const int result{yb::assist::get_value<int>(storage, 56789)};
+		const int result{yb::assist::deserialize<int>(storage, 56789)};
 		EXPECT_EQ(result, 56789);
 	}
 	{
 		yb::to_cpp::TestStorage storage;
 		storage = 12345;
 		
-		const int result{yb::assist::get_value<int>(storage, 56789)};
+		const int result{yb::assist::deserialize<int>(storage, 56789)};
 		EXPECT_EQ(result, 12345);
 	}
 	{
@@ -140,7 +140,7 @@ TEST(TestsAssist, getValueDef) {
 		storage = 12345;
 		
 		int def = 56789;
-		const int result{yb::assist::get_value<int>(storage, def)};
+		const int result{yb::assist::deserialize<int>(storage, def)};
 		EXPECT_EQ(result, 12345);
 	}
 	{
@@ -148,7 +148,7 @@ TEST(TestsAssist, getValueDef) {
 		storage = 12345;
 		
 		const int def = 56789;
-		const int result{yb::assist::get_value<int>(storage, def)};
+		const int result{yb::assist::deserialize<int>(storage, def)};
 		EXPECT_EQ(result, 12345);
 	}
 
@@ -157,7 +157,7 @@ TEST(TestsAssist, getValueDef) {
 		
 		std::vector<int> def{12345, 6789};
 		
-		const auto result = yb::assist::get_value<std::vector<int>>(storage, def);
+		const auto result = yb::assist::deserialize<std::vector<int>>(storage, def);
 		EXPECT_EQ(def.size(), 2);
 		EXPECT_EQ(result, def);
 	}
@@ -167,7 +167,7 @@ TEST(TestsAssist, getValueDef) {
 		
 		std::vector<int> def{12345, 6789};
 		
-		const auto result = yb::assist::get_value<std::vector<int>>(storage, std::move(def));
+		const auto result = yb::assist::deserialize<std::vector<int>>(storage, std::move(def));
 		
 		EXPECT_EQ(def.empty(), true);
 		EXPECT_EQ(result.size(), 2);
@@ -182,7 +182,7 @@ TEST(TestsAssist, getValueDef) {
 
 		std::vector<int> def{12345, 6789};
 		
-		const auto result = yb::assist::get_value<std::vector<int>>(storage, def);
+		const auto result = yb::assist::deserialize<std::vector<int>>(storage, def);
 		
 		EXPECT_EQ(result, value);
 	}
@@ -196,7 +196,7 @@ TEST(TestsAssist, getTupleValue) {
 	
 	std::tuple<int, float, std::string> value;
 	
-	const bool success{yb::assist::get_value_to(storage, value)};
+	const bool success{yb::assist::deserialize_to(storage, value)};
 	
 	EXPECT_EQ(success, true);
 	EXPECT_EQ(std::get<0>(value), 12345);
@@ -225,7 +225,7 @@ TEST(TestsAssist, getStructValue) {
 	
 	Struct_to_string_assist value;
 	
-	const bool success{yb::assist::get_value_to(storage, value)};
+	const bool success{yb::assist::deserialize_to(storage, value)};
 
 	EXPECT_EQ(success, true);
 	EXPECT_EQ(value.intProp, 12345);
@@ -238,7 +238,7 @@ template<class T>
 bool test_empty_value() {
 	yb::to_cpp::TestStorage storage;
 	T value;
-	const bool success{yb::assist::get_value_to(storage, value)};
+	const bool success{yb::assist::deserialize_to(storage, value)};
 	return success == false;
 }
 
@@ -327,7 +327,7 @@ TEST(TestsAssist, setValue) {
 	{
 		yb::from_cpp::TestStorage storage;
 		
-		yb::assist::set_value(storage, 12345);
+		yb::assist::serialize(storage, 12345);
 		
 		ASSERT_EQ(storage.isInt(), true);
 		EXPECT_EQ(storage.asInt(), 12345);
@@ -338,7 +338,7 @@ TEST(TestsAssist, setValue) {
 		
 		yb::from_cpp::TestStorage storage;
 		
-		yb::assist::set_value(storage, value);
+		yb::assist::serialize(storage, value);
 		
 		ASSERT_EQ(storage.isArray(), true);
 		ASSERT_EQ(storage.size(), value.size());

@@ -41,12 +41,11 @@ class Engine_from_cpp {
 	const T &m_cont;
 	Storage& m_storage;
 
-		//constructors
+	//constructors
 	Engine_from_cpp(const T &cont, Storage& storage): m_cont{cont}, m_storage{storage}{}
 
 	DEFINE_MEMBER_CHECKER(meta_table)
 
-		//parse other types
 	template<class T1>
 	void write(const T1 &value, Storage& cur_storage) {
 		if constexpr(HAS_MEMBER(T1, meta_table)) {
