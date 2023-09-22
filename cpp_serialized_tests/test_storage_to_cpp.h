@@ -19,7 +19,7 @@ class TestStorage {
 	Map m_map;
 public:
 	
-	//----Methods for Storage_concept_to_cpp
+	//----Methods for Const_iterator_concept
 	
 	//Iterators
 	class Const_value_iterator {
@@ -47,6 +47,7 @@ public:
 #endif
 	// end of Iterators
 
+	//----Methods for Storage_concept_to_cpp
 	template<typename T1>
 	T1 interface_get_value() const {
 		if constexpr(std::is_same_v<T1, int>) {
