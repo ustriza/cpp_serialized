@@ -296,7 +296,7 @@ class Engine_to_cpp {
 			value.reserve(cur_storage.interface_size());
 		}
 		value.clear();
-		for(auto node_it = cur_storage.interface_begin(); node_it != cur_storage.interface_end(); ++node_it) {
+		for(auto node_it = cur_storage.interface_begin(); node_it.interface_not_equal_to(cur_storage.interface_end()); node_it.interface_increment()) {
 			const auto& nodeItem = std::decay_t<decltype(m_storage)>::interface_get_storage_from_iterator(node_it);
 			if constexpr (std::is_same_v<T1, std::set<typename T1::value_type>> || std::is_same_v<T1, std::unordered_set<typename T1::value_type>>) {
 				typename T1::value_type item;
@@ -327,18 +327,18 @@ class Engine_to_cpp {
 			return false;
 		}
 		
-		auto itemIt = cur_storage.interface_begin();
-		const auto endIt = cur_storage.interface_end();
-		for (; itemIt != endIt; ++itemIt) {
-			const auto& jValue = std::decay_t<decltype(m_storage)>::interface_get_storage_from_iterator(itemIt);
-			const typename T1::key_type& key = itemIt.template interface_get_key<typename T1::key_type>();
+		auto item_it = cur_storage.interface_begin();
+		const auto end_it = cur_storage.interface_end();
+		for (; item_it.interface_not_equal_to(end_it); item_it.interface_increment()) {
+			const auto& j_value = std::decay_t<decltype(m_storage)>::interface_get_storage_from_iterator(item_it);
+			const typename T1::key_type& key = item_it.template interface_get_key<typename T1::key_type>();
 			
 			const auto result = value.emplace(key, typename T1::mapped_type());
 			assert(result.second);
 			
 			if(result.second) {
 				auto& item = (*result.first).second;
-				if(!read(item, jValue)) {
+				if(!read(item, j_value)) {
 					return false;
 				}
 			}
@@ -369,7 +369,7 @@ class Engine_to_cpp {
 		}
 
 		{
-			++itemIt;
+			itemIt.interface_increment();
 			const auto& jValue = std::decay_t<decltype(m_storage)>::interface_get_storage_from_iterator(itemIt);
 			if(!read(value.second, jValue)) {
 				return false;
@@ -398,7 +398,7 @@ class Engine_to_cpp {
 			return;
 		}
 		
-		++curNodeIterator;
+		curNodeIterator.interface_increment();
 		
 		if constexpr(Index + 1 != Size) {
 			for_each_read_tuple_static_index<T1, Index + 1, Size>(value, curNodeIterator, success);

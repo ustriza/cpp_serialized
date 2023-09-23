@@ -204,8 +204,8 @@ struct Key_model {};
 template<class T>
 concept Const_iterator_concept =
 requires(T a, const T ca) {
-	++a;
-	{ca != ca} -> std::convertible_to<bool>;
+	a.interface_increment();
+	{a.interface_not_equal_to(ca)} -> std::convertible_to<bool>;
 	{ca.template interface_get_key<Key_model>()} -> std::convertible_to<Key_model>;
 };
 
@@ -265,8 +265,8 @@ concept Storage_concept_both = (Storage_concept_to_cpp<T> && Storage_concept_fro
 
 class Const_value_iterator {
 public:
-	const Const_value_iterator& operator++();
-	bool operator!=(const Const_value_iterator& other) const;
+	void interface_increment();
+	bool interface_not_equal_to(const Const_value_iterator& other) const;
 	template<typename T1>
 	const T1& interface_get_key() const;
 };

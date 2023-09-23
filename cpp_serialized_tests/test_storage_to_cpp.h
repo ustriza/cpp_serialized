@@ -28,9 +28,9 @@ public:
 
 		//Methods for Const_iterator_concept
 
-		const Const_value_iterator& operator++() {++m_iter; return *this;}
+		void interface_increment() {++m_iter;}
 		
-		bool operator!=(const Const_value_iterator& other) const {return m_iter != other.m_iter;}
+		bool interface_not_equal_to(const Const_value_iterator& other) const {return m_iter != other.m_iter;}
 		
 		template<typename T1>
 		const T1& interface_get_key() const {
