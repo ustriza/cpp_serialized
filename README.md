@@ -884,14 +884,38 @@ public:
 };
 ```
 
+Класс итератора обязын иметь следующие методы.
+
+--  лолололо
+
+1. **interface_increment()**. Переходит к следующему элементу. Возвращаемое значение не требуется. Соответствует operator++() у обычного итератора.
+2. **interface_not_equal_to**. Сравнивает с другим итератором. На практике сравнение происходит со значением, возвращаемым методом interface_end() класса хранилища. Соответствует operator!= у обычного итератора.
+3. **interface_get_key()**. Шаблонная функция возвращает значение ключа указанного типа, если итератор используется с C++ типами std::map, std::unordered_map. Соответствует first у обычного итератора.
+
+**Шаблон хранилища**
+```cpp
+class Deserialize_storage {
+public:
+	yb::Type interface_get_type() const;
+
+	template<typename T1>
+	T1 interface_get_value() const;
+	
+	//container support
+	size_t interface_size() const;
+	Const_value_iterator interface_begin() const;
+	Const_value_iterator interface_end() const;
+	
+	template<typename T1>
+	const Deserialize_storage& interface_get_storage_by_key(const T1& key) const;
+	
+	static const Deserialize_storage& interface_get_storage_from_iterator(const Const_value_iterator& iter);
+};
+```
 
 Класс хранилища обязан иметь следующие методы.
 
---  null_value - значение не найдено методом interface_get_storage_by_key объекта хранилища (см. ниже).
---  int_value - целое (int).
---  uint_value - беззнаковое целое (unsigned int).
-
---  **interface_get_type()**. Возвращает тип значения в хранилище.
+1. **interface_get_type()**. Возвращает тип значения в хранилище.
 
 Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value.
 2. **interface_get_value()**. Возвращает значение, ханящееся в данном хранилище.
