@@ -887,6 +887,10 @@ public:
 
 Класс хранилища обязан иметь следующие методы.
 
+--  null_value - значение не найдено методом interface_get_storage_by_key объекта хранилища (см. ниже).
+--  int_value - целое (int).
+--  uint_value - беззнаковое целое (unsigned int).
+
 --  **interface_get_type()**. Возвращает тип значения в хранилище.
 
 Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value.
