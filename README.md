@@ -854,7 +854,6 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 
 
 ## Как создать своё хранилище для десериализации
-* int_value - целое (int).
 Для создания ханилища для десериализации необходимо реализовать два класса. Класс итератора и класс хранилища. Если Вы используете C++20, то Ваши классы итератора и хранилища обязаны соответствовать концептам:
 
 **Концепт итератора**
@@ -915,13 +914,13 @@ public:
 
 1. **interface_get_type()**. Возвращает тип значения в хранилище.
 
-Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value.
+Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value.  
 2. **interface_get_value()**. Возвращает значение, ханящееся в данном хранилище.
 
-Для хранилищ с типом array_container.
+Для хранилищ с типом array_container.  
 3. **interface_size()**. Возвращает размер масива. Соответствует методу size() обычного контейнера.
 
-Для хранилищ с типом array_container, object_container.
+Для хранилищ с типом array_container, object_container.  
 4. **interface_begin()**. возвращает итератор на первый элемент в хранилище. Соответствует методу begin() обычного контейнера.
 5. **interface_end()**. возвращает итератор на последний + 1 элемент в хранилище. Соответствует методу end() обычного контейнера.
 
