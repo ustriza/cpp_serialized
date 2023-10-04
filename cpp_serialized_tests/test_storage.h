@@ -31,13 +31,13 @@ public:
 
 		//Methods for Const_iterator_concept
 
-		const Const_value_iterator& operator++() {++m_iter; return *this;}
+		void interface_increment() {++m_iter;}
 		
-		bool operator!=(const Const_value_iterator& other) const {return m_iter != other.m_iter;}
+		bool interface_not_equal_to(const Const_value_iterator& other) const {return m_iter != other.m_iter;}
 		
 		template<typename T1>
 		const T1& interface_get_key() const {
-			return std::get<T1>(m_iter->first.get_value());
+			return std::get<T1>(m_iter->first.deserialize());
 		}
 		//-------------------------------------
 
@@ -227,13 +227,13 @@ private:
 			return -1;
 		}
 		const auto& max_elm = std::max_element(m_map.begin(), m_map.end(), [](const auto& item1, const auto& item2) -> bool {
-			if(!std::holds_alternative<size_t>(item1.first.get_value()) || !std::holds_alternative<size_t>(item2.first.get_value())) {
+			if(!std::holds_alternative<size_t>(item1.first.deserialize()) || !std::holds_alternative<size_t>(item2.first.deserialize())) {
 				return false;
 			}
-			return std::get<size_t>(item1.first.get_value()) < std::get<size_t>(item2.first.get_value());
+			return std::get<size_t>(item1.first.deserialize()) < std::get<size_t>(item2.first.deserialize());
 		});
 		
-		return static_cast<int>(std::get<size_t>(max_elm->first.get_value()));
+		return static_cast<int>(std::get<size_t>(max_elm->first.deserialize()));
 	}
 	
 	enum class Value_subtype {NONE, SCALAR, ARRAY, OBJECT};

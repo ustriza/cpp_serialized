@@ -14,37 +14,37 @@ decltype(auto) find_storage(const Storage& storage, std::string_view key) {
 }
 
 template <typename T, Storage_concept_to_cpp Storage>
-bool get_value_to(const Storage& storage, T& outMyVar) {
-	auto deser = yb::to_cpp::storage_to_cpp_instance(outMyVar, storage);
+bool deserialize_to(const Storage& storage, T& to_value) {
+	auto deser = yb::to_cpp::storage_to_cpp_instance(to_value, storage);
 	return deser.read_from();
 }
 
 template <typename T, Storage_concept_to_cpp Storage>
-std::optional<T> get_value(const Storage& storage) {
-	std::optional<T> ret_value;
-	ret_value.emplace();
-	if(!get_value_to(storage, ret_value.value())) {
-		ret_value.reset();
+std::optional<T> deserialize(const Storage& storage) {
+	std::optional<T> to_value;
+	to_value.emplace();
+	if(!deserialize_to(storage, to_value.value())) {
+		to_value.reset();
 	}
-	return ret_value;
+	return to_value;
 }
 
 template <typename T, Storage_concept_to_cpp Storage>
-T get_value(const Storage& storage, const T& def) {
-	T ret_value;
-	if(!get_value_to(storage, ret_value)) {
-		ret_value = def;
+T deserialize(const Storage& storage, const T& def) {
+	T to_value;
+	if(!deserialize_to(storage, to_value)) {
+		to_value = def;
 	}
-	return ret_value;
+	return to_value;
 }
 
 template <typename T, Storage_concept_to_cpp Storage>
-T get_value(const Storage& storage, T&& def) {
-	std::decay_t<T> ret_value;
-	if(!get_value_to(storage, ret_value)) {
-		ret_value = std::forward<T>(def);
+T deserialize(const Storage& storage, T&& def) {
+	std::decay_t<T> to_value;
+	if(!deserialize_to(storage, to_value)) {
+		to_value = std::forward<T>(def);
 	}
-	return ret_value;
+	return to_value;
 }
 
 
@@ -56,8 +56,8 @@ decltype(auto) create_storage(Storage&& storage, std::string_view key) {
 
 
 template <Storage_concept_from_cpp Storage, typename T>
-void set_value(Storage&& storage, const T& my_var) {
-	auto inst = yb::from_cpp::cpp_to_storage_instance(my_var, storage);
+void serialize(Storage&& storage, const T& from_value) {
+	auto inst = yb::from_cpp::cpp_to_storage_instance(from_value, storage);
 	inst.write_to();
 }
 

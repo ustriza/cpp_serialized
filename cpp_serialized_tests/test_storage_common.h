@@ -24,7 +24,7 @@ public:
 		return *this;
 	}
 	
-	const Value_type& get_value() const {
+	const Value_type& deserialize() const {
 		return m_value;
 	}
 private:
@@ -37,14 +37,14 @@ namespace std {
 template<> struct less<yb::tests::MapKey> {
 	bool operator() (const yb::tests::MapKey& lhs, const yb::tests::MapKey& rhs) const
 	{
-		if(std::holds_alternative<size_t>(lhs.get_value())) {
-			return std::get<size_t>(lhs.get_value()) < std::get<size_t>(rhs.get_value());
+		if(std::holds_alternative<size_t>(lhs.deserialize())) {
+			return std::get<size_t>(lhs.deserialize()) < std::get<size_t>(rhs.deserialize());
 		}
-		else if(std::holds_alternative<int>(lhs.get_value())) {
-			return std::get<int>(lhs.get_value()) < std::get<int>(rhs.get_value());
+		else if(std::holds_alternative<int>(lhs.deserialize())) {
+			return std::get<int>(lhs.deserialize()) < std::get<int>(rhs.deserialize());
 		}
 		else {
-			return std::less<std::string>{}(std::get<std::string>(lhs.get_value()), std::get<std::string>(rhs.get_value()));
+			return std::less<std::string>{}(std::get<std::string>(lhs.deserialize()), std::get<std::string>(rhs.deserialize()));
 		}
 	}
 };

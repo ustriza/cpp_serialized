@@ -542,7 +542,7 @@ TEST(TestsToStl, readPairKeyString) {
 	storage.append(1234);
 	
 	std::pair<std::string, int> pairVar;
-	const auto success = yb::assist::get_value_to(storage, pairVar);
+	const auto success = yb::assist::deserialize_to(storage, pairVar);
 	ASSERT_EQ(success, true);
 	
 	const std::pair<std::string, int> standardValue{"key", 1234};
@@ -556,7 +556,7 @@ TEST(TestsToStl, readPairKeyInt) {
 	storage.append(1234);
 	
 	std::pair<int, int> pairVar;
-	const auto success = yb::assist::get_value_to(storage, pairVar);
+	const auto success = yb::assist::deserialize_to(storage, pairVar);
 	ASSERT_EQ(success, true);
 	
 	const std::pair<int, int> standardValue{98765, 1234};
@@ -569,7 +569,7 @@ TEST(TestsToStl, readTupleStringInt) {
 	storage.append(1234);
 
 	std::tuple<std::string, int> tupleVar;
-	const auto success = yb::assist::get_value_to(storage, tupleVar);
+	const auto success = yb::assist::deserialize_to(storage, tupleVar);
 	ASSERT_EQ(success, true);
 
 	const std::tuple<std::string, int> standardValue{"98765", 1234};
@@ -612,7 +612,7 @@ TEST(TestsToStl, readTupleComplex) {
 	
 	
 	testType tupleVar;
-	const auto getResult = yb::assist::get_value_to(storage, tupleVar);
+	const auto getResult = yb::assist::deserialize_to(storage, tupleVar);
 	ASSERT_EQ(getResult, true);
 	
 	testType standardValue;

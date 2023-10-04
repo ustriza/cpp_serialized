@@ -517,7 +517,7 @@ TEST(TestsToText, set_value_VectorInt) {
 	
 	yb::text_from_cpp::TextStorage storage;
 	
-	yb::assist::set_value(storage, value);
+	yb::assist::serialize(storage, value);
 	
 	const std::string test_data = "[\n"
 	"  12345,\n"

@@ -204,8 +204,8 @@ struct Key_model {};
 template<class T>
 concept Const_iterator_concept =
 requires(T a, const T ca) {
-	++a;
-	{ca != ca} -> std::convertible_to<bool>;
+	a.interface_increment();
+	{a.interface_not_equal_to(ca)} -> std::convertible_to<bool>;
 	{ca.template interface_get_key<Key_model>()} -> std::convertible_to<Key_model>;
 };
 
@@ -258,4 +258,54 @@ concept Storage_concept_both = (Storage_concept_to_cpp<T> && Storage_concept_fro
 #define Const_iterator_concept typename
 #define Storage_concept_from_cpp typename
 #define Storage_concept_to_cpp typename
+
+//Templates for creating your own storages.
+
+//** For deserialization **//
+
+class Const_value_iterator {
+public:
+	void interface_increment();
+	bool interface_not_equal_to(const Const_value_iterator& other) const;
+	template<typename T1>
+	const T1& interface_get_key() const;
+};
+
+class Deserialize_storage {
+public:
+	template<typename T1>
+	T1 interface_get_value() const;
+	
+	yb::Type interface_get_type() const;
+	
+	//container support
+	size_t interface_size() const;
+	Const_value_iterator interface_begin() const;
+	Const_value_iterator interface_end() const;
+	
+	template<typename T1>
+	const Deserialize_storage& interface_get_storage_by_key(const T1& key) const;
+	
+	static const Deserialize_storage& interface_get_storage_from_iterator(const Const_value_iterator& iter);
+};
+
+//** For serialization **//
+
+class Serialiaze_storage {
+public:
+	void interface_init_container(yb::Type type);
+
+	void interface_deinit_container(yb::Type type);
+	
+	template<typename T1>
+	void interface_assign_from(const T1& value);
+	
+	Serialiaze_storage& interface_append_array_item();
+	
+	template<typename TKey>
+	Serialiaze_storage& interface_append_map_item(const TKey& key);
+};
+
+//End of Templates for creating your own storages.
+
 #endif
