@@ -886,6 +886,7 @@ public:
 
 
 Класс хранилища обязан иметь следующие методы.
+
 --  **interface_get_type()**. Возвращает тип значения в хранилище.
 
 Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value.
