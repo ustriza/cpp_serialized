@@ -1,16 +1,16 @@
 
-# Автор ****, 8 марта 2021 г. 
+# Автор **Юрий Бармин**, 3 октября 2023 г. 
 
-## Автоматическая сериализация и десериализация произвольныхтипов C++. 
+## Автоматическая сериализация и десериализация произвольных типов C++. 
 
 ## Version 2.1. 
 
 
-**cpp_serialized** может автоматически сериализовать и десериализовать C++ типы в/из произвольное хранилище. Вы моежте использовать уже существующие хранилища или создать поддержку собственных хранилищ. cpp_serialized поставляется со следующей поддержкой хранилищ:
+**cpp_serialized** может автоматически сериализовать и десериализовать C++ типы в/из произвольное хранилище. Вы моежте использовать уже существующие хранилища или создать поддержку собственных хранилищ. **cpp_serialized** поставляется со следующей поддержкой хранилищ:
 
 1. TextStorage - сериализация в текст.
-2. Json_storage_adapter_from_cpp - сериализация в Json (через jsoncpp парсер).
-3. Json_storage_adapter_to_cpp - десериализация из Json (через jsoncpp парсер).
+2. Json_storage_adapter_from_cpp - сериализация в Json (через сторонний jsoncpp парсер).
+3. Json_storage_adapter_to_cpp - десериализация из Json (через сторонний jsoncpp парсер).
 
 Типы поддерживаемых данных.
 1. int, unsigned int, long, unsigned long, float, double, bool
@@ -19,6 +19,8 @@
 4. Собственные struct / class. Для поддержки сериализации и десериализации необхдимо объявить поля структуры/класса [специальном образом](#struct).
 5. enum class - при использовании [enum string](#enum_string).
 6. Сторонние структуры и классы. Для поддержки сериализации и десериализации необходимо определить [функции чтения и записи](#third_party_struct) этих структур и классов.
+7. std::vector, std::list, std::deque, std::set, std::unordered_set.
+8. std::map, std::unordered_map.
 
 **cpp_serialized** позволит вам сериализовать и десериализовать сложные стректуры данных, контейнеры одной строкой. например:
 
@@ -62,7 +64,7 @@ yb::assist::set_value(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
 * yb::from_cpp::TestStorage - для сериализации.
 * yb::to_cpp::TestStorage - для десериализации.
 
-Также Вы можете использовать адаптеры хранилища для Json (jsoncpp парсер, см. классы 'Json_storage_adapter_to_cpp' и 'Json_storage_adapter_from_cpp' в include/useful_storages/jsoncpp_storage.h) и экспорта в текст (поставляются вместе с cpp_serialized, класс TextStorage в include/useful_storages/text_storage.h)
+Также Вы можете использовать адаптеры хранилища для Json (сторонний jsoncpp парсер, см. классы 'Json_storage_adapter_to_cpp' и 'Json_storage_adapter_from_cpp' в include/useful_storages/jsoncpp_storage.h) и экспорта в текст (поставляются вместе с cpp_serialized, класс TextStorage в include/useful_storages/text_storage.h)
 
 4. Вызвать сpp_serialized одной из функций: 
 
@@ -87,7 +89,7 @@ void serialize(Storage&& storage, const T& from_value);
 //cpp_serialized library main header.
 #include "cpp_serialized.h"
 
-//cpp_serialized storage adapter for the third party jsoncpp parser
+//cpp_serialized storage adapter for the third-party jsoncpp parser
 #include "jsoncpp_storage.h"
 
 //Third-party jsoncpp parser header
@@ -213,7 +215,7 @@ bool deserialize_to(const Storage& storage, T& to_value)
 //cpp_serialized library main header.
 #include "cpp_serialized.h"
 
-//cpp_serialized storage adapter for the third party jsoncpp parser
+//cpp_serialized storage adapter for the third-party jsoncpp parser
 #include "jsoncpp_storage.h"
 
 //Third-party jsoncpp parser header
@@ -272,7 +274,7 @@ std::optional<T> get_value(const Storage& storage);
 //cpp_serialized library main header.
 #include "cpp_serialized.h"
 
-//cpp_serialized storage adapter for the third party jsoncpp parser
+//cpp_serialized storage adapter for the third-party jsoncpp parser
 #include "jsoncpp_storage.h"
 
 //Third-party jsoncpp parser header
@@ -331,7 +333,7 @@ T deserialize(const Storage& storage, T&& def);
 //cpp_serialized library main header.
 #include "cpp_serialized.h"
 
-//cpp_serialized storage adapter for the third party jsoncpp parser
+//cpp_serialized storage adapter for the third-party jsoncpp parser
 #include "jsoncpp_storage.h"
 
 //Third-party jsoncpp parser header
@@ -659,7 +661,7 @@ public:
 //cpp_serialized library main header.
 #include "cpp_serialized.h"
 
-//cpp_serialized storage adapter for the third party jsoncpp parser
+//cpp_serialized storage adapter for the third-party jsoncpp parser
 #include "jsoncpp_storage.h"
 
 //Third-party jsoncpp parser header
@@ -723,6 +725,227 @@ bool deserialize_deser_to() {
 	return true;
 }
 ```
+##Преобразование enum class в текст и обратно. <a name="enum_string"></a>
+Заголовочный файл: **enum_string.h**. Используйте макро **DEFINE_ENUM_STRING** или **DEFINE_ENUM_STRING_LC** для определения enum class.
+1. **DEFINE_ENUM_STRING** - после преобразования в текст символы будут на том же регистре, что и в оригинальных элементах enum class.
+2. **DEFINE_ENUM_STRING_LC** - после преобразования в текст символы будут преобразованы в нижний регистр.
+
+Больше примеров см. в файле **cpp_serialized_tests/tests_enum_str.cpp**.
+
+**Пример 1**
+Преобразоване enum class в строку.
+```cpp
+//Enum string
+#include "enum_string.h"
+
+//String utils
+#include "string_utils.h"
+
+DEFINE_ENUM_STRING(Example_enum, ME_1, ME_2)
+
+bool enum_to_string() {
+	const auto res_str1 = yb::string_utils::val_to_string(Example_enum::ME_1);
+	
+	const auto res_str2 = yb::string_utils::val_to_string(Example_enum::ME_2);
+	
+	const auto res_str3 = yb::string_utils::val_to_string(Example_enum(1234567));
+	
+	if(res_str1 != "ME_1") {
+		return false;
+	}
+	if(res_str2 != "ME_2") {
+		return false;
+	}
+	if(res_str3 != "") {
+		return false;
+	}
+	return true;
+}
+
+```
+
+**Пример 1**
+Преобразоване строки в enum class.
+```cpp
+//Enum string
+#include "enum_string.h"
+
+//String utils
+#include "string_utils.h"
+
+DEFINE_ENUM_STRING(Example_enum, ME_1, ME_2)
+
+bool enum_from_string() {
+	const auto res_enum1 = yb::string_utils::string_to_val<Example_enum>("ME_1");
+	const auto res_enum2 = yb::string_utils::string_to_val<Example_enum>("ME_2");
+	const auto res_enum3 = yb::string_utils::string_to_val<Example_enum>("ME_76565656");
+	
+	if(res_enum1 != Example_enum::ME_1) {
+		return false;
+	}
+	if(res_enum2 != Example_enum::ME_2) {
+		return false;
+	}
+	if(res_enum3 != Example_enum(-1)) {
+		return false;
+	}
+	
+	return true;
+}
+
+```
+
+##Как сериализовать и десериализовать сторонние структуры и классы <a name="third_party_struct"></a>
+Допустим нас необходимо сериалзовать или десериализовать сторонний объект, например **std::chrono::time_point<std::chrono::system_clock>**. Для этого необходимо создать пару шаблонных функций - для сериализации и десериализации.
+
+Примеры расположены в файле **include/engine/engine_addons.h**.
+
+1. yb::from_cpp::meta_table_from_cpp - сериализация.
+```cpp
+namespace yb::from_cpp {
+	template<Storage_concept_from_cpp Storage>
+	void meta_table_from_cpp(const std::chrono::time_point<std::chrono::system_clock> &value, Storage& cur_node) {
+		const auto tvalue = std::chrono::system_clock::to_time_t(value);
+		const auto svalue = yb::string_utils::val_to_string(tvalue);
+		cur_node.interface_assign_from(svalue);
+	}
+}
+```
+
+2. yb::to_cpp::meta_table_to_cpp - десериализация.
+```cpp
+namespace yb::to_cpp {
+	template<Storage_concept_to_cpp Storage>
+	bool meta_table_to_cpp(std::chrono::time_point<std::chrono::system_clock> &value, const Storage& cur_node) {
+		if(cur_node.interface_get_type() != Type::string_value) {
+			return false;
+		}
+
+		const auto sval = cur_node.template interface_get_value<std::string>();
+		const auto ttval = yb::string_utils::string_to_val<time_t>(sval);
+		value = std::chrono::system_clock::from_time_t(ttval);
+		
+		return true;
+
+	}
+}
+```
 
 
-##Как создавать свои хранилища
+##Поддерживаемые типы данных##
+```cpp
+enum class Type {null_value, int_value, uint_value, float_value, string_value, boolean_value, array_container, object_container};
+```
+
+**cpp_serialized** работает со следующими типами данных.
+--  null_value - значение не найдено методом interface_get_storage_by_key объекта хранилища (см. ниже).
+--  int_value - целое (int).
+--  uint_value - беззнаковое целое (unsigned int).
+--  float_value - плавающая точка (float).
+--  string_value - строка (std::string).
+--  boolean_value - булевый (bool).
+--  array_container - массив (std::vector, std::list, std::deque, std::set, std::unordered_set). Элементы массива могут быть любым типом, кроме null_value.
+--  object_container - ассоциативный контейнер (std::map, std::unordered_map).
+
+
+##Как создать своё хранилище для десериализации##
+
+Для создания ханилища для десериализации необходимо реализовать два класса. Класс итератора и класс хранилища. Если Вы используете C++20, то Ваши классы итератора и хранилища обязаны соответствовать концептам:
+
+**Концепт итератора**
+```cpp
+struct Value_model {};
+struct Key_model {};
+
+template<class T>
+concept Const_iterator_concept =
+requires(T a, const T ca) {
+	++a;
+	{ca != ca} -> std::convertible_to<bool>;
+	{ca.template interface_get_key<Key_model>()} -> std::convertible_to<Key_model>;
+};
+```
+
+Вы можете использовать класс - шаблон для написания собственного класса-итератора. Итератор используется для чтения данных из C++ объекта контейнера, таких как std::vector, std::map и т.п.
+
+**Шаблон итератора**
+```cpp
+class Const_value_iterator {
+public:
+	void interface_increment();
+	bool interface_not_equal_to(const Const_value_iterator& other) const;
+	template<typename T1>
+	const T1& interface_get_key() const;
+};
+```
+
+Класс итератора обязын иметь следующие методы.
+
+1. **interface_increment()**. Переходит к следующему элементу. Возвращаемое значение не требуется. Соответствует operator++() у обычного итератора.
+2. **interface_not_equal_to**. Сравнивает с другим итератором. На практике сравнение происходит со значением, возвращаемым методом interface_end() класса хранилища. Соответствует operator!= у обычного итератора.
+3. **interface_get_key()**. Шаблонная функция возвращает значение ключа указанного типа, если итератор используется с C++ типами std::map, std::unordered_map. Соответствует first у обычного итератора.
+
+**Шаблон хранилища**
+```cpp
+class Deserialize_storage {
+public:
+	yb::Type interface_get_type() const;
+
+	template<typename T1>
+	T1 interface_get_value() const;
+	
+	//container support
+	size_t interface_size() const;
+	Const_value_iterator interface_begin() const;
+	Const_value_iterator interface_end() const;
+	
+	template<typename T1>
+	const Deserialize_storage& interface_get_storage_by_key(const T1& key) const;
+	
+	static const Deserialize_storage& interface_get_storage_from_iterator(const Const_value_iterator& iter);
+};
+```
+
+Класс хранилища обязын иметь следующие методы.
+1. **interface_get_type()**. Возвращает тип значения в хранилище.
+
+Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value.
+2. **interface_get_value()**. Возвращает значение, ханящееся в данном хранилище.
+
+Для хранилищ с типом array_container.
+3. **interface_size()**. Возвращает размер масива. Соответствует методу size() обычного контейнера.
+
+Для хранилищ с типом array_container, object_container.
+4. **interface_begin()**. возвращает итератор на первый элемент в хранилище. Соответствует методу begin() обычного контейнера.
+5. **interface_end()**. возвращает итератор на последний + 1 элемент в хранилище. Соответствует методу end() обычного контейнера.
+
+Для хранилищ с типом object_container.
+6. **interface_get_storage_by_key(const T1& key)**. Ищет значение 'key' в ассоциативном массиве хранилища. Если значение не найдено, то возвращается хранилище с типом ('interface_get_type()') 'Type::null_value'. Если значение найдено, то возвращает найденное хранилище. Возвращаемое значение может быть константной ссылкой на хранилище (const Storage&') или объектом хранилища ('Storage').
+7. **interface_get_storage_from_iterator(const Const_value_iterator& iter)**. статический метод. Для переданного итератора возвращает хранилище, на который указывает этот итератор.  Соответствует 'second' у обычного итератора.
+
+См. примеры хранилищ для десериализации:
+--  Адаптер для стороннего Json парсера jsoncpp.
+    Файл **include/useful_storages/jsoncpp_storage.h**.
+	Класс **yb::jsoncpp::Json_storage_adapter_to_cpp** - хранилище для сериализации.
+	Класс **yb::jsoncpp::Const_value_iterator** - класс итератора по объекту хранилища для десериализации.
+	Класс **yb::jsoncpp::Json_storage_adapter_from_cpp** - класс адаптера для сериализации в сторонний парсер jsoncpp.
+	Класс **yb::jsoncpp::Json_storage_adapter_to_cpp** - класс адаптера для десериализации из стороннего парсера jsoncpp.
+	
+--  Сериализация в форматированный текст.
+    Файл **include/useful_storages/text_storage.h**.
+    Класс **yb::text_from_cpp::TextStorage** - класс хранилища для сериализации в форматированный текст.
+
+--  Тестовое единое хранилище для сериализации десериализации.
+    Файл **cpp_serialized_tests/test_storage.h**.
+    Класс **yb::both::TestStorage::Const_value_iterator** - класс итератора по объекту хранилища для десериализации.
+    Класс **yb::both::TestStorage** - класс хранилища для сериализации и десериализации.
+
+--  Тестовое хранилище для десериализации.
+    Файл **cpp_serialized_tests/test_storage_to_cpp.h**.
+    Класс **yb::to_cpp::TestStorage::Const_value_iterator** - класс итератора по объекту тестового хранилища для десериализации.
+    Класс **yb::to_cpp::TestStorage** - класс тестового хранилища для десериализации из тестового хранилища.
+    
+--  Тестовое хранилище для сериализации.
+    Файл **cpp_serialized_tests/test_storage_from_cpp.h**.
+    Класс **yb::from_cpp::TestStorage** - класс тестового хранилища для сериализации в тестовое хранилище.
+

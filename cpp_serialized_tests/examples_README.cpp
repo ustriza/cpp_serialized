@@ -22,6 +22,13 @@
 //Tests engine
 #include "tests_engine.h"
 
+//Enum string
+#include "enum_string.h"
+
+//String utils
+#include "string_utils.h"
+
+
 bool serialize_example() {
 	//Declare data for serialization
 	const std::vector<std::map<int, std::string>> value{{{12345, "string_test0"}, {98765, "string_test1"}}, {{54321, "string_test11"}, {1234321, "string_test12"}}};
@@ -332,4 +339,52 @@ bool deserialize_deser_to() {
 }
 TEST(example_README, deserialize_deser_to) {
 	ASSERT_EQ(deserialize_deser_to(), true);
+}
+
+DEFINE_ENUM_STRING(Example_enum, ME_1, ME_2)
+
+bool enum_to_string() {
+	const auto res_str1 = yb::string_utils::val_to_string(Example_enum::ME_1);
+	
+	const auto res_str2 = yb::string_utils::val_to_string(Example_enum::ME_2);
+	
+	const auto res_str3 = yb::string_utils::val_to_string(Example_enum(1234567));
+	
+	if(res_str1 != "ME_1") {
+		return false;
+	}
+	if(res_str2 != "ME_2") {
+		return false;
+	}
+	if(res_str3 != "") {
+		return false;
+	}
+	return true;
+}
+
+TEST(example_README, enum_to_string) {
+	EXPECT_EQ(enum_to_string(), true);
+}
+
+bool enum_from_string() {
+	const auto res_enum1 = yb::string_utils::string_to_val<Example_enum>("ME_1");
+	const auto res_enum2 = yb::string_utils::string_to_val<Example_enum>("ME_2");
+	const auto res_enum3 = yb::string_utils::string_to_val<Example_enum>("ME_76565656");
+	
+	if(res_enum1 != Example_enum::ME_1) {
+		return false;
+	}
+	if(res_enum2 != Example_enum::ME_2) {
+		return false;
+	}
+	if(res_enum3 != Example_enum(-1)) {
+		return false;
+	}
+	
+	return true;
+}
+
+
+TEST(example_README, enum_string) {
+	EXPECT_EQ(enum_from_string(), true);
 }
