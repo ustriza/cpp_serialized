@@ -48,9 +48,9 @@ yb::assist::set_value(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
 ]
 ```
 
-###Все примеры из этой статьи располагаются в файле cpp_serialized_tests/examples_README.cpp###
+### Все примеры из этой статьи располагаются в файле cpp_serialized_tests/examples_README.cpp
 
-##Как использовать##
+## Как использовать
 1. cpp_serialized это заголовочная библиотека. Чтобы добавить cpp_serialized в свой проект, необходимо скопировать папку include.
 
 2. Добавить в исходник следующую строку.
@@ -370,7 +370,7 @@ bool deserialize_def() {
 }
 ```
 
-##Как использовать сериализацию в текст
+## Как использовать сериализацию в текст.
 
 Заголовок:
 
@@ -507,7 +507,7 @@ void serialize_to_string() {
 ]
 ```
 
-##Как создавать структуры для сериализации и десериализации <a name="struct"></a>
+## Как создавать структуры для сериализации и десериализации <a name="struct"></a>
 
 Чтобы структуры и классы поддерживали автоматическую сериализацию и десериализацию, необходимо описать поля специальным образом, а затем описать мета-таблицу, которая используется для доступа к этим полям. Размер такой структуры будет равен размеру структуры с полями, описанными обычным образом.
 
@@ -525,7 +525,7 @@ struct Struct_example_2 {
 };
 ```
 
-###Макрос DEFINE_DATA определает поле структуры:###
+### Макро DEFINE_DATA определает поле структуры:
 ```cpp
 DEFINE_DATA(name, type)
 ```
@@ -571,7 +571,7 @@ using Map = std::map<std::string, int>;
 DEFINE_DATA(map_prop, Map)
 ```
 
-###Макрос BEGIN_META_TABLE ###
+### Макро BEGIN_META_TABLE
 Начинает определения таблицы для доступа к полям структуры / класса. Таблица определена как static constexpr std::tpule.
 
 **Пример:**
@@ -579,7 +579,7 @@ DEFINE_DATA(map_prop, Map)
 BEGIN_META_TABLE
 ```
 
-###Макрос DEFINE_META_TABLE_ITEM добавляет элемент в мета таблицу###
+###Макро DEFINE_META_TABLE_ITEM добавляет элемент в мета таблицу
 
 ```cpp
 DEFINE_META_TABLE_ITEM(name)
@@ -596,7 +596,7 @@ DEFINE_META_TABLE_ITEM(name)
 DEFINE_META_TABLE_ITEM(int_prop)
 ```
 
-###Макрос DEFINE_META_TABLE_ITEM_EMPTY добавляет элемент в мета таблицу###
+### Макро DEFINE_META_TABLE_ITEM_EMPTY добавляет элемент в мета таблицу
 
 ```cpp
 DEFINE_META_TABLE_ITEM_EMPTY(name)
@@ -613,7 +613,7 @@ DEFINE_META_TABLE_ITEM_EMPTY(name)
 DEFINE_META_TABLE_ITEM_EMPTY(string_prop)
 ```
 
-###Макрос DEFINE_META_TABLE_ITEM_DEFAULT добавляет элемент в мета таблицу###
+### Макро DEFINE_META_TABLE_ITEM_DEFAULT добавляет элемент в мета таблицу
 
 ```cpp
 DEFINE_META_TABLE_ITEM_DEFAULT(name, def)
@@ -631,7 +631,7 @@ DEFINE_META_TABLE_ITEM_DEFAULT(name, def)
 DEFINE_META_TABLE_ITEM_DEFAULT(vector_prop, (std::vector{1000, 2000}))
 ```
 
-###DEFINE_DESER_GETTER<a name="DEFINE_DESER_GETTER"></a>###
+### DEFINE_DESER_GETTER<a name="DEFINE_DESER_GETTER"></a>
 
 DEFINE_DESER_GETTER добавляет в структуру три элемента:
 1. Поле данных name (int_prop в примере).
@@ -725,7 +725,7 @@ bool deserialize_deser_to() {
 	return true;
 }
 ```
-##Преобразование enum class в текст и обратно. <a name="enum_string"></a>
+## Преобразование enum class в текст и обратно.<a name="enum_string"></a>
 Заголовочный файл: **enum_string.h**. Используйте макро **DEFINE_ENUM_STRING** или **DEFINE_ENUM_STRING_LC** для определения enum class.
 1. **DEFINE_ENUM_STRING** - после преобразования в текст символы будут на том же регистре, что и в оригинальных элементах enum class.
 2. **DEFINE_ENUM_STRING_LC** - после преобразования в текст символы будут преобразованы в нижний регистр.
@@ -795,8 +795,13 @@ bool enum_from_string() {
 
 ```
 
-##Как сериализовать и десериализовать сторонние структуры и классы <a name="third_party_struct"></a>
-Допустим нас необходимо сериалзовать или десериализовать сторонний объект, например **std::chrono::time_point<std::chrono::system_clock>**. Для этого необходимо создать пару шаблонных функций - для сериализации и десериализации.
+## Как сериализовать и десериализовать сторонние структуры и классы.<a name="third_party_struct"></a>
+Допустим нас необходимо сериалзовать или десериализовать сторонний объект, например **std::chrono::time_point<std::chrono::system_clock>**. Для этого необходимо создать пару шаблонных функций - для сериализации и десериализации. Заголовочный файл с этими функциями необходимо включать перед "cpp_serialized.h":
+
+```cpp
+#include "engine_addons.h"
+#include "cpp_serialized.h"
+```
 
 Примеры расположены в файле **include/engine/engine_addons.h**.
 
@@ -832,7 +837,7 @@ namespace yb::to_cpp {
 ```
 
 
-##Поддерживаемые типы данных##
+## Поддерживаемые типы данных
 ```cpp
 enum class Type {null_value, int_value, uint_value, float_value, string_value, boolean_value, array_container, object_container};
 ```
@@ -848,7 +853,7 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 --  object_container - ассоциативный контейнер (std::map, std::unordered_map).
 
 
-##Как создать своё хранилище для десериализации##
+## Как создать своё хранилище для десериализации
 
 Для создания ханилища для десериализации необходимо реализовать два класса. Класс итератора и класс хранилища. Если Вы используете C++20, то Ваши классы итератора и хранилища обязаны соответствовать концептам:
 
