@@ -843,14 +843,14 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 ```
 
 **cpp_serialized** работает со следующими типами данных.
---  null_value - значение не найдено методом interface_get_storage_by_key объекта хранилища (см. ниже).
---  int_value - целое (int).
---  uint_value - беззнаковое целое (unsigned int).
---  float_value - плавающая точка (float).
---  string_value - строка (std::string).
---  boolean_value - булевый (bool).
---  array_container - массив (std::vector, std::list, std::deque, std::set, std::unordered_set). Элементы массива могут быть любым типом, кроме null_value.
---  object_container - ассоциативный контейнер (std::map, std::unordered_map).
+* null_value - значение не найдено методом interface_get_storage_by_key объекта хранилища (см. ниже).
+* int_value - целое (int).
+* uint_value - беззнаковое целое (unsigned int).
+* float_value - плавающая точка (float).
+* string_value - строка (std::string).
+* boolean_value - булевый (bool).
+* array_container - массив (std::vector, std::list, std::deque, std::set, std::unordered_set). Элементы массива могут быть любым типом, кроме null_value.
+* object_container - ассоциативный контейнер (std::map, std::unordered_map).
 
 
 ## Как создать своё хранилище для десериализации
