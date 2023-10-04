@@ -48,7 +48,7 @@ yb::assist::set_value(yb::jsoncpp::Json_storage_adapter_from_cpp{json}, value);
 ]
 ```
 
-### Все примеры из этой статьи располагаются в файле cpp_serialized_tests/examples_README.cpp
+**Все примеры из этой статьи располагаются в файле cpp_serialized_tests/examples_README.cpp**
 
 ## Как использовать
 1. cpp_serialized это заголовочная библиотека. Чтобы добавить cpp_serialized в свой проект, необходимо скопировать папку include.
@@ -912,23 +912,29 @@ public:
 ```
 
 Класс хранилища обязын иметь следующие методы.
+
 1. **interface_get_type()**. Возвращает тип значения в хранилище.
 
-Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value.
+Для хранилищ с типом int_value, uint_value, float_value, string_value, boolean_value:
+
 2. **interface_get_value()**. Возвращает значение, ханящееся в данном хранилище.
 
-Для хранилищ с типом array_container.
+Для хранилищ с типом array_container:
+
 3. **interface_size()**. Возвращает размер масива. Соответствует методу size() обычного контейнера.
 
-Для хранилищ с типом array_container, object_container.
+Для хранилищ с типом array_container, object_container:
+
 4. **interface_begin()**. возвращает итератор на первый элемент в хранилище. Соответствует методу begin() обычного контейнера.
 5. **interface_end()**. возвращает итератор на последний + 1 элемент в хранилище. Соответствует методу end() обычного контейнера.
 
-Для хранилищ с типом object_container.
+Для хранилищ с типом object_container:
+
 6. **interface_get_storage_by_key(const T1& key)**. Ищет значение 'key' в ассоциативном массиве хранилища. Если значение не найдено, то возвращается хранилище с типом ('interface_get_type()') 'Type::null_value'. Если значение найдено, то возвращает найденное хранилище. Возвращаемое значение может быть константной ссылкой на хранилище (const Storage&') или объектом хранилища ('Storage').
 7. **interface_get_storage_from_iterator(const Const_value_iterator& iter)**. статический метод. Для переданного итератора возвращает хранилище, на который указывает этот итератор.  Соответствует 'second' у обычного итератора.
 
 См. примеры хранилищ для десериализации:
+
 --  Адаптер для стороннего Json парсера jsoncpp.
     Файл **include/useful_storages/jsoncpp_storage.h**.
 	Класс **yb::jsoncpp::Json_storage_adapter_to_cpp** - хранилище для сериализации.
@@ -936,21 +942,25 @@ public:
 	Класс **yb::jsoncpp::Json_storage_adapter_from_cpp** - класс адаптера для сериализации в сторонний парсер jsoncpp.
 	Класс **yb::jsoncpp::Json_storage_adapter_to_cpp** - класс адаптера для десериализации из стороннего парсера jsoncpp.
 	
---  Сериализация в форматированный текст.
+--  Сериализация в форматированный текст:
+
     Файл **include/useful_storages/text_storage.h**.
     Класс **yb::text_from_cpp::TextStorage** - класс хранилища для сериализации в форматированный текст.
 
---  Тестовое единое хранилище для сериализации десериализации.
+--  Тестовое единое хранилище для сериализации десериализации:
+
     Файл **cpp_serialized_tests/test_storage.h**.
     Класс **yb::both::TestStorage::Const_value_iterator** - класс итератора по объекту хранилища для десериализации.
     Класс **yb::both::TestStorage** - класс хранилища для сериализации и десериализации.
 
---  Тестовое хранилище для десериализации.
+--  Тестовое хранилище для десериализации:
+
     Файл **cpp_serialized_tests/test_storage_to_cpp.h**.
     Класс **yb::to_cpp::TestStorage::Const_value_iterator** - класс итератора по объекту тестового хранилища для десериализации.
     Класс **yb::to_cpp::TestStorage** - класс тестового хранилища для десериализации из тестового хранилища.
     
---  Тестовое хранилище для сериализации.
+--  Тестовое хранилище для сериализации:
+
     Файл **cpp_serialized_tests/test_storage_from_cpp.h**.
     Класс **yb::from_cpp::TestStorage** - класс тестового хранилища для сериализации в тестовое хранилище.
 
