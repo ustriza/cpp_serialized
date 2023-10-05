@@ -31,7 +31,7 @@ Table of Contents.
    * [yb::assist::deserialize (2) - deserialization](#deserialize_2)
 - [How to use serialization to text](#How_to_use_serialization_to_text)
 - [How to create structures for serialization and deserialization](#struct)
-   * [Macro BEGIN_META_TABLE](#BEGIN_META_TABLE)
+   * [Macro BEGIN_META_TABLE](#begin_meta_table)
    * [Macro DEFINE_META_TABLE_ITEM adds an element to the meta table](#DEFINE_META_TABLE_ITEM)
    * [Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table](#DEFINE_META_TABLE_ITEM_EMPTY)
    * [Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table](#DEFINE_META_TABLE_ITEM_DEFAULT)
@@ -591,7 +591,7 @@ using Map = std::map<std::string, int>;
 DEFINE_DATA(map_prop, Map)
 ```
 
-### Macro BEGIN_META_TABLE <a name="BEGIN_META_TABLE"></a>
+### Macro BEGIN_META_TABLE <a name="begin_meta_table"></a>
 Begins table definitions for accessing structure/class fields. The table is defined as static constexpr std::tpule.
 
 **Example:**
