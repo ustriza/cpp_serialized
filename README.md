@@ -29,7 +29,7 @@ Table of Contents.
    * [yb::assist::deserialize_to - deserialization](#deserialize_to)
    * [yb::assist::deserialize (1) - deserialization](#deserialize_1)
    * [yb::assist::deserialize (2) - deserialization](#deserialize_2)
-- [How to use serialization to text](#How to use serialization to text)
+- [How to use serialization to text](#How_to_use_serialization_to_text)
 - [How to create structures for serialization and deserialization](#struct)
    * [Macro BEGIN_META_TABLE](#BEGIN_META_TABLE)
    * [Macro DEFINE_META_TABLE_ITEM adds an element to the meta table](#DEFINE_META_TABLE_ITEM)
@@ -389,7 +389,7 @@ bool deserialize_def() {
 }
 ```
 
-## How to use serialization to text.<a name="How to use serialization to text"></a>
+## How to use serialization to text.<a name="How_to_use_serialization_to_text"></a>
 
 Heading:
 
