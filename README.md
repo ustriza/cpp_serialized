@@ -332,7 +332,7 @@ bool deserialize() {
 }
 ```
 
-### yb::assist::deserialize (2) - deserialization.
+### yb::assist::deserialize (2) - deserialization. <a name="deserialize_2"></a>
 Declaration:
 ```cpp
 template <typename T, Storage_concept_to_cpp Storage>
@@ -389,7 +389,7 @@ bool deserialize_def() {
 }
 ```
 
-## How to use serialization to text.<a name="How_to_use_serialization_to_text"></a>
+## How to use serialization to text. <a name="How_to_use_serialization_to_text"></a>
 
 Heading:
 
@@ -599,7 +599,7 @@ Begins table definitions for accessing structure/class fields. The table is defi
 BEGIN_META_TABLE
 ```
 
-###Macro DEFINE_META_TABLE_ITEM adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM"></a>
+### Macro DEFINE_META_TABLE_ITEM adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM(name)
