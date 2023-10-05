@@ -32,13 +32,13 @@ Table of Contents.
 - [How to use serialization to text](#How_to_use_serialization_to_text)
 - [How to create structures for serialization and deserialization](#struct)
    * [Macro BEGIN_META_TABLE](#begin_meta_table)
-   * [Macro DEFINE_META_TABLE_ITEM adds an element to the meta table](#DEFINE_META_TABLE_ITEM)
-   * [Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table](#DEFINE_META_TABLE_ITEM_EMPTY)
-   * [Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table](#DEFINE_META_TABLE_ITEM_DEFAULT)
-   * [Macro DEFINE_DESER_GETTER](#DEFINE_DESER_GETTER)
+   * [Macro DEFINE_META_TABLE_ITEM adds an element to the meta table](#define_meta_table_item)
+   * [Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table](#define_meta_table_item_empty)
+   * [Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table](#define_meta_table_item_default)
+   * [Macro DEFINE_DESER_GETTER](#define_deser_getter)
 - [Convert enum class to text and back](#enum_string)
 - [How to serialize and deserialize third party structures and classes](#third_party_struct)
-- [Supported data types](#Supported_data_types)
+- [Supported data types](#supported_data_types)
 - [How to create your own storage for deserialization](#own_storage)
 
 ```cpp
@@ -599,7 +599,7 @@ Begins table definitions for accessing structure/class fields. The table is defi
 BEGIN_META_TABLE
 ```
 
-### Macro DEFINE_META_TABLE_ITEM adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM"></a>
+### Macro DEFINE_META_TABLE_ITEM adds an element to the meta table <a name="define_meta_table_item"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM(name)
@@ -616,7 +616,7 @@ An entry with the key name MUST be present in the repository. If a record with s
 DEFINE_META_TABLE_ITEM(int_prop)
 ```
 
-### Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM_EMPTY"></a>
+### Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table <a name="define_meta_table_item_empty"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM_EMPTY(name)
@@ -633,7 +633,7 @@ An entry with the key name may not be in the repository. If a record with such a
 DEFINE_META_TABLE_ITEM_EMPTY(string_prop)
 ```
 
-### Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM_DEFAULT"></a>
+### Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table <a name="define_meta_table_item_default"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM_DEFAULT(name, def)
@@ -651,7 +651,7 @@ An entry with the key name may not be in the repository. If an entry with such a
 DEFINE_META_TABLE_ITEM_DEFAULT(vector_prop, (std::vector{1000, 2000}))
 ```
 
-### Macro DEFINE_DESER_GETTER<a name="DEFINE_DESER_GETTER"></a>
+### Macro DEFINE_DESER_GETTER<a name="define_deser_getter"></a>
 
 DEFINE_DESER_GETTER adds three elements to the structure:
 1. Name data field (int_prop in the example).
@@ -857,7 +857,7 @@ namespace yb::to_cpp {
 ```
 
 
-## Supported data types <a name="Supported_data_types"></a>
+## Supported data types <a name="supported_data_types"></a>
 ```cpp
 enum class Type {null_value, int_value, uint_value, float_value, string_value, boolean_value, array_container, object_container};
 ```
