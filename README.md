@@ -23,6 +23,24 @@ Types of supported data.
 
 **cpp_serialized** will allow you to serialize and deserialize complex data structures and containers in one line. For example:
 
+Table of Contents.
+- [How to use](#how_to_use)
+   * [yb::assist::serialize - serialization](#yb::assist::serialize - serialization)
+   * [yb::assist::deserialize_to - deserialization](#yb::assist::deserialize_to - deserialization)
+   * [yb::assist::deserialize (1) - deserialization](#yb::assist::deserialize (1) - deserialization)
+   * [yb::assist::deserialize (2) - deserialization](#yb::assist::deserialize (2) - deserialization)
+- [How to use serialization to text](#How to use serialization to text)
+- [How to create structures for serialization and deserialization](#struct)
+   * [Macro BEGIN_META_TABLE](#BEGIN_META_TABLE)
+   * [Macro DEFINE_META_TABLE_ITEM adds an element to the meta table](#DEFINE_META_TABLE_ITEM)
+   * [Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table](#DEFINE_META_TABLE_ITEM_EMPTY)
+   * [Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table](#DEFINE_META_TABLE_ITEM_DEFAULT)
+   * [Macro DEFINE_DESER_GETTER](#DEFINE_DESER_GETTER)
+- [Convert enum class to text and back](#enum_string)
+- [How to serialize and deserialize third party structures and classes](#third_party_struct)
+- [Supported data types](#Supported data types)
+- [How to create your own storage for deserialization](#How to create your own storage for deserialization)
+
 ```cpp
 //declare data
 const std::vector<std::map<int, std::string>> value{{{12345, "string_test0"}}, {{54321, "string_test1"}}};
@@ -52,7 +70,7 @@ The binary value of the following Json text will be written to the json variable
 **XCode:         projects/xcode/cpp_serialized.xcodeproj**
 **Visual Studio: projects/vs/cpp_serialized/cpp_serialized.sln**
 
-## How to use
+## How to use <a name="how_to_use"></a>
 1. cpp_serialized is a header library. To add cpp_serialized to your project, you need to copy the include folder.
 
 2. Add the following line to the source.
@@ -75,7 +93,7 @@ You can also use storage adapters for Json (third party jsoncpp parser, see clas
 
 The examples are located in the file 'cpp_serialized_tests/examples_README.cpp'.
 
-### yb::assist::serialize - serialization
+### yb::assist::serialize - serialization <a name="yb::assist::serialize - serialization"></a>
 Declaration:
 ```cpp
 template <Storage_concept_from_cpp Storage, typename T>
@@ -196,7 +214,7 @@ bool serialize_example_2() {
 
 ```
 
-### yb::assist::deserialize_to - deserialization.
+### yb::assist::deserialize_to - deserialization. <a name="yb::assist::deserialize_to - deserialization"></a>
 Declaration:
 ```cpp
 template <typename T, Storage_concept_to_cpp Storage>
@@ -258,7 +276,7 @@ bool deserialize_to() {
 }
 ```
 
-### yb::assist::deserialize (1) - deserialization.
+### yb::assist::deserialize (1) - deserialization. <a name="yb::assist::deserialize (1) - deserialization"></a>
 Declaration:
 ```cpp
 template <typename T, Storage_concept_to_cpp Storage>
@@ -371,7 +389,7 @@ bool deserialize_def() {
 }
 ```
 
-## How to use serialization to text.
+## How to use serialization to text.<a name="How to use serialization to text"></a>
 
 Heading:
 
@@ -573,7 +591,7 @@ using Map = std::map<std::string, int>;
 DEFINE_DATA(map_prop, Map)
 ```
 
-### Macro BEGIN_META_TABLE
+### Macro BEGIN_META_TABLE <a name="BEGIN_META_TABLE"></a>
 Begins table definitions for accessing structure/class fields. The table is defined as static constexpr std::tpule.
 
 **Example:**
@@ -581,7 +599,7 @@ Begins table definitions for accessing structure/class fields. The table is defi
 BEGIN_META_TABLE
 ```
 
-###Macro DEFINE_META_TABLE_ITEM adds an element to the meta table
+###Macro DEFINE_META_TABLE_ITEM adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM(name)
@@ -598,7 +616,7 @@ An entry with the key name MUST be present in the repository. If a record with s
 DEFINE_META_TABLE_ITEM(int_prop)
 ```
 
-### Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table
+### Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM_EMPTY"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM_EMPTY(name)
@@ -615,7 +633,7 @@ An entry with the key name may not be in the repository. If a record with such a
 DEFINE_META_TABLE_ITEM_EMPTY(string_prop)
 ```
 
-### Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table
+### Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table <a name="DEFINE_META_TABLE_ITEM_DEFAULT"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM_DEFAULT(name, def)
@@ -633,7 +651,7 @@ An entry with the key name may not be in the repository. If an entry with such a
 DEFINE_META_TABLE_ITEM_DEFAULT(vector_prop, (std::vector{1000, 2000}))
 ```
 
-### DEFINE_DESER_GETTER<a name="DEFINE_DESER_GETTER"></a>
+### Macro DEFINE_DESER_GETTER<a name="DEFINE_DESER_GETTER"></a>
 
 DEFINE_DESER_GETTER adds three elements to the structure:
 1. Name data field (int_prop in the example).
@@ -839,7 +857,7 @@ namespace yb::to_cpp {
 ```
 
 
-## Supported data types
+## Supported data types <a name="Supported data types"></a>
 ```cpp
 enum class Type {null_value, int_value, uint_value, float_value, string_value, boolean_value, array_container, object_container};
 ```
@@ -855,7 +873,7 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 * object_container - associative container (std::map, std::unordered_map).
 
 
-## How to create your own storage for deserialization
+## How to create your own storage for deserialization <a name="How to create your own storage for deserialization"></a>
 To create a storage facility for deserialization, you need to implement two classes. Iterator class and storage class. If you are using C++20, then your iterator and store classes must comply with the concepts:
 
 **Iterator Concept**
