@@ -48,6 +48,9 @@ The binary value of the following Json text will be written to the json variable
 ```
 
 **All examples from this article are located in the file cpp_serialized_tests/examples_README.cpp**
+**Tests projects:**
+**XCode:         projects/xcode/cpp_serialized.xcodeproj**
+**Visual Studio: projects/vs/cpp_serialized/cpp_serialized.sln**
 
 ## How to use
 1. cpp_serialized is a header library. To add cpp_serialized to your project, you need to copy the include folder.
