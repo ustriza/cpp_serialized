@@ -23,6 +23,24 @@ Types of supported data.
 
 **cpp_serialized** will allow you to serialize and deserialize complex data structures and containers in one line. For example:
 
+Table of Contents.
+- [How to use](#how_to_use)
+   * [yb::assist::serialize - serialization](#serialization)
+   * [yb::assist::deserialize_to - deserialization](#deserialize_to)
+   * [yb::assist::deserialize (1) - deserialization](#deserialize_1)
+   * [yb::assist::deserialize (2) - deserialization](#deserialize_2)
+- [How to use serialization to text](#How_to_use_serialization_to_text)
+- [How to create structures for serialization and deserialization](#struct)
+   * [Macro BEGIN_META_TABLE](#begin_meta_table)
+   * [Macro DEFINE_META_TABLE_ITEM adds an element to the meta table](#define_meta_table_item)
+   * [Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table](#define_meta_table_item_empty)
+   * [Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table](#define_meta_table_item_default)
+   * [Macro DEFINE_DESER_GETTER](#define_deser_getter)
+- [Convert enum class to text and back](#enum_string)
+- [How to serialize and deserialize third party structures and classes](#third_party_struct)
+- [Supported data types](#supported_data_types)
+- [How to create your own storage for deserialization](#own_storage)
+
 ```cpp
 //declare data
 const std::vector<std::map<int, std::string>> value{{{12345, "string_test0"}}, {{54321, "string_test1"}}};
@@ -52,7 +70,7 @@ The binary value of the following Json text will be written to the json variable
 **XCode:         projects/xcode/cpp_serialized.xcodeproj**
 **Visual Studio: projects/vs/cpp_serialized/cpp_serialized.sln**
 
-## How to use
+## How to use <a name="how_to_use"></a>
 1. cpp_serialized is a header library. To add cpp_serialized to your project, you need to copy the include folder.
 
 2. Add the following line to the source.
@@ -75,7 +93,7 @@ You can also use storage adapters for Json (third party jsoncpp parser, see clas
 
 The examples are located in the file 'cpp_serialized_tests/examples_README.cpp'.
 
-### yb::assist::serialize - serialization
+### yb::assist::serialize - serialization <a name="serialization"></a>
 Declaration:
 ```cpp
 template <Storage_concept_from_cpp Storage, typename T>
@@ -196,7 +214,7 @@ bool serialize_example_2() {
 
 ```
 
-### yb::assist::deserialize_to - deserialization.
+### yb::assist::deserialize_to - deserialization. <a name="deserialize_to"></a>
 Declaration:
 ```cpp
 template <typename T, Storage_concept_to_cpp Storage>
@@ -258,7 +276,7 @@ bool deserialize_to() {
 }
 ```
 
-### yb::assist::deserialize (1) - deserialization.
+### yb::assist::deserialize (1) - deserialization. <a name="deserialize_1"></a>
 Declaration:
 ```cpp
 template <typename T, Storage_concept_to_cpp Storage>
@@ -314,7 +332,7 @@ bool deserialize() {
 }
 ```
 
-### yb::assist::deserialize (2) - deserialization.
+### yb::assist::deserialize (2) - deserialization. <a name="deserialize_2"></a>
 Declaration:
 ```cpp
 template <typename T, Storage_concept_to_cpp Storage>
@@ -371,7 +389,7 @@ bool deserialize_def() {
 }
 ```
 
-## How to use serialization to text.
+## How to use serialization to text. <a name="How_to_use_serialization_to_text"></a>
 
 Heading:
 
@@ -573,7 +591,7 @@ using Map = std::map<std::string, int>;
 DEFINE_DATA(map_prop, Map)
 ```
 
-### Macro BEGIN_META_TABLE
+### Macro BEGIN_META_TABLE <a name="begin_meta_table"></a>
 Begins table definitions for accessing structure/class fields. The table is defined as static constexpr std::tpule.
 
 **Example:**
@@ -581,7 +599,7 @@ Begins table definitions for accessing structure/class fields. The table is defi
 BEGIN_META_TABLE
 ```
 
-###Macro DEFINE_META_TABLE_ITEM adds an element to the meta table
+### Macro DEFINE_META_TABLE_ITEM adds an element to the meta table <a name="define_meta_table_item"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM(name)
@@ -598,7 +616,7 @@ An entry with the key name MUST be present in the repository. If a record with s
 DEFINE_META_TABLE_ITEM(int_prop)
 ```
 
-### Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table
+### Macro DEFINE_META_TABLE_ITEM_EMPTY adds an element to the meta table <a name="define_meta_table_item_empty"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM_EMPTY(name)
@@ -615,7 +633,7 @@ An entry with the key name may not be in the repository. If a record with such a
 DEFINE_META_TABLE_ITEM_EMPTY(string_prop)
 ```
 
-### Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table
+### Macro DEFINE_META_TABLE_ITEM_DEFAULT adds an element to the meta table <a name="define_meta_table_item_default"></a>
 
 ```cpp
 DEFINE_META_TABLE_ITEM_DEFAULT(name, def)
@@ -633,7 +651,7 @@ An entry with the key name may not be in the repository. If an entry with such a
 DEFINE_META_TABLE_ITEM_DEFAULT(vector_prop, (std::vector{1000, 2000}))
 ```
 
-### DEFINE_DESER_GETTER<a name="DEFINE_DESER_GETTER"></a>
+### Macro DEFINE_DESER_GETTER<a name="define_deser_getter"></a>
 
 DEFINE_DESER_GETTER adds three elements to the structure:
 1. Name data field (int_prop in the example).
@@ -839,7 +857,7 @@ namespace yb::to_cpp {
 ```
 
 
-## Supported data types
+## Supported data types <a name="supported_data_types"></a>
 ```cpp
 enum class Type {null_value, int_value, uint_value, float_value, string_value, boolean_value, array_container, object_container};
 ```
@@ -855,7 +873,7 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 * object_container - associative container (std::map, std::unordered_map).
 
 
-## How to create your own storage for deserialization
+## How to create your own storage for deserialization <a name="own_storage"></a>
 To create a storage facility for deserialization, you need to implement two classes. Iterator class and storage class. If you are using C++20, then your iterator and store classes must comply with the concepts:
 
 **Iterator Concept**
@@ -891,7 +909,7 @@ The iterator class must have the following methods.
 2. **interface_not_equal_to**. Compares with another iterator. In practice, the comparison occurs with the value returned by the interface_end() method of the storage class. Corresponds to operator!= for a regular iterator.
 3. **interface_get_key()**. The template function returns the value of the key of the specified type if the iterator is used with the C++ types std::map, std::unordered_map. Corresponds to first for a regular iterator.
 
-**Vault Template**
+**Storage Template**
 ```cpp
 class Deserialize_storage {
 public:
