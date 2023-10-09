@@ -39,7 +39,7 @@ Table of Contents.
 - [Convert enum class to text and back](#enum_string)
 - [How to serialize and deserialize third party structures and classes](#third_party_struct)
 - [Supported data types](#supported_data_types)
-- [How to create your own storage for deserialization](#own_storage)
+- [How to create your own storage for deserialization](#own_storage_deser)
 
 ```cpp
 //declare data
@@ -873,7 +873,51 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 * object_container - associative container (std::map, std::unordered_map).
 
 
-## How to create your own storage for deserialization <a name="own_storage"></a>
+## Как создать собственное хранилище для сериализаии <a name="own_storage_ser"></a>
+Чтобы оздать хранилище для сериализации необходимо реализовать один класс. Если Вы используете C++20, то Ваш класс хранилища обязан соответствовать концепту:
+
+```cpp
+struct Value_model {};
+struct Key_model {};
+
+template<class T>
+concept Storage_concept =
+requires(T a, const Value_model value_model, const Key_model key_model) {
+	requires (std::is_convertible_v<std::decay_t<decltype(a.interface_append_array_item())>, std::decay_t<T>>);
+	requires (std::is_convertible_v<std::decay_t<decltype(a.interface_append_map_item(key_model))>, std::decay_t<T>>);
+	{a.interface_init_container(yb::Type{})} -> std::same_as<void>;
+	{a.interface_deinit_container(yb::Type{})} -> std::same_as<void>;
+	{a.interface_assign_from(value_model)} -> std::same_as<void>;
+};
+```
+
+Вы можете использовать класс - шаблон для написания собственного класса хранилища.
+
+```cpp
+class Serialiaze_storage {
+public:
+	void interface_init_container(yb::Type type);
+
+	void interface_deinit_container(yb::Type type);
+	
+	template<typename T1>
+	void interface_assign_from(const T1& value);
+	
+	Serialiaze_storage& interface_append_array_item();
+	
+	template<typename TKey>
+	Serialiaze_storage& interface_append_map_item(const TKey& key);
+};
+```
+
+Класс хранилища обязан иметь следующие методы.
+1. **interface_init_container(yb::Type type)**. Вызывается перед добавлением данных в контейнер (тип хранилища Type::array_container, Type::object_container).
+2. **interface_deinit_container(yb::Type type)**. Вызывается после добавления данных в контейнер (тип хранилища Type::array_container, Type::object_container).
+3. **interface_assign_from(const T1& value)**. Вызывается для присваивания хранилищу скалярного значение.
+4. **interface_append_array_item()**. Вызывается для добавления элемента в хранилище, имеющего тип Type::array_container. Функция обязана вернуть новый пустой элемент.
+5. **interface_append_map_item(const TKey& key)**. Вызывается для добавления элемента в хранилище, имеющего тип Type::object_container. Функция обязана вернуть новый пустой элемент.
+
+## How to create your own storage for deserialization <a name="own_storage_deser"></a>
 To create a storage facility for deserialization, you need to implement two classes. Iterator class and storage class. If you are using C++20, then your iterator and store classes must comply with the concepts:
 
 **Iterator Concept**
@@ -909,7 +953,7 @@ The iterator class must have the following methods.
 2. **interface_not_equal_to**. Compares with another iterator. In practice, the comparison occurs with the value returned by the interface_end() method of the storage class. Corresponds to operator!= for a regular iterator.
 3. **interface_get_key()**. The template function returns the value of the key of the specified type if the iterator is used with the C++ types std::map, std::unordered_map. Corresponds to first for a regular iterator.
 
-**Storage Template**
+**Storage pattern**
 ```cpp
 class Deserialize_storage {
 public:
