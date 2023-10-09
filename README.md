@@ -873,8 +873,9 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 * object_container - associative container (std::map, std::unordered_map).
 
 
-## Как создать собственное хранилище для сериализаии <a name="own_storage_ser"></a>
-Чтобы оздать хранилище для сериализации необходимо реализовать один класс. Если Вы используете C++20, то Ваш класс хранилища обязан соответствовать концепту:
+Translation result
+## How to create your own storage for serialization <a name="own_storage_ser"></a>
+To create a store for serialization, you need to implement one class. If you are using C++20, then your storage class must comply with the concept:
 
 ```cpp
 struct Value_model {};
@@ -891,7 +892,7 @@ requires(T a, const Value_model value_model, const Key_model key_model) {
 };
 ```
 
-Вы можете использовать класс - шаблон для написания собственного класса хранилища.
+You can use the template class to write your own storage class.
 
 ```cpp
 class Serialiaze_storage {
@@ -910,12 +911,12 @@ public:
 };
 ```
 
-Класс хранилища обязан иметь следующие методы.
-1. **interface_init_container(yb::Type type)**. Вызывается перед добавлением данных в контейнер (тип хранилища Type::array_container, Type::object_container).
-2. **interface_deinit_container(yb::Type type)**. Вызывается после добавления данных в контейнер (тип хранилища Type::array_container, Type::object_container).
-3. **interface_assign_from(const T1& value)**. Вызывается для присваивания хранилищу скалярного значение.
-4. **interface_append_array_item()**. Вызывается для добавления элемента в хранилище, имеющего тип Type::array_container. Функция обязана вернуть новый пустой элемент.
-5. **interface_append_map_item(const TKey& key)**. Вызывается для добавления элемента в хранилище, имеющего тип Type::object_container. Функция обязана вернуть новый пустой элемент.
+The storage class must have the following methods.
+1. **interface_init_container(yb::Type type)**. Called before adding data to the container (storage type Type::array_container, Type::object_container).
+2. **interface_deinit_container(yb::Type type)**. Called after adding data to the container (storage type Type::array_container, Type::object_container).
+3. **interface_assign_from(const T1& value)**. Called to assign a scalar value to the store.
+4. **interface_append_array_item()**. Called to add an element to the storage that has type Type::array_container. The function must return a new empty element.
+5. **interface_append_map_item(const TKey& key)**. Called to add an element to the store that has type Type::object_container. The function must return a new empty element.
 
 ## How to create your own storage for deserialization <a name="own_storage_deser"></a>
 To create a storage facility for deserialization, you need to implement two classes. Iterator class and storage class. If you are using C++20, then your iterator and store classes must comply with the concepts:
