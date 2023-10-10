@@ -1,9 +1,8 @@
-# Author **Yuri Barmin**, October 3, 2023
+# cpp_serialized 
 
 ## Automatic serialization and deserialization of arbitrary C++ types.
 
-## Version 2.1.
-
+## Version 2.1. October 3, 2023
 
 **cpp_serialized** can automatically serialize and deserialize C++ types to/from arbitrary storage. You can use existing repositories or create support for your own repositories. **cpp_serialized** comes with the following storage support:
 
