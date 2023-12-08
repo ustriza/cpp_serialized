@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4767A0AA2AB9A0A6000AE2ED /* examples_README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */; };
+		477A2FBA2B1F2ADC00515969 /* tests_date_formatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477A2FB92B1F2ADC00515969 /* tests_date_formatter.cpp */; };
 		47E125F72AA7363500C79954 /* tests_assist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EA2AA7363500C79954 /* tests_assist.cpp */; };
 		47E125F82AA7363500C79954 /* tests_enum_str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EB2AA7363500C79954 /* tests_enum_str.cpp */; };
 		47E125F92AA7363500C79954 /* tests_from_cpp_to_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EE2AA7363500C79954 /* tests_from_cpp_to_text.cpp */; };
@@ -36,6 +37,8 @@
 
 /* Begin PBXFileReference section */
 		4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = examples_README.cpp; sourceTree = "<group>"; };
+		477A2FB82B1E0AAC00515969 /* date_formatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date_formatter.h; sourceTree = "<group>"; };
+		477A2FB92B1F2ADC00515969 /* tests_date_formatter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tests_date_formatter.cpp; sourceTree = "<group>"; };
 		47CDCD072A77ED5E00683DBB /* cpp_serialized */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cpp_serialized; sourceTree = BUILT_PRODUCTS_DIR; };
 		47CDCD1F2A77FDED00683DBB /* libgtest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest.a; path = ../../../../../../../../../usr/local/Cellar/googletest/1.13.0/lib/libgtest.a; sourceTree = "<group>"; };
 		47E125E92AA7363500C79954 /* test_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_storage.h; sourceTree = "<group>"; };
@@ -138,6 +141,7 @@
 				47E125F32AA7363500C79954 /* tests_jsoncpp_to_cpp.cpp */,
 				47E125F42AA7363500C79954 /* tests_jsoncpp_from_cpp.cpp */,
 				47E125F52AA7363500C79954 /* tests_both.cpp */,
+				477A2FB92B1F2ADC00515969 /* tests_date_formatter.cpp */,
 				47E125F62AA7363500C79954 /* main.cpp */,
 				4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */,
 			);
@@ -166,6 +170,7 @@
 				47E126212AA7365C00C79954 /* engine_common.h */,
 				47E126232AA7365C00C79954 /* cpp_serialized.h */,
 				47E126252AA7365C00C79954 /* engine_addons.h */,
+				477A2FB82B1E0AAC00515969 /* date_formatter.h */,
 			);
 			path = engine;
 			sourceTree = "<group>";
@@ -298,6 +303,7 @@
 				47E125FB2AA7363500C79954 /* tests_from_cpp_to_storage.cpp in Sources */,
 				47E125FC2AA7363500C79954 /* tests_jsoncpp_to_cpp.cpp in Sources */,
 				47E125FD2AA7363500C79954 /* tests_jsoncpp_from_cpp.cpp in Sources */,
+				477A2FBA2B1F2ADC00515969 /* tests_date_formatter.cpp in Sources */,
 				47E125FA2AA7363500C79954 /* tests_to_cpp_from_storage.cpp in Sources */,
 				47E125F92AA7363500C79954 /* tests_from_cpp_to_text.cpp in Sources */,
 				47E126402AA7897A00C79954 /* json_reader.cpp in Sources */,
