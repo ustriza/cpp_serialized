@@ -54,7 +54,8 @@
 	},
 
 #define DEFINE_DATA(name, type)  public: type name{}; \
-	void set_##name(const type& __value__) {name = __value__;} \
+	template<typename T>\
+	void set_##name(T&& __value__) {name = std::forward<T>(__value__);} \
 	constexpr const auto& get_##name() const noexcept { \
 	constexpr auto arrName = YB_STATIC_STRING(#name); \
 	constexpr bool result = yb::find_prop_class::find_prop<std::decay_t<std::remove_pointer_t<decltype(this)>>, yb::ANY_STL_METATABLE_ITEM_TYPE_SERIALIZE | yb::ANY_STL_METATABLE_ITEM_TYPE_DESERIALIZE>(arrName);                                        \
