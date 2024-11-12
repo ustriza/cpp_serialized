@@ -35,14 +35,14 @@ inline void value_storage_input(const T &value,  Storage& storage) {
 
 template <class T, Storage_concept_from_cpp Storage>
 class Engine_from_cpp {
-public:
-	//constructor
-	Engine_from_cpp(const T &cont, Storage& storage): m_cont{cont}, m_storage{storage}{}
-private:
-	
+	template <class T1, Storage_concept_from_cpp Storage1>
+	friend Engine_from_cpp<T1, Storage1> cpp_to_storage_instance(const T1 &cont, Storage1& storage);
+
 	const T &m_cont;
 	Storage& m_storage;
 
+	//constructors
+	Engine_from_cpp(const T &cont, Storage& storage): m_cont{cont}, m_storage{storage}{}
 
 	DEFINE_MEMBER_CHECKER(meta_table)
 
@@ -256,4 +256,4 @@ Engine_from_cpp<T, Storage> cpp_to_storage_instance(const T &cont, Storage& stor
 	return d;
 }
 
-} //end of namespace yb::from_cpp
+} //end of namespace yb::from
