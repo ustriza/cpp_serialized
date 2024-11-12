@@ -14,7 +14,7 @@ namespace yb::string_utils {
 template <class T>
 inline T string_to_val(const char* s) {
 	if constexpr(std::is_enum_v<T>) {
-		const auto result = fromString(s, T());
+		const auto result = yb_enum_from_string(s, T());
 		if(result.has_value()) {
 			return result.value();
 		}

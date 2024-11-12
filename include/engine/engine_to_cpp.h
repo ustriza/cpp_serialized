@@ -566,7 +566,7 @@ class Engine_to_cpp {
 		}
 		
 		const auto str = cur_storage.template interface_get_value<std::string>();
-		const auto result = fromString(str, T1());
+		const auto result = yb_enum_from_string(str, T1());
 //		assert(result && "Could not convert enum to string");
 		if(result.has_value()) {
 			value = result.value();

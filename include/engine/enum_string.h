@@ -145,7 +145,7 @@ constexpr std::string_view yb_enum_to_string(name n) {                          
 	}                                                                                 \
 	return {};                                                                        \
 }                                                                                     \
-constexpr std::optional<name> fromString(std::string_view s, name) { \
+constexpr std::optional<name> yb_enum_from_string(std::string_view s, name) { \
 	ARG_FOR_EACH(name, IF_X_FE,__VA_ARGS__)                                           \
 	return {};                                                                        \
 }
@@ -162,7 +162,7 @@ constexpr std::string_view yb_enum_to_string(name n) {                          
 	}                                                                                 \
 	return {};                                                                        \
 }                                                                                     \
-constexpr std::optional<name> fromString(std::string_view s, name) { \
+constexpr std::optional<name> yb_enum_from_string(std::string_view s, name) { \
 	ARG_FOR_EACH(name, IF_X_FE,__VA_ARGS__)                                           \
 	return {};                                                                        \
 }
@@ -177,7 +177,7 @@ constexpr std::string_view yb_enum_to_string(name n) {                          
 	}                                                                                 \
 	return {};                                                                        \
 }                                                                                     \
-constexpr std::optional<name> fromString(std::string_view s, name) { \
+constexpr std::optional<name> yb_enum_from_string(std::string_view s, name) { \
 	ARG_FOR_EACH(name, IF_X_FE,__VA_ARGS__)                                           \
 	return {};                                                                        \
 }                                                                                     \
@@ -195,7 +195,7 @@ constexpr std::string_view yb_enum_to_string(name n) {                          
 	}                                                                                 \
 	return {};                                                                        \
 }                                                                                     \
-constexpr std::optional<name> fromString(std::string_view s, name) { \
+constexpr std::optional<name> yb_enum_from_string(std::string_view s, name) { \
 	ARG_FOR_EACH(name, IF_X_FE,__VA_ARGS__)                                           \
 	return {};                                                                        \
 }
@@ -208,7 +208,7 @@ constexpr std::string_view yb_enum_to_string(name n) {                          
 	}                                                                                 \
 	return {};                                                                        \
 }                                                                                     \
-constexpr std::optional<name> fromString(std::string_view s, name) { \
+constexpr std::optional<name> yb_enum_from_string(std::string_view s, name) { \
 	ARG_FOR_EACH(name, IF_X_FE,__VA_ARGS__)                                           \
 	return {};                                                                        \
 }
