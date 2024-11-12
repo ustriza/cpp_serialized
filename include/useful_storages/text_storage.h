@@ -91,7 +91,6 @@ public:
 	template<typename TKey>
 	TextStorage& interface_append_map_item(const TKey& key) {
 		std::string s_key;
-		s_key.clear();
 		add_value(key, s_key);
 
 		inc_count();
