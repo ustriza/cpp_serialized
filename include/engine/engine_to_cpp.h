@@ -254,14 +254,13 @@ inline bool value_storage_output(T &value,  const Storage& storage) {
 
 template <class T, Storage_concept_to_cpp Storage>
 class Engine_to_cpp {
-	template <class T1, Storage_concept_to_cpp Storage1>
-	friend Engine_to_cpp<T1, Storage1> storage_to_cpp_instance(T1 &cont, const Storage1& storage);
+public:
+	//constructors
+	Engine_to_cpp(T &cont, const Storage& storage): m_cont(cont), m_storage(storage){}
+private:
 	
 	T &m_cont;
 	const Storage& m_storage;
-	
-	//constructors
-	Engine_to_cpp(T &cont, const Storage& storage): m_cont(cont), m_storage(storage){}
 	
 	DEFINE_MEMBER_CHECKER(meta_table)
 	DEFINE_MEMBER_CHECKER(deserCompleteHandler)
