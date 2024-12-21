@@ -1,6 +1,7 @@
 .DS_Store
 *.xcuserstate
 projects/vs/cpp_serialized/Debug/
+projects/vs/cpp_serialized/x64/
 projects/xcode/cpp_serialized.xcodeproj/xcshareddata
 projects/xcode/cpp_serialized.xcodeproj/xcuserdata
 projects/vs/cpp_serialized/.vs/

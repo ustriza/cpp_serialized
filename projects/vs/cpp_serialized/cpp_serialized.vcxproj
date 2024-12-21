@@ -167,6 +167,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\jsoncpp\include;$(SolutionDir)\..\..\..\include\useful_storages;$(SolutionDir)\..\..\..\include\engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
