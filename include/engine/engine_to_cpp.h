@@ -426,7 +426,67 @@ class Engine_to_cpp {
 	}
 
 	template<typename T1, size_t tuple_index>
-	constexpr bool each_tuple_item(T1& value, const Storage &cur_storage, bool& success){
+	constexpr bool each_meta_table_item_pay_load(const Storage& storage_by_key, T1& value) {
+		constexpr auto& item = std::get<tuple_index>(T1::meta_table);
+		constexpr unsigned flags = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_FLAGS>(item);
+		constexpr bool is_container = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_CONTAINER_ITEM) != 0u;
+		constexpr bool is_adapter = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_ADAPTER) != 0u;
+		constexpr bool is_default = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_DEFAULT) != 0u;
+		constexpr bool is_def_empty = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_EMPTY) != 0u;
+
+		constexpr auto& lambda = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_LAMBDA>(item);
+		constexpr auto& lambda_adapter = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_ADAPTER>(item);
+
+		using Type_data = std::remove_pointer_t<std::invoke_result_t<decltype(lambda), nullptr_t, nullptr_t>>;
+		using Type_data_for_adapter = std::remove_pointer_t<std::invoke_result_t<decltype(lambda_adapter), nullptr_t, nullptr_t>>;
+
+		if (storage_by_key.interface_get_type() == Type::null_value) {
+			if (is_container) {
+				assert(false && "[Engine_to_cpp::read_meta_table] Could not read property from storage: node not found");
+				return false;
+			}
+			else if constexpr (!is_container && (is_default || is_def_empty)) { //set default value
+				if constexpr (!is_adapter && is_def_empty) {
+					return true;
+				}
+				else {
+					if constexpr (is_adapter) {
+						Type_data_for_adapter defData{ std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_DEFAULT>(item)() };
+						lambda_adapter(&value, &defData);
+					}
+					else {
+						Type_data def_data{ std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_DEFAULT>(item)() };
+						auto data = lambda(&value, nullptr);
+						*data = std::move(def_data);
+					}
+					return true;
+				}
+			}
+			else {
+//						assert(false && "[Engine_to_cpp::read_meta_table] Could not read property from storage: node not found");
+				return false;
+			}
+		}
+
+		bool success{};
+		if constexpr (is_adapter) {
+			Type_data_for_adapter data{};
+			success = read(data, storage_by_key);
+			if (success) {
+				lambda_adapter(&value, &data);
+			}
+		}
+		else {
+			auto data = lambda(&value, nullptr);
+			success = read(*data, storage_by_key);
+		}
+		assert(success && "[Engine_to_cpp::read_meta_table] Could not read property from storage");
+
+		return success;
+	}
+
+	template<typename T1, size_t tuple_index>
+	constexpr bool each_meta_table_item(T1& value, const Storage &cur_storage, bool& success){
 		constexpr auto& item = std::get<tuple_index>(T1::meta_table);
 		using Tuple_type = std::decay_t<decltype(item)>;
 		constexpr size_t tuple_size{std::tuple_size_v<Tuple_type>};
@@ -449,80 +509,16 @@ class Engine_to_cpp {
 			else {
 				constexpr bool is_container = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_CONTAINER_ITEM) != 0u;
 				
-				constexpr auto name = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_NAME>(item).data();
-				constexpr auto& lambda = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_LAMBDA>(item);
-				constexpr auto& lambda_adapter = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_ADAPTER>(item);
-				
-				using Type_data = std::remove_pointer_t<std::invoke_result_t<decltype(lambda), nullptr_t, nullptr_t>>;
-				using Type_data_for_adapter = std::remove_pointer_t<std::invoke_result_t<decltype(lambda_adapter), nullptr_t, nullptr_t>>;
-				
-				const auto pay_load = [&](const Storage& storage_by_key) -> bool {
-					//Workaround a VS compiler bug
-					constexpr auto& item = std::get<tuple_index>(T1::meta_table);
-					constexpr unsigned flags = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_FLAGS>(item);
-					constexpr bool is_container = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_CONTAINER_ITEM) != 0u;
-					constexpr bool is_adapter = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_ADAPTER) != 0u;
-					constexpr bool is_default = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_DEFAULT) != 0u;
-					constexpr bool is_def_empty = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_EMPTY) != 0u;
-
-					constexpr auto& lambda = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_LAMBDA>(item);
-					constexpr auto& lambda_adapter = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_ADAPTER>(item);
-					//----------------------------------------------------------------------------------------
-
-					if(storage_by_key.interface_get_type() == Type::null_value) {
-						if(is_container) {
-							assert(false && "[Engine_to_cpp::read_meta_table] Could not read property from storage: node not found");
-							success = false;
-							return false;
-						}
-						else if constexpr(!is_container && (is_default || is_def_empty)) { //set default value
-							if constexpr(!is_adapter && is_def_empty) {
-								return true;
-							}
-							else {
-								if constexpr(is_adapter) {
-									Type_data_for_adapter defData {std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_DEFAULT>(item)()};
-									lambda_adapter(&value, &defData);
-								}
-								else {
-									Type_data def_data {std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_DEFAULT>(item)()};
-									auto data = lambda(&value, nullptr);
-									*data = std::move(def_data);
-								}
-								return true;
-							}
-						}
-						else {
-	//						assert(false && "[Engine_to_cpp::read_meta_table] Could not read property from storage: node not found");
-							success = false;
-							return false;
-						}
-					}
-					
-					if constexpr(is_adapter) {
-						Type_data_for_adapter data{};
-						success = read(data, storage_by_key);
-						if(success) {
-							lambda_adapter(&value, &data);
-						}
-					}
-					else {
-						auto data = lambda(&value, nullptr);
-						success = read(*data, storage_by_key);
-					}
-					assert(success && "[Engine_to_cpp::read_meta_table] Could not read property from storage");
-					
-					return success;
-				};
-				
 				if constexpr(is_container) {//if is an container item
-					success = pay_load(cur_storage);
+					success = each_meta_table_item_pay_load<T1, tuple_index>(cur_storage, value);
 				}
 				else  {
 					//cur_storage.interface_get_storage_by_key can return 'const Storage&' or 'Storage'. In the second case, NRVO will work.
 					
+					constexpr auto name = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_NAME>(item).data();
+					
 					const Storage& storage_by_key = cur_storage.interface_get_storage_by_key(name);
-					success = pay_load(storage_by_key);
+					success = each_meta_table_item_pay_load<T1, tuple_index>(storage_by_key, value);
 				}
 
 				
@@ -534,7 +530,7 @@ class Engine_to_cpp {
 
 	template<class T1, size_t Index = 0, size_t Size>
 	constexpr void for_each_static_index(T1& value, const Storage &cur_storage, bool& success) {
-		if(!each_tuple_item<T1, Index>(value, cur_storage, success)) {
+		if(!each_meta_table_item<T1, Index>(value, cur_storage, success)) {
 			return;
 		}
 		
