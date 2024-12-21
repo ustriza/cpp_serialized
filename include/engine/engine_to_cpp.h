@@ -468,7 +468,7 @@ class Engine_to_cpp {
 			}
 		}
 
-		bool success;
+		bool success{};
 		if constexpr (is_adapter) {
 			Type_data_for_adapter data{};
 			success = read(data, storage_by_key);
@@ -509,15 +509,13 @@ class Engine_to_cpp {
 			else {
 				constexpr bool is_container = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_CONTAINER_ITEM) != 0u;
 				
-				constexpr auto name = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_NAME>(item).data();
-				constexpr auto& lambda = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_LAMBDA>(item);
-				constexpr auto& lambda_adapter = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_ADAPTER>(item);
-				
 				if constexpr(is_container) {//if is an container item
 					success = each_meta_table_item_pay_load<T1, tuple_index>(cur_storage, value);
 				}
 				else  {
 					//cur_storage.interface_get_storage_by_key can return 'const Storage&' or 'Storage'. In the second case, NRVO will work.
+					
+					constexpr auto name = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_NAME>(item).data();
 					
 					const Storage& storage_by_key = cur_storage.interface_get_storage_by_key(name);
 					success = each_meta_table_item_pay_load<T1, tuple_index>(storage_by_key, value);
