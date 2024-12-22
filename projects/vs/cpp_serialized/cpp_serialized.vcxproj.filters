@@ -51,6 +51,9 @@
     <ClCompile Include="..\..\..\jsoncpp\src\json_writer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\cpp_serialized_tests\examples_README.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\cpp_serialized_tests\tests_engine.h">
