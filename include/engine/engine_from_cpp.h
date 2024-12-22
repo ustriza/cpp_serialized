@@ -124,7 +124,7 @@ private:
 	}
 
 	template<typename T1, size_t tuple_index>
-	constexpr void each_tuple_item(const T1& value, Storage &cur_storage){
+	constexpr void each_meta_table_item(const T1& value, Storage &cur_storage){
 		constexpr auto& item = std::get<tuple_index>(T1::meta_table);
 		using Tuple_type = std::decay_t<decltype(item)>;
 		constexpr auto tuple_size = std::tuple_size_v<Tuple_type>;
@@ -180,7 +180,7 @@ private:
 
 	template<class T1, size_t Index = 0, size_t Size>
 	constexpr void for_each_static_index(const T1& value, Storage &cur_storage) {
-		each_tuple_item<T1, Index>(value, cur_storage);
+		each_meta_table_item<T1, Index>(value, cur_storage);
 
 		if constexpr(Index + 1 != Size) {
 			for_each_static_index<T1, Index + 1, Size>(value, cur_storage);
