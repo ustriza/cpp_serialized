@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4767A0AA2AB9A0A6000AE2ED /* examples_README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */; };
+		47BE5FA62D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47BE5FA52D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp */; };
 		47E125F72AA7363500C79954 /* tests_assist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EA2AA7363500C79954 /* tests_assist.cpp */; };
 		47E125F82AA7363500C79954 /* tests_enum_str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EB2AA7363500C79954 /* tests_enum_str.cpp */; };
 		47E125F92AA7363500C79954 /* tests_from_cpp_to_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EE2AA7363500C79954 /* tests_from_cpp_to_text.cpp */; };
@@ -36,6 +37,8 @@
 
 /* Begin PBXFileReference section */
 		4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = examples_README.cpp; sourceTree = "<group>"; };
+		47BE5FA42D8DEAB7005821E4 /* nlohmann_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nlohmann_storage.h; sourceTree = "<group>"; };
+		47BE5FA52D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tests_nlohmann_to_cpp.cpp; sourceTree = "<group>"; };
 		47CDCD072A77ED5E00683DBB /* cpp_serialized */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cpp_serialized; sourceTree = BUILT_PRODUCTS_DIR; };
 		47CDCD1F2A77FDED00683DBB /* libgtest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest.a; path = ../../../../../../../../../usr/local/Cellar/googletest/1.13.0/lib/libgtest.a; sourceTree = "<group>"; };
 		47E125E92AA7363500C79954 /* test_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_storage.h; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 				47E125F22AA7363500C79954 /* test_storage_common.h */,
 				47E125F32AA7363500C79954 /* tests_jsoncpp_to_cpp.cpp */,
 				47E125F42AA7363500C79954 /* tests_jsoncpp_from_cpp.cpp */,
+				47BE5FA52D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp */,
 				47E125F52AA7363500C79954 /* tests_both.cpp */,
 				47E125F62AA7363500C79954 /* main.cpp */,
 				4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */,
@@ -176,6 +180,7 @@
 				47E126202AA7365C00C79954 /* json_engine_addons.h */,
 				47E126262AA7365C00C79954 /* text_storage.h */,
 				47E126272AA7365C00C79954 /* jsoncpp_storage.h */,
+				47BE5FA42D8DEAB7005821E4 /* nlohmann_storage.h */,
 			);
 			path = useful_storages;
 			sourceTree = "<group>";
@@ -301,6 +306,7 @@
 				47E125FA2AA7363500C79954 /* tests_to_cpp_from_storage.cpp in Sources */,
 				47E125F92AA7363500C79954 /* tests_from_cpp_to_text.cpp in Sources */,
 				47E126402AA7897A00C79954 /* json_reader.cpp in Sources */,
+				47BE5FA62D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,11 +429,14 @@
 		47CDCD0F2A77ED5E00683DBB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "${SRCROOT}/../../jsoncpp/include";
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../",
+					"${SRCROOT}/../../jsoncpp/include",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/googletest/1.13.0/lib,
@@ -443,11 +452,14 @@
 		47CDCD102A77ED5E00683DBB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "${SRCROOT}/../../jsoncpp/include";
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/../../",
+					"${SRCROOT}/../../jsoncpp/include",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/googletest/1.13.0/lib,
