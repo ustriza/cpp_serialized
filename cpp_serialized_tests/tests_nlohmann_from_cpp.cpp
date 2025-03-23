@@ -4,7 +4,6 @@
 //  Created by Yuri Barmin on 22.03.2025.
 //
 
-#include "json_engine_addons.h"
 #include "cpp_serialized.h"
 #include "nlohmann_storage.h"
 #include "tests_engine.h"

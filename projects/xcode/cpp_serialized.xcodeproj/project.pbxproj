@@ -62,7 +62,6 @@
 		47E1261D2AA7365C00C79954 /* access_assist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = access_assist.h; sourceTree = "<group>"; };
 		47E1261E2AA7365C00C79954 /* enum_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = enum_string.h; sourceTree = "<group>"; };
 		47E1261F2AA7365C00C79954 /* string_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = string_utils.h; sourceTree = "<group>"; };
-		47E126202AA7365C00C79954 /* json_engine_addons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json_engine_addons.h; sourceTree = "<group>"; };
 		47E126212AA7365C00C79954 /* engine_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engine_common.h; sourceTree = "<group>"; };
 		47E126222AA7365C00C79954 /* engine_from_cpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engine_from_cpp.h; sourceTree = "<group>"; };
 		47E126232AA7365C00C79954 /* cpp_serialized.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpp_serialized.h; sourceTree = "<group>"; };
@@ -182,7 +181,6 @@
 		47E126242AA7365C00C79954 /* useful_storages */ = {
 			isa = PBXGroup;
 			children = (
-				47E126202AA7365C00C79954 /* json_engine_addons.h */,
 				47E126262AA7365C00C79954 /* text_storage.h */,
 				47E126272AA7365C00C79954 /* jsoncpp_storage.h */,
 				47BE5FA42D8DEAB7005821E4 /* nlohmann_storage.h */,
