@@ -264,6 +264,7 @@ concept Storage_concept_both = (Storage_concept_to_cpp<T> && Storage_concept_fro
 
 //** For deserialization **//
 
+/*
 class Const_value_iterator {
 public:
 	void interface_increment();
@@ -274,6 +275,9 @@ public:
 
 class Deserialize_storage {
 public:
+	 template<OptionsForEngine option>
+	 static constexpr auto get_options_for_engine(){}
+
 	template<typename T1>
 	T1 interface_get_value() const;
 	
@@ -290,10 +294,13 @@ public:
 	static const Deserialize_storage& interface_get_storage_from_iterator(const Const_value_iterator& iter);
 };
 
-//** For serialization **//
+// For serialization
 
 class Serialiaze_storage {
 public:
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){}
+
 	void interface_init_container(yb::Type type);
 
 	void interface_deinit_container(yb::Type type);
@@ -308,5 +315,5 @@ public:
 };
 
 //End of Templates for creating your own storages.
-
+*/
 #endif

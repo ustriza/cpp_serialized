@@ -24,6 +24,7 @@
 #include "engine_common.h"
 #include "string_utils.h"
 #include "engine_addons.h"
+#include "storage_common.h"
 
 namespace yb::from_cpp {
 
@@ -48,11 +49,17 @@ private:
 
 	template<class T1>
 	void write(const T1 &value, Storage& cur_storage) {
+		using StorageTypeForItem =
+		std::remove_pointer_t<std::invoke_result_t<decltype(Storage::template get_options_for_engine<OptionsForEngine::STORAGE_TYPE_FOR_ITEM>)>>;
+
 		if constexpr(HAS_MEMBER(T1, meta_table)) {
 			write_meta_table(value, cur_storage);
 		}
 		else if constexpr(std::is_enum_v<T1>) {
 			write_enum(value, cur_storage);
+		}
+		else if constexpr(std::is_same_v<T1, StorageTypeForItem>) {
+			return write_storage_value(value, cur_storage);
 		}
 		else if constexpr(!is_allowed_type<T1>()) {
 			return meta_table_from_cpp(value, cur_storage);
@@ -198,6 +205,11 @@ private:
 	void write_enum(const T1 &value, Storage &cur_storage) {
 		const auto str = yb_enum_to_string(value);
 		cur_storage.interface_assign_from(std::string(str));
+	}
+
+	template<typename T1>
+	void write_storage_value(T1 &value, Storage& cur_node) {
+		cur_node.interface_assign_from(value);
 	}
 
 	template<class T1>

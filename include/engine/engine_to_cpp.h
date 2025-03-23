@@ -25,6 +25,7 @@
 
 #include "engine_common.h"
 #include "engine_addons.h"
+#include "storage_common.h"
 
 #define SER_META_TABLE_LAMBDA_ADAPTER(name, adapterFunc)                        \
 [adapter = adapterFunc](auto ptr) {                                             \
@@ -268,11 +269,17 @@ private:
 	//parse other types
 	template<class T1>
 	bool read(T1 &value, const Storage& cur_storage) {
+		using StorageTypeForItem = 
+		std::remove_pointer_t<std::invoke_result_t<decltype(Storage::template get_options_for_engine<OptionsForEngine::STORAGE_TYPE_FOR_ITEM>)>>;
+		
 		if constexpr(HAS_MEMBER(T1, meta_table)) {
 			return read_meta_table(value, cur_storage);
 		}
 		else if constexpr(std::is_enum_v<T1>) {
 			return read_enum(value, cur_storage);
+		}
+		else if constexpr(std::is_same_v<T1, StorageTypeForItem>) {
+			return read_storage_value(value, cur_storage);
 		}
 		else if constexpr(!is_allowed_type<T1>()) {
 			return meta_table_to_cpp(value, cur_storage);
@@ -568,6 +575,12 @@ private:
 			return true;
 		}
 		return false;
+	}
+
+	template<typename T1>
+	bool read_storage_value(T1 &value, const Storage& cur_node) {
+		value = cur_node.template interface_get_value<T1>();
+		return true;
 	}
 	
 	template<class T1>
