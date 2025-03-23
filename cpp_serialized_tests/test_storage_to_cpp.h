@@ -20,7 +20,10 @@ class TestStorage {
 public:
 	
 	//----Methods for Const_iterator_concept
-	
+
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){}
+
 	//Iterators
 	class Const_value_iterator {
 	public:

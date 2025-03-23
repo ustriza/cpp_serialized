@@ -7,6 +7,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+#include "storage_common.h"
 
 namespace yb::nlohmann {
 
@@ -40,6 +41,12 @@ class Json_storage_adapter_to_cpp {
 public:
 	
 	//----Methods for Storage_concept_to_cpp
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){
+		if constexpr(option == OptionsForEngine::STORAGE_TYPE_FOR_ITEM) {
+			return static_cast<std::add_pointer_t<::nlohmann::json>>(nullptr);
+		}
+	}
 	
 	template<typename T1>
 	auto interface_get_value() const -> std::conditional_t<std::is_same_v<T1, ::nlohmann::json>, const T1&, T1>{
@@ -149,6 +156,14 @@ class Json_storage_adapter_from_cpp {
 public:
 	
 	//Interface implementation. Methods for Storage_concept_from_cpp concept.
+
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){
+		if constexpr(option == OptionsForEngine::STORAGE_TYPE_FOR_ITEM) {
+			return static_cast<std::add_pointer_t<::nlohmann::json>>(nullptr);
+		}
+	}
+
 	void interface_init_container(yb::Type type) {
 		switch (type) {
 			case Type::array_container:

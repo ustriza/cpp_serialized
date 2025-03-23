@@ -21,6 +21,10 @@ class TestStorage {
 	Map m_map;
 public:
 	//Interface implementation
+
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){}
+
 	void interface_init_container(yb::Type type) {
 		m_storage_type = type_to_subtype(type);
 	}

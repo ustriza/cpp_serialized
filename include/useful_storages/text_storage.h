@@ -11,12 +11,16 @@
 
 #include "engine_from_cpp.h"
 #include "test_storage_common.h"
+#include "storage_common.h"
 
 namespace yb::text_from_cpp {
 
 class TextStorage {
 public:
 	//Interface implementation
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){}
+
 	void interface_init_container(yb::Type type) {
 		set_type(type);
 		

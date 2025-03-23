@@ -15,6 +15,13 @@ public:
 	Const_value_iterator(const Json::Value::const_iterator& iter): m_iter(iter){}
 	
 	//Methods for Const_iterator_concept
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){
+		if constexpr(option == OptionsForEngine::STORAGE_TYPE_FOR_ITEM) {
+			return static_cast<std::add_pointer_t<Json::Value>>(nullptr);
+		}
+	}
+
 	void interface_increment() {++m_iter;}
 	
 	bool interface_not_equal_to(const Const_value_iterator& other) const {return m_iter != other.m_iter;}
@@ -41,6 +48,13 @@ public:
 	
 	//----Methods for Storage_concept_to_cpp
 	
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){
+		if constexpr(option == OptionsForEngine::STORAGE_TYPE_FOR_ITEM) {
+			return static_cast<std::add_pointer_t<Json::Value>>(nullptr);
+		}
+	}
+
 	template<typename T1>
 	auto interface_get_value() const -> std::conditional_t<std::is_same_v<T1, Json::Value>, const T1&, T1>{
 		if constexpr(std::is_same_v<T1, Json::Value>) {
@@ -144,6 +158,13 @@ class Json_storage_adapter_from_cpp {
 public:
 	
 	//Interface implementation. Methods for Storage_concept_from_cpp concept.
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){
+		if constexpr(option == OptionsForEngine::STORAGE_TYPE_FOR_ITEM) {
+			return static_cast<std::add_pointer_t<Json::Value>>(nullptr);
+		}
+	}
+
 	void interface_init_container(yb::Type type) {
 		switch (type) {
 			case Type::array_container:
