@@ -246,7 +246,7 @@ TEST(stlToNlohmann, writeMapsIntStr) {
 	toNLohmannTestMaps(values);
 }
 
-struct testSerializeStruct1ContainerItem {
+struct testNLohmanSerializeStruct1ContainerItem {
 	DEFINE_CONTAINER_DATA(Item, int)
 	
 	BEGIN_META_TABLE
@@ -257,8 +257,8 @@ struct testSerializeStruct1ContainerItem {
 
 
 TEST(stlToNlohmann, writeMapsIntStruct) {
-	using usedContainer = std::map<int, testSerializeStruct1ContainerItem>;
-	const std::array values {usedContainer{}, usedContainer{{1234, testSerializeStruct1ContainerItem{12345}}, {56789, testSerializeStruct1ContainerItem{567890}}}};
+	using usedContainer = std::map<int, testNLohmanSerializeStruct1ContainerItem>;
+	const std::array values {usedContainer{}, usedContainer{{1234, testNLohmanSerializeStruct1ContainerItem{12345}}, {56789, testNLohmanSerializeStruct1ContainerItem{567890}}}};
 	
 	toNLohmannTestMaps(values);
 }
@@ -295,7 +295,7 @@ TEST(stlToNlohmann, writeUnorderedMapsIntStr) {
 	toNLohmannTestMaps(values);
 }
 
-struct testSerializeStruct {
+struct testNLohmannSerializeStruct {
 	DEFINE_DATA(item, int)
 	DEFINE_DATA(item2, int)
 	DEFINE_DATA(adapterProp, int)
@@ -311,7 +311,7 @@ struct testSerializeStruct {
 };
 
 TEST(stlToNlohmann, writeStruct0) {
-	const testSerializeStruct value{12345, 56789, 89010};
+	const testNLohmannSerializeStruct value{12345, 56789, 89010};
 	
 	const auto check = [](const auto& storage){
 		ASSERT_EQ(storage.size(), 3);
@@ -351,8 +351,8 @@ TEST(stlToNlohmann, writeStruct0) {
 	
 }
 
-struct testSerializeStruct1 {
-	DEFINE_DATA(vectorOfIntsContItems, std::vector<testSerializeStruct1ContainerItem>)
+struct testNLohmannSerializeStruct1 {
+	DEFINE_DATA(vectorOfIntsContItems, std::vector<testNLohmanSerializeStruct1ContainerItem>)
 	
 	BEGIN_META_TABLE
 	DEFINE_META_TABLE_ITEM(vectorOfIntsContItems)
@@ -360,10 +360,10 @@ struct testSerializeStruct1 {
 };
 
 TEST(stlToNlohmann, writeArrayContainerItem) {
-	const testSerializeStruct1 value = []{
-		testSerializeStruct1 value;
-		value.vectorOfIntsContItems.push_back(testSerializeStruct1ContainerItem{12345});
-		value.vectorOfIntsContItems.push_back(testSerializeStruct1ContainerItem{67890});
+	const testNLohmannSerializeStruct1 value = []{
+		testNLohmannSerializeStruct1 value;
+		value.vectorOfIntsContItems.push_back(testNLohmanSerializeStruct1ContainerItem{12345});
+		value.vectorOfIntsContItems.push_back(testNLohmanSerializeStruct1ContainerItem{67890});
 		return value;
 	}();
 	
@@ -402,7 +402,7 @@ TEST(stlToNlohmann, readStruct1) {
 	
 	yb::nlohmann::Json_storage_adapter_to_cpp storage{autoJsonDeserUnitTestJson};
 	
-	testSerializeStruct1 value;
+	testNLohmannSerializeStruct1 value;
 	
 	yb::nlohmann::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
@@ -416,7 +416,7 @@ TEST(stlToNlohmann, readStruct1) {
 }
 
 
-struct testSerializeStruct2ContainerAdapter {
+struct testNLohmannSerializeStruct2ContainerAdapter {
 	DEFINE_CONTAINER_DATA(Item, int)
 	
 	BEGIN_META_TABLE
@@ -427,8 +427,8 @@ struct testSerializeStruct2ContainerAdapter {
 	
 };
 
-struct testSerializeStruct2 {
-	DEFINE_DATA(vectorOfIntsContItems, std::vector<testSerializeStruct2ContainerAdapter>)
+struct testNLohmannSerializeStruct2 {
+	DEFINE_DATA(vectorOfIntsContItems, std::vector<testNLohmannSerializeStruct2ContainerAdapter>)
 	
 	BEGIN_META_TABLE
 	DEFINE_META_TABLE_ITEM(vectorOfIntsContItems)
@@ -436,10 +436,10 @@ struct testSerializeStruct2 {
 };
 
 TEST(stlToNlohmann, writeStruct2) {
-	const testSerializeStruct2 value = []{
-		testSerializeStruct2 value;
-		value.vectorOfIntsContItems.push_back(testSerializeStruct2ContainerAdapter{12345});
-		value.vectorOfIntsContItems.push_back(testSerializeStruct2ContainerAdapter{67890});
+	const testNLohmannSerializeStruct2 value = []{
+		testNLohmannSerializeStruct2 value;
+		value.vectorOfIntsContItems.push_back(testNLohmannSerializeStruct2ContainerAdapter{12345});
+		value.vectorOfIntsContItems.push_back(testNLohmannSerializeStruct2ContainerAdapter{67890});
 		return value;
 	}();
 	
@@ -489,7 +489,7 @@ TEST(stlToNlohmann, writeEnumFail) {
 }
 
 
-struct testSerializeDeserializeEmptyStruct {
+struct testNLohmannSerializeDeserializeEmptyStruct {
 	DEFINE_DATA(item, int)
 	
 	
@@ -510,7 +510,7 @@ TEST(stlToNlohmann, readStructEmpty) {
 		return;
 	}
 	
-	testSerializeDeserializeEmptyStruct value;
+	testNLohmannSerializeDeserializeEmptyStruct value;
 	
 	yb::nlohmann::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
@@ -521,7 +521,7 @@ TEST(stlToNlohmann, readStructEmpty) {
 }
 
 TEST(stlToNlohmann, writeStructEmpty) {
-	testSerializeDeserializeEmptyStruct value;
+	testNLohmannSerializeDeserializeEmptyStruct value;
 	value.item = 10;
 	
 	nlohmann::json json;
@@ -533,7 +533,7 @@ TEST(stlToNlohmann, writeStructEmpty) {
 	EXPECT_EQ(json["item"].get<int>(), 10);
 }
 
-struct testSerializeDeserializeDefaultStruct {
+struct testNLohmannSerializeDeserializeDefaultStruct {
 	DEFINE_DATA(item, int)
 	
 	
@@ -554,7 +554,7 @@ TEST(stlToNlohmann, readStructDefault) {
 		return;
 	}
 	
-	testSerializeDeserializeDefaultStruct value;
+	testNLohmannSerializeDeserializeDefaultStruct value;
 	
 	yb::nlohmann::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
@@ -565,7 +565,7 @@ TEST(stlToNlohmann, readStructDefault) {
 }
 
 TEST(stlToNlohmann, writeStructDefault) {
-	testSerializeDeserializeDefaultStruct value;
+	testNLohmannSerializeDeserializeDefaultStruct value;
 	value.item = 10;
 	
 	nlohmann::json json;
@@ -577,7 +577,7 @@ TEST(stlToNlohmann, writeStructDefault) {
 	EXPECT_EQ(json["item"].get<int>(), 10);
 }
 
-struct testSerializeDeserializeJsonStruct {
+struct testNLohmannSerializeDeserializeStruct {
 	DEFINE_DATA(item, nlohmann::json)
 	
 	
@@ -598,7 +598,7 @@ TEST(stlToNlohmann, readJsonStruct) {
 		return;
 	}
 
-	testSerializeDeserializeJsonStruct value;
+	testNLohmannSerializeDeserializeStruct value;
 	
 	yb::nlohmann::Json_storage_adapter_to_cpp storage_adapter{autoJsonDeserUnitTestJson};
 	auto inst = yb::to_cpp::storage_to_cpp_instance(value, storage_adapter);
@@ -612,7 +612,7 @@ TEST(stlToNlohmann, readJsonStruct) {
 }
 
 TEST(stlToNlohmann, writeJsonStruct) {
-	testSerializeDeserializeJsonStruct value;
+	testNLohmannSerializeDeserializeStruct value;
 	value.item.push_back("abcd");
 	value.item.push_back("xyz");
 	
@@ -627,7 +627,7 @@ TEST(stlToNlohmann, writeJsonStruct) {
 	ASSERT_EQ(json["item"][1u].get<std::string>(), "xyz");
 }
 
-struct testSerializeDeserializeEmptyArrayMapStruct {
+struct testNLohmannSerializeDeserializeEmptyArrayMapStruct {
 	DEFINE_DATA(itemArray, std::vector<int>)
 	
 	using mapType = std::map<std::string, int>;
@@ -641,7 +641,7 @@ struct testSerializeDeserializeEmptyArrayMapStruct {
 };
 
 TEST(stlToNlohmann, writeEmptyArrayMapStruct) {
-	testSerializeDeserializeEmptyArrayMapStruct value;
+	testNLohmannSerializeDeserializeEmptyArrayMapStruct value;
 	
 	nlohmann::json json;
 	yb::nlohmann::Json_storage_adapter_from_cpp storage_adapter{json};
@@ -697,7 +697,7 @@ TEST(stlToNlohmann, writeTupleStringInt) {
 	EXPECT_EQ(json[1u].get<int>(), 12345);
 }
 
-struct tupleSerStructItem {
+struct tupleNLohmannSerStructItem {
 	DEFINE_DATA(item1, int)
 	DEFINE_DATA(item2, std::string)
 	
@@ -708,7 +708,7 @@ struct tupleSerStructItem {
 };
 
 TEST(stlToNlohmann, writeTupleComplex) {
-	using testType = std::tuple<std::string, int, std::vector<int>, std::tuple<int, int, int>, tupleSerStructItem>;
+	using testType = std::tuple<std::string, int, std::vector<int>, std::tuple<int, int, int>, tupleNLohmannSerStructItem>;
 	
 	testType value;
 	std::get<0>(value) = "98765";
@@ -720,7 +720,7 @@ TEST(stlToNlohmann, writeTupleComplex) {
 	std::tuple<int, int, int> tup {100, 200, 300};
 	std::get<3>(value) = tup;
 	
-	tupleSerStructItem struc;
+	tupleNLohmannSerStructItem struc;
 	struc.item1 = 100;
 	struc.item2 = "200";
 	std::get<4>(value) = struc;
