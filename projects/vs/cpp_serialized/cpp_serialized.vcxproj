@@ -28,6 +28,8 @@
     <ClCompile Include="..\..\..\cpp_serialized_tests\tests_from_cpp_to_text.cpp" />
     <ClCompile Include="..\..\..\cpp_serialized_tests\tests_jsoncpp_from_cpp.cpp" />
     <ClCompile Include="..\..\..\cpp_serialized_tests\tests_jsoncpp_to_cpp.cpp" />
+    <ClCompile Include="..\..\..\cpp_serialized_tests\tests_nlohmann_from_cpp.cpp" />
+    <ClCompile Include="..\..\..\cpp_serialized_tests\tests_nlohmann_to_cpp.cpp" />
     <ClCompile Include="..\..\..\cpp_serialized_tests\tests_to_cpp_from_storage.cpp" />
     <ClCompile Include="..\..\..\jsoncpp\src\json_reader.cpp" />
     <ClCompile Include="..\..\..\jsoncpp\src\json_value.cpp" />
@@ -47,8 +49,10 @@
     <ClInclude Include="..\..\..\include\engine\engine_to_cpp.h" />
     <ClInclude Include="..\..\..\include\engine\enum_string.h" />
     <ClInclude Include="..\..\..\include\engine\string_utils.h" />
+    <ClInclude Include="..\..\..\include\storage_common.h" />
     <ClInclude Include="..\..\..\include\useful_storages\jsoncpp_storage.h" />
     <ClInclude Include="..\..\..\include\useful_storages\json_engine_addons.h" />
+    <ClInclude Include="..\..\..\include\useful_storages\nlohmann_storage.h" />
     <ClInclude Include="..\..\..\include\useful_storages\text_storage.h" />
     <ClInclude Include="..\..\..\jsoncpp\include\json\allocator.h" />
     <ClInclude Include="..\..\..\jsoncpp\include\json\assertions.h" />
@@ -61,6 +65,7 @@
     <ClInclude Include="..\..\..\jsoncpp\include\json\version.h" />
     <ClInclude Include="..\..\..\jsoncpp\include\json\writer.h" />
     <ClInclude Include="..\..\..\jsoncpp\src\json_tool.h" />
+    <ClInclude Include="..\..\..\nlohmann\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\jsoncpp\src\json_valueiterator.inl" />
@@ -168,8 +173,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\jsoncpp\include;$(SolutionDir)\..\..\..\include\useful_storages;$(SolutionDir)\..\..\..\include\engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\..\jsoncpp\include;$(SolutionDir)\..\..\..\include\useful_storages;$(SolutionDir)\..\..\..\include\engine;$(SolutionDir)\..\..\..\include;$(SolutionDir)\..\..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
