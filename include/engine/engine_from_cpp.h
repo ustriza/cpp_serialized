@@ -17,6 +17,10 @@
 #include <set>
 #include <list>
 
+#if __cplusplus >= 202002L //C++ 20
+#include <ranges>
+#endif
+
 #include <cassert>
 
 #include <stddef.h>
@@ -28,6 +32,7 @@
 
 namespace yb::from_cpp {
 
+
 template<class T, Storage_concept_from_cpp Storage>
 inline void value_storage_input(const T &value,  Storage& storage) {
 	static_assert(!std::is_pointer<T>::value);
@@ -38,17 +43,17 @@ template <class T, Storage_concept_from_cpp Storage>
 class Engine_from_cpp {
 public:
 	//constructor
-	Engine_from_cpp(const T &cont, Storage& storage): m_cont{cont}, m_storage{storage}{}
+	Engine_from_cpp(t1_arg_t<T> &cont, Storage& storage): m_cont{cont}, m_storage{storage}{}
 private:
-	
-	const T &m_cont;
+
+    t1_arg_t<T> &m_cont;
 	Storage& m_storage;
 
 
 	DEFINE_MEMBER_CHECKER(meta_table)
 
 	template<class T1>
-	void write(const T1 &value, Storage& cur_storage) {
+	static void write(const T1 &value, Storage& cur_storage) {
 		using StorageTypeForItem =
 		std::remove_pointer_t<std::invoke_result_t<decltype(Storage::template get_options_for_engine<OptionsForEngine::STORAGE_TYPE_FOR_ITEM>)>>;
 
@@ -70,10 +75,10 @@ private:
 	}
 
 
-	template<class T1>
-	void write_array(const T1 &value, Storage &cur_storage) {
+    template<class T1>
+    static void write_array(t1_arg_t<T1> &value, Storage &cur_storage) {
 		cur_storage.interface_init_container(yb::Type::array_container);
-		
+
 		for(const auto& valueItem: value) {
 			decltype(auto) new_storage = cur_storage.interface_append_array_item();
 			write(valueItem, new_storage);
@@ -83,7 +88,7 @@ private:
 	}
 
 	template<class T1>
-	void write_map(const T1 &value, Storage &cur_storage) {
+	static void write_map(t1_arg_t<T1> &value, Storage &cur_storage) {
 		cur_storage.interface_init_container(yb::Type::object_container);
 
 		for(const auto& valueItem: value) {
@@ -94,7 +99,7 @@ private:
 	}
 
 	template<class T1>
-	void write_pair(const T1 &value, Storage &cur_storage) {
+	static void write_pair(const T1 &value, Storage &cur_storage) {
 		cur_storage.interface_init_container(yb::Type::array_container);
 
 		decltype(auto) first = cur_storage.interface_append_array_item();
@@ -106,14 +111,14 @@ private:
 	}
 
 	template<typename T1, size_t tupleIndex>
-	constexpr void each_write_tuple_item(const T1& value, Storage &cur_storage) {
+    static constexpr void each_write_tuple_item(const T1& value, Storage &cur_storage) {
 		const auto& tupleItem = std::get<tupleIndex>(value);
 		decltype(auto) array_item = cur_storage.interface_append_array_item();
 		write(tupleItem, array_item);
 	}
 
 	template<class T1, size_t Index = 0, size_t Size>
-	constexpr void for_each_write_tuple_static_index(const T1& value, Storage &cur_storage) {
+	static constexpr void for_each_write_tuple_static_index(const T1& value, Storage &cur_storage) {
 		each_write_tuple_item<T1, Index>(value, cur_storage);
 
 		if constexpr(Index + 1 != Size) {
@@ -122,7 +127,7 @@ private:
 	}
 
 	template<class T1>
-	void write_tuple(const T1 &value, Storage &cur_storage) {
+    static void write_tuple(const T1 &value, Storage &cur_storage) {
 		cur_storage.interface_init_container(yb::Type::array_container);
 
 		for_each_write_tuple_static_index<T1, 0, std::tuple_size_v<T1>>(value, cur_storage);
@@ -131,7 +136,7 @@ private:
 	}
 
 	template<typename T1, size_t tuple_index>
-	constexpr void each_meta_table_item(const T1& value, Storage &cur_storage){
+	static constexpr void each_meta_table_item(const T1& value, Storage &cur_storage){
 		constexpr auto& item = std::get<tuple_index>(T1::meta_table);
 		using Tuple_type = std::decay_t<decltype(item)>;
 		constexpr auto tuple_size = std::tuple_size_v<Tuple_type>;
@@ -186,7 +191,7 @@ private:
 	}
 
 	template<class T1, size_t Index = 0, size_t Size>
-	constexpr void for_each_static_index(const T1& value, Storage &cur_storage) {
+	static constexpr void for_each_static_index(const T1& value, Storage &cur_storage) {
 		each_meta_table_item<T1, Index>(value, cur_storage);
 
 		if constexpr(Index + 1 != Size) {
@@ -195,77 +200,134 @@ private:
 	}
 
 	template<class T1>
-	void write_meta_table(const T1 &value, Storage &cur_storage) {
+	static void write_meta_table(const T1 &value, Storage &cur_storage) {
 		cur_storage.interface_init_container(yb::Type::object_container);
 		for_each_static_index<T1, 0, std::tuple_size_v<decltype(T1::meta_table)>>(value, cur_storage);
 		cur_storage.interface_deinit_container(yb::Type::object_container);
 	}
 
 	template<class T1>
-	void write_enum(const T1 &value, Storage &cur_storage) {
+    static void write_enum(const T1 &value, Storage &cur_storage) {
 		const auto str = yb_enum_to_string(value);
 		cur_storage.interface_assign_from(std::string(str));
 	}
 
 	template<typename T1>
-	void write_storage_value(T1 &value, Storage& cur_node) {
+    static void write_storage_value(T1 &value, Storage& cur_node) {
 		cur_node.interface_assign_from(value);
 	}
 
 	template<class T1>
-	void write(const std::vector<T1> &value, Storage& cur_storage) {
-		write_array(value, cur_storage);
+    static void write(const std::vector<T1> &value, Storage& cur_storage) {
+		write_array<std::decay_t<decltype(value)>>(value, cur_storage);
 	}
 
 	template<class T1>
-	void write(const std::list<T1> &value, Storage& cur_storage) {
-		write_array(value, cur_storage);
+    static void write(const std::list<T1> &value, Storage& cur_storage) {
+		write_array<std::decay_t<decltype(value)>>(value, cur_storage);
 	}
 
 	template<class _Key, class _Compare, class _Allocator>
-	void write(const std::set<_Key, _Compare, _Allocator> &value, Storage& cur_storage) {
-		write_array(value, cur_storage);
+    static void write(const std::set<_Key, _Compare, _Allocator> &value, Storage& cur_storage) {
+		write_array<std::decay_t<decltype(value)>>(value, cur_storage);
 	}
 
 	template<class T1>
-	void write(const std::unordered_set<T1> &value, Storage& cur_storage) {
-		write_array(value, cur_storage);
+    static void write(const std::unordered_set<T1> &value, Storage& cur_storage) {
+		write_array<std::decay_t<decltype(value)>>(value, cur_storage);
 	}
 
 	template<class T1>
-	void write(const std::deque<T1> &value, Storage& cur_storage) {
-		write_array(value, cur_storage);
+    static void write(const std::deque<T1> &value, Storage& cur_storage) {
+		write_array<std::decay_t<decltype(value)>>(value, cur_storage);
 	}
 
 	template <class _Key, class _Tp, class _Allocator>
-	void write(const std::map<_Key, _Tp, _Allocator> &value, Storage& cur_storage) {
-		write_map(value, cur_storage);
+    static void write(const std::map<_Key, _Tp, _Allocator> &value, Storage& cur_storage) {
+		write_map<std::decay_t<decltype(value)>>(value, cur_storage);
 	}
 
 	template <class T1, class T2>
-	void write(const std::unordered_map<T1, T2> &value, Storage& cur_storage) {
-		write_map(value, cur_storage);
+    static void write(const std::unordered_map<T1, T2> &value, Storage& cur_storage) {
+		write_map<std::decay_t<decltype(value)>>(value, cur_storage);
 	}
 
 	template<class T1, class T2>
-	void write(const std::pair<T1, T2> &value, Storage& cur_storage) {
+    static void write(const std::pair<T1, T2> &value, Storage& cur_storage) {
 		write_pair(value, cur_storage);
 	}
 
 	template<class ...T1>
-	void write(const std::tuple<T1...> &value, Storage& cur_storage) {
+    static void write(const std::tuple<T1...> &value, Storage& cur_storage) {
 		write_tuple(value, cur_storage);
 	}
+
+#if __cplusplus >= 202002L //C++ 20
+    template<typename T1>
+    requires std::ranges::view<std::decay_t<T1>>
+    static void write_range_view(t1_arg_t<T1> &value, Storage& cur_storage) {
+        write_range_view_dispatcher<T1>(value, cur_storage);
+    }
+
+    //Array
+    template <typename T1>
+    requires is_array<T1>
+    static void write_range_view_dispatcher(t1_arg_t<T1> &value, Storage& cur_storage) {
+        write_array<T1>(value, cur_storage);
+    }
+
+    //Map
+    template <typename T1>
+    requires is_any_map_v<T1>
+    static void write_range_view_dispatcher(t1_arg_t<T1> &value, Storage& cur_storage) {
+        write_map<T1>(value, cur_storage);
+    }
+#endif
+
+
 public:
 	void write_to() {
-		this->write(m_cont, m_storage);
+#if __cplusplus >= 202002L //C++ 20
+        if constexpr(std::ranges::view<std::decay_t<T>>) {
+            write_range_view<T>(m_cont, m_storage);
+        }
+        else {
+            write(m_cont, m_storage);
+        }
+#else
+        write(m_cont, m_storage);
+#endif
 	}
 };
 
+#if __cplusplus >= 202002L //C++ 20
+
+template <class T, Storage_concept_from_cpp Storage>
+requires has_non_const_begin_v<T>
+Engine_from_cpp<T, Storage> cpp_to_storage_instance(T &cont, Storage& storage) {
+	Engine_from_cpp<T, Storage> d(cont, storage);
+	return d;
+}
+
+template <class T, Storage_concept_from_cpp Storage>
+//requires (!has_begin<T> || !has_non_const_begin<T>)
+Engine_from_cpp<T, Storage> cpp_to_storage_instance(const T &cont, Storage& storage) {
+	Engine_from_cpp<T, Storage> d(cont, storage);
+	return d;
+}
+
+//template <class T, Storage_concept_from_cpp Storage>
+//Engine_from_cpp<T, Storage> cpp_to_storage_instance(t1_arg_t<T> &cont, Storage& storage) {
+//	Engine_from_cpp<T, Storage> d(cont, storage);
+//	return d;
+//}
+#else
 template <class T, Storage_concept_from_cpp Storage>
 Engine_from_cpp<T, Storage> cpp_to_storage_instance(const T &cont, Storage& storage) {
 	Engine_from_cpp<T, Storage> d(cont, storage);
 	return d;
 }
+#endif
+
 
 } //end of namespace yb::from_cpp

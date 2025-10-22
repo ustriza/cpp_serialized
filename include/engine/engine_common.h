@@ -14,8 +14,93 @@
 
 #if __cplusplus >= 202002L //C++ 20
 #define CONSTEVAL consteval
+
+#include <ranges>
+
+template<typename T, typename = void>
+struct _underlying_container
+{
+    using type = std::decay_t<T>;
+};
+
+template <typename T>
+struct _underlying_container<T, std::enable_if_t<std::ranges::view<std::decay_t<T>>>>
+{
+    using type = _underlying_container<decltype(std::declval<std::decay_t<T>>().base())>::type;
+};
+
+template<typename T1>
+using view_value_type_t = std::decay_t<decltype(*(std::declval<std::decay_t<T1>>().begin()))>;
+
+//Check for std::map
+template<typename T>
+constexpr bool _is_std_map_impl = false;
+
+template<typename Key, typename Value, typename Compare, typename Alloc>
+constexpr bool _is_std_map_impl<std::map<Key, Value, Compare, Alloc>> = true;
+
+template<typename T>
+concept is_cont_map_v = _is_std_map_impl<T>;
+//-----------
+
+//Check for std::unordered_map
+template<typename T>
+constexpr bool _is_std_unordered_map_impl = false;
+
+template<typename Key,typename Tp,typename Hash,typename Pred>
+constexpr bool _is_std_unordered_map_impl<std::unordered_map<Key, Tp, Hash, Pred>> = true;
+
+template<typename T>
+concept is_cont_unordered_map_v = _is_std_unordered_map_impl<T>;
+//-----------
+
+template<typename T1>
+using container_type_from_view_t = _underlying_container<T1>::type;
+
+template <typename T>
+concept is_pair_v = requires {
+    requires std::is_base_of_v<std::pair<typename T::first_type, typename T::second_type>, T>;
+};
+
+template<typename T1>
+concept is_any_map_v = (
+        is_cont_map_v<container_type_from_view_t<T1>>
+        || is_cont_unordered_map_v<container_type_from_view_t<T1>>)
+    && is_pair_v<view_value_type_t<T1>>;
+
+template<typename T1>
+concept is_array = (
+      (std::same_as<container_type_from_view_t<T1>, std::vector<typename container_type_from_view_t<T1>::value_type>>
+   || std::same_as<container_type_from_view_t<T1>, std::list<typename container_type_from_view_t<T1>::value_type>>
+   || std::same_as<container_type_from_view_t<T1>, std::deque<typename container_type_from_view_t<T1>::value_type>>)
+   || ((is_cont_map_v<container_type_from_view_t<T1>> || is_cont_unordered_map_v<container_type_from_view_t<T1>>) && !is_pair_v<view_value_type_t<T1>>)
+);
+
+template<typename T>
+concept has_begin = requires(T& t) {
+	t.begin(); 
+};
+
+template<typename T>
+concept has_non_const_begin_v = requires(T& t) {
+	t.begin();
+} && !requires(const T& t) {
+	t.begin();
+};
+
+template<class T>
+concept has_const_begin_v = requires(const std::decay_t<T>& instance) {
+    { instance.begin() }; // Checks if instance.method() is a valid expression
+};
+template <typename T1>
+using t1_arg_t = std::conditional_t<has_non_const_begin_v<T1>, std::decay_t<T1>, std::add_const_t<std::decay_t<T1>>>;
+
 #else
 #define CONSTEVAL constexpr
+
+template <typename T1>
+using t1_arg_t = std::add_const_t<std::decay_t<T1>>;
+
 #endif
 
 #define BEGIN_META_TABLE \
