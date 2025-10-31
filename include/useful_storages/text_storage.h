@@ -209,16 +209,18 @@ std::string to_string_impl(t1_arg_t<T>& from_value) {
 }
 
 template<typename T>
-std::string to_string(const T& from_value) {
-    return to_string_impl<T>(from_value);
-}
-
-template<typename T>
-requires (has_non_const_begin_v<T>)
+requires has_non_const_begin_v<T>
 std::string to_string(T&& from_value) {
     static_assert(!std::is_const_v<std::remove_reference_t<decltype(from_value)>>, "Do not use 'const' for std::views::filter");
     return to_string_impl<T>(from_value);
 }
+
+template<typename T>
+requires (!has_begin<T> || has_const_begin_v<T>)
+std::string to_string(const T& from_value) {
+	return to_string_impl<T>(from_value);
+}
+
 #else
 template<typename T>
 std::string to_string(const T& from_value) {
