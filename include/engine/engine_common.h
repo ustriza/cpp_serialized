@@ -17,6 +17,12 @@
 
 #include <ranges>
 
+template<typename T>
+concept has_base_range_view_v = std::ranges::view<std::decay_t<T>>
+&& requires(T t) {
+	{ t.base() };
+};
+
 template<typename T, typename = void>
 struct _underlying_container
 {
@@ -24,9 +30,9 @@ struct _underlying_container
 };
 
 template <typename T>
-struct _underlying_container<T, std::enable_if_t<std::ranges::view<std::decay_t<T>>>>
+struct _underlying_container<T, std::enable_if_t<has_base_range_view_v<T>>>
 {
-    using type = _underlying_container<decltype(std::declval<std::decay_t<T>>().base())>::type;
+	using type = _underlying_container<decltype(std::declval<std::decay_t<T>>().base())>::type;
 };
 
 template<typename T1>
@@ -54,13 +60,22 @@ template<typename T>
 concept is_cont_unordered_map_v = _is_std_unordered_map_impl<T>;
 //-----------
 
-template<typename T>
-concept has_no_underlying_container_v = !requires(T t) {
-	t.base();
-};
-
 template<typename T1>
 using container_type_from_view_t = _underlying_container<T1>::type;
+
+template <typename T>
+concept is_container_v = requires(T a) {
+	typename std::decay_t<T>::value_type;
+	typename std::decay_t<T>::iterator;
+	{ a.begin() };
+	{ a.end() } ;
+	{ a.size() } -> std::convertible_to<std::size_t>;
+};
+
+template<typename T>
+concept has_underlying_container_v = requires(container_type_from_view_t<T> t) {
+	{ t } -> is_container_v;
+};
 
 template <typename T>
 concept is_pair_v = requires {
@@ -69,14 +84,14 @@ concept is_pair_v = requires {
 
 template<typename T1>
 concept is_any_map_v = (
-		!has_no_underlying_container_v<T1>
+		has_underlying_container_v<T1>
         && (is_cont_map_v<container_type_from_view_t<T1>>
         || is_cont_unordered_map_v<container_type_from_view_t<T1>>))
     && is_pair_v<view_value_type_t<T1>>;
 
 template<typename T1>
 concept is_array = (
-       has_no_underlying_container_v<T1>
+       !has_underlying_container_v<T1>
    ||   (std::same_as<container_type_from_view_t<T1>, std::vector<typename container_type_from_view_t<T1>::value_type>>
    || std::same_as<container_type_from_view_t<T1>, std::list<typename container_type_from_view_t<T1>::value_type>>
    || std::same_as<container_type_from_view_t<T1>, std::deque<typename container_type_from_view_t<T1>::value_type>>)

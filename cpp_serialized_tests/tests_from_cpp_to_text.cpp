@@ -642,14 +642,24 @@ TEST(TestsToText, to_string_RangeViewNotContainer) {
 		EXPECT_EQ(result_text, test_data);
 	}
 
-//	{
-//		auto value_view = std::ranges::iota_view{1, 10} | std::ranges::views::filter([](const int item){return item > 5;});
-//		
-//		const auto result_text = yb::assist::to_string(value_view);
-//		
-//		const std::string test_data = "[\n  6,\n  7,\n  8,\n  9\n]";
-//		EXPECT_EQ(result_text, test_data);
-//	}
+	{
+		auto value_view = std::ranges::iota_view{1, 10} | std::ranges::views::filter([](const int item){return item > 5;});
+		
+		const auto result_text = yb::assist::to_string(value_view);
+		
+		const std::string test_data = "[\n  6,\n  7,\n  8,\n  9\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+	
+	{
+		auto value_view = std::ranges::single_view{1} | std::ranges::views::all | std::ranges::views::filter([](const int item){return item > 0;});
+																											  
+		const auto result_text = yb::assist::to_string(value_view);
+		
+		const std::string test_data = "[\n  1\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+
 
 }
 
