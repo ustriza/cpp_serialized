@@ -4,6 +4,10 @@
 //  Created by Yuri Barmin on 08.08.2023.
 //
 
+#if __cplusplus >= 202002L //C++ 20
+#include <ranges>
+#endif
+
 #include "test_storage_from_cpp.h"
 #include "engine_from_cpp.h"
 #include "access_assist.h"
@@ -519,3 +523,20 @@ TEST(TestsFromStl, writeEnumFail) {
 	EXPECT_EQ(storage.isString(), true);
 	EXPECT_EQ(storage.asString(), "");
 }
+
+#if __cplusplus >= 202002L //C++ 20
+TEST(TestsFromStl, to_string_RangeViewNotContainer) {
+	
+	{
+		const auto value = std::ranges::single_view{1};
+		
+		yb::from_cpp::TestStorage storage;
+		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+		inst.write_to();
+
+		EXPECT_EQ(storage.isArray(), true);
+		EXPECT_EQ(storage.get_map().size(), 1);
+		EXPECT_EQ(get_array_value<int>(0, storage.get_map()), 1);
+	}
+}
+#endif
