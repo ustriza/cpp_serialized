@@ -4,6 +4,10 @@
 //  Created by Yuri Barmin on 08.08.2023.
 //
 
+#if __cplusplus >= 202002L //C++ 20
+#include <ranges>
+#endif
+
 #include "cpp_serialized.h"
 #include "text_storage.h"
 #include "tests_engine.h"
@@ -539,3 +543,124 @@ TEST(TestsToText, to_string_VectorInt) {
 	
 	EXPECT_EQ(result_text, test_data);
 }
+
+#if __cplusplus >= 202002L //C++ 20
+TEST(TestsToText, to_string_RangeViewAllInt) {
+	const std::vector<int> value{12345, 67890};
+	
+	{
+		const auto result_text = yb::assist::to_string(value | std::ranges::views::all);
+		
+		const std::string test_data = "[\n"
+		"  12345,\n"
+		"  67890"
+		"\n]";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+	
+	{
+		const auto view = std::ranges::views::all;
+		const auto result_text = yb::assist::to_string(value | view);
+		
+		const std::string test_data = "[\n"
+		"  12345,\n"
+		"  67890"
+		"\n]";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		auto view = std::ranges::views::all;
+		const auto result_text = yb::assist::to_string(value | view);
+		
+		const std::string test_data = "[\n"
+		"  12345,\n"
+		"  67890"
+		"\n]";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+
+}
+
+TEST(TestsToText, to_string_RangeViewFilterInt) {
+	const std::vector<int> value{12345, 67890};
+	
+	{
+		const auto result_text = yb::assist::to_string(value | std::ranges::views::filter(
+			[](const auto& item){return item > 12345;}));
+					
+		const std::string test_data = "[\n"
+		"  67890"
+		"\n]";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+	
+	{
+		auto value_view = value | std::ranges::views::filter([](const auto& item){return item > 12345;});
+		
+		const auto result_text = yb::assist::to_string(value_view);
+		
+		const std::string test_data = "[\n"
+		"  67890"
+		"\n]";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+
+}
+
+TEST(TestsToText, to_string_RangeViewNotContainer) {
+	{
+		const auto result_text = yb::assist::to_string(std::ranges::iota_view{1, 10});
+		
+		const std::string test_data = "[\n  1,\n  2,\n  3,\n  4,\n  5,\n  6,\n  7,\n  8,\n  9\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		const auto result_text = yb::assist::to_string(std::ranges::single_view{1});
+		
+		const std::string test_data = "[\n  1\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		const auto result_text = yb::assist::to_string(std::ranges::empty_view<int>{});
+		
+		const std::string test_data = "[\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		const auto result_text = yb::assist::to_string(std::ranges::views::all(std::ranges::iota_view{1, 10}));
+		
+		const std::string test_data = "[\n  1,\n  2,\n  3,\n  4,\n  5,\n  6,\n  7,\n  8,\n  9\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		auto value_view = std::ranges::iota_view{1, 10} | std::ranges::views::filter([](const int item){return item > 5;});
+		
+		const auto result_text = yb::assist::to_string(value_view);
+		
+		const std::string test_data = "[\n  6,\n  7,\n  8,\n  9\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+	
+	{
+		auto value_view = std::ranges::single_view{1} | std::ranges::views::all | std::ranges::views::filter([](const int item){return item > 0;});
+																											  
+		const auto result_text = yb::assist::to_string(value_view);
+		
+		const std::string test_data = "[\n  1\n]";
+		EXPECT_EQ(result_text, test_data);
+	}
+
+
+}
+
+#endif
