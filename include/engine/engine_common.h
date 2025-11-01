@@ -9,6 +9,7 @@
 
 #include <string>
 #include <array>
+#include <vector>
 
 #define YB_STATIC_STRING(X) yb::string_utils::Static_string<sizeof(X)>{X}
 
