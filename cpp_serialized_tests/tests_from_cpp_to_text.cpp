@@ -663,4 +663,49 @@ TEST(TestsToText, to_string_RangeViewNotContainer) {
 
 }
 
+TEST(TestsToText, to_string_RangeViewMapIntString) {
+	const std::map<int, std::string> value{{1, "value1"}, {2, "value2"}};
+	
+	{
+		const auto result_text = yb::assist::to_string(value | std::ranges::views::all);
+		
+		const std::string test_data = "{\n  1: \"value1\",\n  2: \"value2\"\n}";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		const auto result_text = yb::assist::to_string(value | std::ranges::views::filter([](const auto& item){return item.first > 1;}));
+		
+		const std::string test_data = "{\n  2: \"value2\"\n}";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		const auto result_text = yb::assist::to_string(
+			value
+		  | std::ranges::views::filter([](const auto& item){return item.first > 1;})
+		  | std::ranges::views::transform([](const auto& item){return std::pair{"k: " + std::to_string(item.first), item.second};})
+		);
+		
+		const std::string test_data = "{\n  \"k: 2\": \"value2\"\n}";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+
+	{
+		const auto result_text = yb::assist::to_string(
+		   value
+		   | std::ranges::views::filter([](const auto& item){return item.first > 1;})
+		   | std::ranges::views::transform([](const auto& item){return item.second;})
+		   );
+		
+		const std::string test_data = "[\n  \"value2\"\n]";
+		
+		EXPECT_EQ(result_text, test_data);
+	}
+
+}
+
 #endif
