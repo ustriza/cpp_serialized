@@ -316,11 +316,6 @@ Engine_from_cpp<T, Storage> cpp_to_storage_instance(const T &cont, Storage& stor
 	return d;
 }
 
-//template <class T, Storage_concept_from_cpp Storage>
-//Engine_from_cpp<T, Storage> cpp_to_storage_instance(t1_arg_t<T> &cont, Storage& storage) {
-//	Engine_from_cpp<T, Storage> d(cont, storage);
-//	return d;
-//}
 #else
 template <class T, Storage_concept_from_cpp Storage>
 Engine_from_cpp<T, Storage> cpp_to_storage_instance(const T &cont, Storage& storage) {
