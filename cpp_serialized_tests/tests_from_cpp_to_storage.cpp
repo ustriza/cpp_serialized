@@ -33,6 +33,16 @@ TValue get_map_value(const TKey& key, const TMap& map) {
 	return find_it->second.template asValue<TValue>();
 }
 
+template<typename TMap>
+const yb::from_cpp::TestStorage& get_storage_value(size_t index, const TMap& map) {
+	static const yb::from_cpp::TestStorage empty_storage;
+	const auto find_it = map.find(yb::tests::MapKey{index});
+	if(find_it == map.end()) {
+		return empty_storage;
+	}
+	return find_it->second;
+}
+
 template<typename TValue, typename TMap>
 TValue get_set_value(const TValue& value, const TMap& map) {
 	const auto find_it = std::find_if(map.begin(), map.end(), [&value](const auto& item) {
@@ -591,6 +601,26 @@ TEST(TestsFromStl, to_string_RangeViewMapIntString) {
 		ASSERT_EQ(storage.get_map().size(), 1);
 		EXPECT_EQ(get_array_value<std::string>(0, storage.get_map()), "value2");
 	}
+	
+	{
+		yb::from_cpp::TestStorage storage;
+		
+		yb::assist::serialize(storage, value
+							  | std::ranges::views::filter([](const auto& item){return item.first > 1;})
+							  | std::ranges::views::transform([](const auto& item){return std::tuple{"k: " + std::to_string(item.first), item.second};})
+							  );
+		
+		ASSERT_EQ(storage.isArray(), true);
+		ASSERT_EQ(storage.get_map().size(), 1);
+
+		const auto& tuple_storage = get_storage_value(0, storage.get_map());
+		
+		const auto result_key = get_array_value<std::string>(0, tuple_storage.get_map());
+		const auto result_value = get_array_value<std::string>(1, tuple_storage.get_map());
+
+		EXPECT_EQ(std::make_tuple(result_key, result_value), std::make_tuple("k: 2", "value2"));
+	}
+
 }
 
 #endif
