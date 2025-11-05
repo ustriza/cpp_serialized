@@ -28,14 +28,14 @@ TEST(EnumStr, yb_enum_to_string) {
 	EXPECT_EQ(resStr3, "");
 }
 
-TEST(EnumStr, fromString) {
-	constexpr auto resEnum1 = fromString("ME_1", testNS::myTestEnum());
+TEST(EnumStr, yb_enum_from_string) {
+	constexpr auto resEnum1 = yb_enum_from_string("ME_1", testNS::myTestEnum());
 	static_assert(resEnum1 && resEnum1.value() == testNS::myTestEnum::ME_1);
 	
-	constexpr auto resEnum2 = fromString("ME_2", testNS::myTestEnum());
+	constexpr auto resEnum2 = yb_enum_from_string("ME_2", testNS::myTestEnum());
 	static_assert(resEnum2.has_value() && resEnum2.value() == testNS::myTestEnum::ME_2);
 
-	constexpr auto resEnum3 = fromString("ME_76565656", testNS::myTestEnum());
+	constexpr auto resEnum3 = yb_enum_from_string("ME_76565656", testNS::myTestEnum());
 	static_assert(!resEnum3);
 
 	ASSERT_EQ(resEnum1.has_value(), true);
@@ -47,14 +47,14 @@ TEST(EnumStr, fromString) {
 	ASSERT_EQ(resEnum3.has_value(), false);
 }
 
-TEST(EnumStr, fromStringLC) {
-	constexpr auto resEnum1 = fromString("Me_1", testNS::myTestEnumIC());
+TEST(EnumStr, yb_enum_from_stringLC) {
+	constexpr auto resEnum1 = yb_enum_from_string("Me_1", testNS::myTestEnumIC());
 	static_assert(resEnum1 && resEnum1.value() == testNS::myTestEnumIC::ME_1);
 	
-	constexpr auto resEnum2 = fromString("mE_2", testNS::myTestEnumIC());
+	constexpr auto resEnum2 = yb_enum_from_string("mE_2", testNS::myTestEnumIC());
 	static_assert(resEnum2 && resEnum2.value() == testNS::myTestEnumIC::ME_2);
 	
-	constexpr auto resEnum3 = fromString("me_2", testNS::myTestEnumIC::ME_2);
+	constexpr auto resEnum3 = yb_enum_from_string("me_2", testNS::myTestEnumIC::ME_2);
 	static_assert(resEnum3);
 	
 	ASSERT_EQ(resEnum1.has_value(), true);
@@ -137,14 +137,14 @@ TEST(EnumStr, toStringConv) {
 	EXPECT_EQ(resStr3, "");
 }
 
-TEST(EnumStr, fromStringConv) {
-	constexpr auto resEnum1 = fromString("Me_1", testNS::MyStrConvEnum());
+TEST(EnumStr, yb_enum_from_stringConv) {
+	constexpr auto resEnum1 = yb_enum_from_string("Me_1", testNS::MyStrConvEnum());
 	static_assert(resEnum1 && resEnum1.value() == testNS::MyStrConvEnum::ME_1);
 	
-	constexpr auto resEnum2 = fromString("mE_2", testNS::MyStrConvEnum());
+	constexpr auto resEnum2 = yb_enum_from_string("mE_2", testNS::MyStrConvEnum());
 	static_assert(resEnum2 && resEnum2.value() == testNS::MyStrConvEnum::ME_2);
 	
-	constexpr auto resEnum3 = fromString("me_2", testNS::MyStrConvEnum::ME_2);
+	constexpr auto resEnum3 = yb_enum_from_string("me_2", testNS::MyStrConvEnum::ME_2);
 	static_assert(resEnum3);
 	
 	ASSERT_EQ(resEnum1.has_value(), true);
@@ -172,14 +172,14 @@ TEST(EnumStr, toStringConvLC) {
 	EXPECT_EQ(resStr3, "");
 }
 
-TEST(EnumStr, fromStringConvLC) {
-	constexpr auto resEnum1 = fromString("Me_1", testNS::MyStrConvEnumLC());
+TEST(EnumStr, yb_enum_from_stringConvLC) {
+	constexpr auto resEnum1 = yb_enum_from_string("Me_1", testNS::MyStrConvEnumLC());
 	static_assert(resEnum1 && resEnum1.value() == testNS::MyStrConvEnumLC::ME_1);
 
-	constexpr auto resEnum2 = fromString("mE_2", testNS::MyStrConvEnumLC());
+	constexpr auto resEnum2 = yb_enum_from_string("mE_2", testNS::MyStrConvEnumLC());
 	static_assert(resEnum2 && resEnum2.value() == testNS::MyStrConvEnumLC::ME_2);
 	
-	constexpr auto resEnum3 = fromString("me_2", testNS::MyStrConvEnumLC::ME_2);
+	constexpr auto resEnum3 = yb_enum_from_string("me_2", testNS::MyStrConvEnumLC::ME_2);
 	static_assert(resEnum3);
 	
 	ASSERT_EQ(resEnum1.has_value(), true);

@@ -10,13 +10,16 @@
 #include <vector>
 
 #include "engine_from_cpp.h"
-#include "test_storage_common.h"
+#include "storage_common.h"
 
 namespace yb::text_from_cpp {
 
 class TextStorage {
 public:
 	//Interface implementation
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){}
+
 	void interface_init_container(yb::Type type) {
 		set_type(type);
 		
@@ -91,7 +94,6 @@ public:
 	template<typename TKey>
 	TextStorage& interface_append_map_item(const TKey& key) {
 		std::string s_key;
-		s_key.clear();
 		add_value(key, s_key);
 
 		inc_count();
@@ -197,12 +199,35 @@ static_assert(Storage_concept_from_cpp<TextStorage>);
 
 namespace yb::assist {
 
+#if __cplusplus >= 202002L //C++ 20
 template<typename T>
-std::string to_string(const T& from_value) {
-	yb::text_from_cpp::TextStorage storage;
-	auto inst = yb::from_cpp::cpp_to_storage_instance(from_value, storage);
-	inst.write_to();
-	return std::move(storage.get_text());
+std::string to_string_impl(t1_arg_t<T>& from_value) {
+    yb::text_from_cpp::TextStorage storage;
+    auto inst = yb::from_cpp::cpp_to_storage_instance<T>(from_value, storage);
+    inst.write_to();
+    return std::move(storage.get_text());
 }
 
+template<typename T>
+requires has_non_const_begin_v<T>
+std::string to_string(T&& from_value) {
+    static_assert(!std::is_const_v<std::remove_reference_t<decltype(from_value)>>, "Do not use 'const' for std::views::filter");
+    return to_string_impl<T>(from_value);
+}
+
+template<typename T>
+requires (!has_begin<T> || has_const_begin_v<T>)
+std::string to_string(const T& from_value) {
+	return to_string_impl<T>(from_value);
+}
+
+#else
+template<typename T>
+std::string to_string(const T& from_value) {
+    yb::text_from_cpp::TextStorage storage;
+    auto inst = yb::from_cpp::cpp_to_storage_instance<T>(from_value, storage);
+    inst.write_to();
+    return std::move(storage.get_text());
+}
+#endif
 } // end of yb::assist

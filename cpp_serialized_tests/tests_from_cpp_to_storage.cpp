@@ -4,6 +4,10 @@
 //  Created by Yuri Barmin on 08.08.2023.
 //
 
+#if __cplusplus >= 202002L //C++ 20
+#include <ranges>
+#endif
+
 #include "test_storage_from_cpp.h"
 #include "engine_from_cpp.h"
 #include "access_assist.h"
@@ -27,6 +31,16 @@ TValue get_map_value(const TKey& key, const TMap& map) {
 		return TValue{};
 	}
 	return find_it->second.template asValue<TValue>();
+}
+
+template<typename TMap>
+const yb::from_cpp::TestStorage& get_storage_value(size_t index, const TMap& map) {
+	static const yb::from_cpp::TestStorage empty_storage;
+	const auto find_it = map.find(yb::tests::MapKey{index});
+	if(find_it == map.end()) {
+		return empty_storage;
+	}
+	return find_it->second;
 }
 
 template<typename TValue, typename TMap>
@@ -519,3 +533,94 @@ TEST(TestsFromStl, writeEnumFail) {
 	EXPECT_EQ(storage.isString(), true);
 	EXPECT_EQ(storage.asString(), "");
 }
+
+#if __cplusplus >= 202002L //C++ 20
+TEST(TestsFromStl, to_string_RangeViewNotContainer) {
+	
+	{
+		const auto value = std::ranges::single_view{1};
+		
+		yb::from_cpp::TestStorage storage;
+		auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+		inst.write_to();
+
+		EXPECT_EQ(storage.isArray(), true);
+		EXPECT_EQ(storage.get_map().size(), 1);
+		EXPECT_EQ(get_array_value<int>(0, storage.get_map()), 1);
+	}
+}
+
+TEST(TestsFromStl, to_string_RangeViewMapIntString) {
+	const std::map<int, std::string> value{{1, "value1"}, {2, "value2"}};
+	
+	{
+		
+		yb::from_cpp::TestStorage storage;
+		auto inst = yb::from_cpp::cpp_to_storage_instance(value | std::ranges::views::all, storage);
+		inst.write_to();
+
+		EXPECT_EQ(storage.isObject(), true);
+		EXPECT_EQ(storage.get_map().size(), 2);
+		EXPECT_EQ(get_map_value<std::string>(1, storage.get_map()), "value1");
+		EXPECT_EQ(get_map_value<std::string>(2, storage.get_map()), "value2");
+	}
+
+	{
+		
+		yb::from_cpp::TestStorage storage;
+
+		yb::assist::serialize(storage, value | std::ranges::views::filter([](const auto& item){return item.first > 1;}));
+		
+		EXPECT_EQ(storage.isObject(), true);
+		EXPECT_EQ(storage.get_map().size(), 1);
+		EXPECT_EQ(get_map_value<std::string>(2, storage.get_map()), "value2");
+	}
+
+	{
+		
+		yb::from_cpp::TestStorage storage;
+		
+		yb::assist::serialize(storage, value
+		   | std::ranges::views::filter([](const auto& item){return item.first > 1;})
+		   | std::ranges::views::transform([](const auto& item){return std::pair{"k: " + std::to_string(item.first), item.second};}));
+		
+		EXPECT_EQ(storage.isObject(), true);
+		EXPECT_EQ(storage.get_map().size(), 1);
+		EXPECT_EQ(get_map_value<std::string>("k: 2", storage.get_map()), "value2");
+	}
+
+	{
+		yb::from_cpp::TestStorage storage;
+		
+		yb::assist::serialize(storage, value
+		   | std::ranges::views::filter([](const auto& item){return item.first > 1;})
+		   | std::ranges::views::transform([](const auto& item){return item.second;})
+		);
+		
+		ASSERT_EQ(storage.isArray(), true);
+		ASSERT_EQ(storage.get_map().size(), 1);
+		EXPECT_EQ(get_array_value<std::string>(0, storage.get_map()), "value2");
+	}
+	
+	{
+		yb::from_cpp::TestStorage storage;
+		
+		yb::assist::serialize(storage, value
+							  | std::ranges::views::filter([](const auto& item){return item.first > 1;})
+							  | std::ranges::views::transform([](const auto& item){return std::tuple{"k: " + std::to_string(item.first), item.second};})
+							  );
+		
+		ASSERT_EQ(storage.isArray(), true);
+		ASSERT_EQ(storage.get_map().size(), 1);
+
+		const auto& tuple_storage = get_storage_value(0, storage.get_map());
+		
+		const auto result_key = get_array_value<std::string>(0, tuple_storage.get_map());
+		const auto result_value = get_array_value<std::string>(1, tuple_storage.get_map());
+
+		EXPECT_EQ(std::make_tuple(result_key, result_value), std::make_tuple("k: 2", "value2"));
+	}
+
+}
+
+#endif

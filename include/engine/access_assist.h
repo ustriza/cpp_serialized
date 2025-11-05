@@ -54,11 +54,32 @@ decltype(auto) create_storage(Storage&& storage, std::string_view key) {
 	return storage.interface_append_map_item(key);
 }
 
+#if __cplusplus >= 202002L //C++ 20
 
+template <Storage_concept_from_cpp Storage, typename T>
+void serialize_impl(Storage&& storage, t1_arg_t<T>& from_value) {
+	auto inst = yb::from_cpp::cpp_to_storage_instance<T>(from_value, storage);
+	inst.write_to();
+}
+
+template <Storage_concept_from_cpp Storage, typename T>
+requires has_non_const_begin_v<T>
+void serialize(Storage&& storage, T&& from_value) {
+	serialize_impl<Storage, T>(std::forward<Storage>(storage), from_value);
+}
+
+template <Storage_concept_from_cpp Storage, typename T>
+requires (!has_begin<T> || has_const_begin_v<T>)
+void serialize(Storage&& storage, const T& from_value) {
+	serialize_impl<Storage, T>(std::forward<Storage>(storage), from_value);
+}
+
+
+#else
 template <Storage_concept_from_cpp Storage, typename T>
 void serialize(Storage&& storage, const T& from_value) {
 	auto inst = yb::from_cpp::cpp_to_storage_instance(from_value, storage);
 	inst.write_to();
 }
-
+#endif
 } // end of namespace yb::assist

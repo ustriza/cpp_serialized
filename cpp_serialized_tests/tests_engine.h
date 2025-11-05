@@ -21,11 +21,12 @@
 
 using Test_func_ptr = void (*)();
 class Tests_engine {
-	static inline std::unique_ptr<Tests_engine> m_instance;
+	using Tests_engine_ptr = std::unique_ptr<Tests_engine, void(*)(Tests_engine*)>;
+	static inline Tests_engine_ptr m_instance{nullptr, nullptr};
 public:
 	static Tests_engine* get_instance() {
 		if(!m_instance) {
-			m_instance = std::make_unique<Tests_engine>();
+			m_instance = Tests_engine_ptr{new Tests_engine, [](Tests_engine* ptr){delete ptr;}};
 		}
 		return m_instance.get();
 	}

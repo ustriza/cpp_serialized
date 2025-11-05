@@ -24,6 +24,9 @@ public:
 	
 	//----Methods for Storage_concept_to_cpp
 	
+	template<OptionsForEngine option>
+	static constexpr auto get_options_for_engine(){}
+
 	//Iterators
 	class Const_value_iterator {
 	public:
