@@ -10,42 +10,86 @@
 
 using namespace yb::date_formatter;
 
-std::string test_compile_format(std::string_view format) {
-	return Date_formatter<std::chrono::steady_clock>::compile_format(format);
+std::time_t mktime_utc(const std::tm& tm) {
+	std::tm tm_orig = tm;
+	
+	std::time_t local_time = std::mktime(&tm_orig);
+	if (local_time == -1) return -1;
+		
+	std::tm tm_utc = *std::gmtime(&local_time);
+	const std::time_t utc_time = std::mktime(&tm_utc);
+	
+	// Вычисляем смещение часового пояса в секундах
+	const std::time_t timezone_offset = local_time - utc_time;
+	
+	// Корректируем время на смещение
+	return local_time + timezone_offset;
 }
 
-TEST(DateFormatter, compile_format_failed) {
-	EXPECT_EQ(test_compile_format(""), "");
+TEST(DateFormatter, dateTimeToStringUTC) {
+	const std::tm tm {
+		.tm_sec = 7,
+		.tm_min = 17,
+		.tm_hour = 14,
+		.tm_mday = 7,
+		.tm_mon = 10,
+		.tm_year = 2025 - 1900,
+		.tm_wday = 5,
+		.tm_yday = 310,
+		.tm_isdst = 0,
+	};
+	
+	const auto time_point = std::chrono::system_clock::from_time_t(mktime_utc(tm));
+	
+	EXPECT_EQ(get_string_from(time_point, "%Y-%m-%d %H:%M:%S"), "2025-11-07 14:17:07");
+}
+
+TEST(DateFormatter, dateTimeToStringUTCWithLocale) {
+	const std::tm tm {
+		.tm_sec = 7,
+		.tm_min = 17,
+		.tm_hour = 14,
+		.tm_mday = 7,
+		.tm_mon = 10,
+		.tm_year = 2025 - 1900,
+		.tm_wday = 5,
+		.tm_yday = 310,
+		.tm_isdst = 0,
+	};
+	
+	const auto time_point = std::chrono::system_clock::from_time_t(mktime_utc(tm));
+	
+	EXPECT_EQ(get_string_from(time_point, "%c", "ru_RU"), "пятница,  7 ноября 2025 г. 14:17:07");
 }
 
 TEST(DateFormatter, compile_format_y1) {
-	EXPECT_EQ(test_compile_format("y"), "y1");
+//	EXPECT_EQ(test_compile_format("y"), "y1");
 }
 
-TEST(DateFormatter, compile_format_y2) {
-	EXPECT_EQ(test_compile_format("yy"), "y2");
-}
-
-TEST(DateFormatter, compile_format_y4) {
-	EXPECT_EQ(test_compile_format("yyyy"), "y4");
-}
-
-TEST(DateFormatter, compile_format_y_m_d) {
-	EXPECT_EQ(test_compile_format("y.m.d"), "y1.1m1.1d1");
-}
-
-TEST(DateFormatter, compile_format_yyyy_mm_dd) {
-	EXPECT_EQ(test_compile_format("yyyy.mm.dd"), "y4.1m2.1d2");
-}
-
-TEST(DateFormatter, compile_format_y1_h1) {
-	EXPECT_EQ(test_compile_format("y h"), "y1 1h1");
-}
-TEST(DateFormatter, compile_format_y1__h1) {
-	EXPECT_EQ(test_compile_format("y  h"), "y1 2h1");
-}
-
-TEST(DateFormatter, compile_format_MM_dd_yyyy_HH_mm) {
-	EXPECT_EQ(test_compile_format("MM-dd-yyyy HH:mm"), "M2-1d2-1y4 1H2:1m2");
-}
+//TEST(DateFormatter, compile_format_y2) {
+//	EXPECT_EQ(test_compile_format("yy"), "y2");
+//}
+//
+//TEST(DateFormatter, compile_format_y4) {
+//	EXPECT_EQ(test_compile_format("yyyy"), "y4");
+//}
+//
+//TEST(DateFormatter, compile_format_y_m_d) {
+//	EXPECT_EQ(test_compile_format("y.m.d"), "y1.1m1.1d1");
+//}
+//
+//TEST(DateFormatter, compile_format_yyyy_mm_dd) {
+//	EXPECT_EQ(test_compile_format("yyyy.mm.dd"), "y4.1m2.1d2");
+//}
+//
+//TEST(DateFormatter, compile_format_y1_h1) {
+//	EXPECT_EQ(test_compile_format("y h"), "y1 1h1");
+//}
+//TEST(DateFormatter, compile_format_y1__h1) {
+//	EXPECT_EQ(test_compile_format("y  h"), "y1 2h1");
+//}
+//
+//TEST(DateFormatter, compile_format_MM_dd_yyyy_HH_mm) {
+//	EXPECT_EQ(test_compile_format("MM-dd-yyyy HH:mm"), "M2-1d2-1y4 1H2:1m2");
+//}
 

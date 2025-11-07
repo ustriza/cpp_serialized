@@ -12,63 +12,53 @@
 #include <string>
 #include <optional>
 #include <cstdint>
+#include <sstream>
+#include <ctime>
+#include <iomanip>
 
-std::string test_compile_format(std::string_view);
+//std::string test_compile_format(std::string_view);
+
 
 namespace yb::date_formatter {
 
-template<typename TClock>
-class Date_formatter final {
-	friend std::string (::test_compile_format(std::string_view));
-public:
-	using Time_point = std::chrono::time_point<TClock>;
-	
-	Date_formatter() = default;
-	Date_formatter(std::string_view format): m_compiled_format{compile_format(format)}{}
-	
-	void set_timezone(long value) {
-		m_timezone = value;
-	}
-	long get_timezone() const {
-		return m_timezone;
-	}
-	
-	void set_date_format(std::string_view format) {
-		m_compiled_format = compile_format(format);
-	}
-//	const std::string& get_date_format() {
-//		return m_format;
-//	}
+using date_time_t = std::chrono::system_clock::time_point;
 
-	Time_point from(std::string_view value) {
-		
-	}
-private:
-	static std::string compile_format(std::string_view format) {
-		std::string ret_value;
-
-		for(auto it = format.begin(); it != format.end(); ++it) {
-			const auto ch{*it};
-			const char smb_count = [&]() mutable -> char {
-				const auto find_end_smb_seq_it = std::find_if(it + 1, format.end(), [ch](auto arg){
-					return ch != arg;
-				});
-				const auto new_it = find_end_smb_seq_it - 1;
-				const char distance{static_cast<char>(new_it - it + 1 + '0')};
-				it = new_it;
-				
-				return distance;
-			}();
-
-			ret_value.append({ch, smb_count});
-		}
-		
-		return ret_value;
-	}
+std::string get_string_from(const date_time_t& date_time, const std::string& format, const std::string& locale = {})
+{
+	const std::time_t time = std::chrono::system_clock::to_time_t(date_time);
+	const std::tm utc_tm = *std::gmtime(&time);
 	
-	std::string m_compiled_format;
-	std::optional<long> m_timezone;
-};
+	std::stringstream ss;
+	
+	if (!locale.empty()) {
+		ss.imbue(std::locale(locale));
+	}
+	ss << std::put_time(&utc_tm, format.c_str());
+	
+	return ss.str();
+}
+
+
+//static std::tm timePointToTmUTC(const std::chrono::system_clock::time_point& tp) {
+//	std::time_t time = std::chrono::system_clock::to_time_t(tp);
+//	std::tm utc_tm = *std::gmtime(&time);
+//	return utc_tm;
+//}
+//
+//static std::tm timePointToTmLocal(const std::chrono::system_clock::time_point& tp) {
+//	std::time_t time = std::chrono::system_clock::to_time_t(tp);
+//	std::tm utc_tm = *std::localtime(&time);
+//	return utc_tm;
+//}
+//
+//std::string to_utc_string(const std::chrono::system_clock::time_point& tp) {
+//	const auto utc_tm = timePointToTmLocal(tp);
+//	
+//	std::stringstream ss;
+//	
+//	<< std::put_time(&local_tm, "%Y-%m-%d %H:%M:%S") << std::endl;
+//
+//}
 
 
 } //end of namespace yb::date_formatter
