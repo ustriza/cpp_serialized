@@ -21,6 +21,20 @@
 
 namespace yb::date_formatter {
 
+std::time_t mktime_utc(const std::tm& tm) {
+	std::tm tm_orig = tm;
+	
+	std::time_t local_time = std::mktime(&tm_orig);
+	if (local_time == -1) return -1;
+	
+	std::tm tm_utc = *std::gmtime(&local_time);
+	const std::time_t utc_time = std::mktime(&tm_utc);
+	
+	const std::time_t timezone_offset = local_time - utc_time;
+	
+	return local_time + timezone_offset;
+}
+
 using date_time_t = std::chrono::system_clock::time_point;
 
 std::string get_string_from(const date_time_t& date_time, const std::string& format, const std::string& locale = {})
@@ -38,27 +52,20 @@ std::string get_string_from(const date_time_t& date_time, const std::string& for
 	return ss.str();
 }
 
+date_time_t get_date_from(const std::string& str_date_time, const std::string& format, const std::string& locale = {}) {
 
-//static std::tm timePointToTmUTC(const std::chrono::system_clock::time_point& tp) {
-//	std::time_t time = std::chrono::system_clock::to_time_t(tp);
-//	std::tm utc_tm = *std::gmtime(&time);
-//	return utc_tm;
-//}
-//
-//static std::tm timePointToTmLocal(const std::chrono::system_clock::time_point& tp) {
-//	std::time_t time = std::chrono::system_clock::to_time_t(tp);
-//	std::tm utc_tm = *std::localtime(&time);
-//	return utc_tm;
-//}
-//
-//std::string to_utc_string(const std::chrono::system_clock::time_point& tp) {
-//	const auto utc_tm = timePointToTmLocal(tp);
-//	
-//	std::stringstream ss;
-//	
-//	<< std::put_time(&local_tm, "%Y-%m-%d %H:%M:%S") << std::endl;
-//
-//}
+	std::istringstream ss(str_date_time);
+	
+	if (!locale.empty()) {
+		ss.imbue(std::locale(locale));
+	}
 
+	std::tm tm;
+	ss >> std::get_time(&tm, format.c_str());
+	
+	const date_time_t ret_value = std::chrono::system_clock::from_time_t(mktime_utc(tm));
+
+	return ret_value;
+}
 
 } //end of namespace yb::date_formatter
