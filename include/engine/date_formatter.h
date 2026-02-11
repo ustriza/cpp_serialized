@@ -60,7 +60,7 @@ date_time_t get_date_from(const std::string& str_date_time, const std::string& f
 		ss.imbue(std::locale(locale));
 	}
 
-	std::tm tm;
+	std::tm tm{};
 	ss >> std::get_time(&tm, format.c_str());
 	
 	const date_time_t ret_value = std::chrono::system_clock::from_time_t(mktime_utc(tm));
