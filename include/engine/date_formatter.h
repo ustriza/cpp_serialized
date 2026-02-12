@@ -16,12 +16,9 @@
 #include <ctime>
 #include <iomanip>
 
-//std::string test_compile_format(std::string_view);
-
-
 namespace yb::date_formatter {
 
-std::time_t mktime_utc(const std::tm& tm) {
+inline std::time_t mktime_utc(const std::tm& tm) {
 	std::tm tm_orig = tm;
 	
 	std::time_t local_time = std::mktime(&tm_orig);
@@ -35,9 +32,7 @@ std::time_t mktime_utc(const std::tm& tm) {
 	return local_time + timezone_offset;
 }
 
-using date_time_t = std::chrono::system_clock::time_point;
-
-std::string get_string_from(const date_time_t& date_time, const std::string& format, const std::string& locale = {})
+inline std::string get_string_from(const std::chrono::system_clock::time_point& date_time, const std::string& format, const std::string& locale = {})
 {
 	const std::time_t time = std::chrono::system_clock::to_time_t(date_time);
 	const std::tm utc_tm = *std::gmtime(&time);
@@ -52,7 +47,7 @@ std::string get_string_from(const date_time_t& date_time, const std::string& for
 	return ss.str();
 }
 
-date_time_t get_date_from(const std::string& str_date_time, const std::string& format, const std::string& locale = {}) {
+inline auto get_date_from(const std::string& str_date_time, const std::string& format, const std::string& locale = {}) -> std::chrono::system_clock::time_point {
 
 	std::istringstream ss(str_date_time);
 	
@@ -63,7 +58,7 @@ date_time_t get_date_from(const std::string& str_date_time, const std::string& f
 	std::tm tm{};
 	ss >> std::get_time(&tm, format.c_str());
 	
-	const date_time_t ret_value = std::chrono::system_clock::from_time_t(mktime_utc(tm));
+	const std::chrono::system_clock::time_point ret_value = std::chrono::system_clock::from_time_t(mktime_utc(tm));
 
 	return ret_value;
 }
