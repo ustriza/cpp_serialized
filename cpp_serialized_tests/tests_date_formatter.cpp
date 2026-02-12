@@ -50,3 +50,7 @@ TEST(DateFormatter, stringToDateTimeUTC) {
 	EXPECT_EQ(get_string_from(get_date_from("2025-11-07 14:17:07", "%Y-%m-%d %H:%M:%S"),"%Y-%m-%d %H:%M:%S"), "2025-11-07 14:17:07");
 }
 
+TEST(DateFormatter, stringToDateTimeUTCWithLocale) {
+	EXPECT_EQ(get_string_from(get_date_from("2025-11-07 14:17:07", "%Y-%m-%d %H:%M:%S"),"%c", "ru_RU"), "пятница,  7 ноября 2025 г. 14:17:07");
+}
+
