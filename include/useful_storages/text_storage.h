@@ -109,6 +109,11 @@ public:
 
 		return *this;
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return {};//m_date_format;
+	}
+
 	//End if Interface implementation
 
 	//--------------------------------------

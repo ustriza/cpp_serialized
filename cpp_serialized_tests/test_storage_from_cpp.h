@@ -51,6 +51,10 @@ public:
 		m_storage_type = Value_subtype::OBJECT;
 		return m_map[tests::MapKey{key}];
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return {};//m_date_format;
+	}
 	//End if Interface implementation
 
 

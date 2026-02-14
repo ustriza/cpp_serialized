@@ -124,6 +124,11 @@ public:
 	static const TestStorage& interface_get_storage_from_iterator(const Const_value_iterator& iter) {
 		return iter.get_storage();
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return {};//m_date_format;
+	}
+
 	//----End of Methods for Storage_concept_to_cpp
 	
 	//----Methods for Storage_concept_from_cpp

@@ -329,6 +329,8 @@ requires(const T a, const Value_model value_model, const Key_model key_model) {
 
 	{a.interface_get_type()} -> std::same_as<Type>;
 	
+	{a.interface_get_date_format()} -> std::convertible_to<std::string>;
+	
 	//container support
 	{a.interface_size()} -> std::same_as<size_t>;
 	{a.interface_begin()} -> Const_iterator_concept;
@@ -350,6 +352,7 @@ requires(T a, const Value_model value_model, const Key_model key_model) {
 	{a.interface_init_container(yb::Type{})} -> std::same_as<void>;
 	{a.interface_deinit_container(yb::Type{})} -> std::same_as<void>;
 	{a.interface_assign_from(value_model)} -> std::same_as<void>;
+	{a.interface_get_date_format()} -> std::convertible_to<std::string>;
 };
 } //end of yb::from_cpp
 
@@ -391,6 +394,8 @@ public:
 	T1 interface_get_value() const;
 	
 	yb::Type interface_get_type() const;
+ 
+	std::string interface_get_date_format() const;
 	
 	//container support
 	size_t interface_size() const;
@@ -421,6 +426,8 @@ public:
 	
 	template<typename TKey>
 	Serialiaze_storage& interface_append_map_item(const TKey& key);
+
+	std::string interface_get_date_format() const;
 };
 
 //End of Templates for creating your own storages.

@@ -111,6 +111,11 @@ public:
 	static Json_storage_adapter_to_cpp interface_get_storage_from_iterator(const Const_value_iterator& iter) {
 		return Json_storage_adapter_to_cpp{iter.get_json()};
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return {};//m_date_format;
+	}
+
 	//----End of Methods for Storage_concept_to_cpp
 	
 		//For tests
@@ -196,6 +201,11 @@ public:
 		assert(m_json_storage.type() == ::nlohmann::json::value_t::object || m_json_storage.type() == ::nlohmann::json::value_t::null);
 		return Json_storage_adapter_from_cpp{m_json_storage[yb::string_utils::val_to_string(key)]};
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return {};//m_date_format;
+	}
+
 	//End if Interface implementation
 	
 	Json_storage_adapter_from_cpp(::nlohmann::json& storage): m_json_storage{storage}{}
