@@ -281,6 +281,9 @@ private:
 		else if constexpr(std::is_same_v<T1, StorageTypeForItem>) {
 			return read_storage_value(value, cur_storage);
 		}
+		else if constexpr(std::is_same_v<T1, data_time_t>) {
+			return read_date_time(value, cur_storage);
+		}
 		else if constexpr(!is_allowed_type<T1>()) {
 			return meta_table_to_cpp(value, cur_storage);
 		}
@@ -582,6 +585,30 @@ private:
 		value = cur_node.template interface_get_value<T1>();
 		return true;
 	}
+	
+	template<typename T1>
+	bool read_date_time(T1 &value, const Storage &cur_storage) const {
+		if(cur_storage.interface_get_type() != Type::string_value) {
+			return false;
+		}
+		
+		const auto sval = cur_storage.template interface_get_value<std::string>();
+		
+		const std::string& date_format = cur_storage.interface_get_date_format();
+		if (date_format.empty()) {
+			const auto ttval = yb::string_utils::string_to_val<time_t>(sval);
+			value = std::chrono::system_clock::from_time_t(ttval);
+		}
+		else {
+			const std::chrono::system_clock::time_point time_point = yb::date_formatter::get_date_from(sval, date_format);
+			
+			static_assert(sizeof(value) >= sizeof(time_point));
+			value = time_point;
+		}
+		
+		return true;
+	}
+
 	
 	template<class T1>
 	bool read(std::vector<T1> &value, const Storage& cur_storage) {

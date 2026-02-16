@@ -10,6 +10,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <chrono>
 
 #define YB_STATIC_STRING(X) yb::string_utils::Static_string<sizeof(X)>{X}
 
@@ -17,6 +18,9 @@
 #define CONSTEVAL consteval
 
 #include <ranges>
+
+// Supported types
+using data_time_t = std::chrono::system_clock::time_point;
 
 template<typename T>
 concept has_base_range_view_v = std::ranges::view<std::decay_t<T>>

@@ -15,29 +15,6 @@
 
 namespace yb::to_cpp {
 
-template<Storage_concept_to_cpp Storage>
-bool meta_table_to_cpp(std::chrono::system_clock::time_point &value, const Storage& cur_node) {
-	if(cur_node.interface_get_type() != Type::string_value) {
-		return false;
-	}
-
-	const auto sval = cur_node.template interface_get_value<std::string>();
-
-	const std::string& date_format = cur_node.interface_get_date_format();
-	if (date_format.empty()) {
-		const auto ttval = yb::string_utils::string_to_val<time_t>(sval);
-		value = std::chrono::system_clock::from_time_t(ttval);
-	}
-	else {
-		const std::chrono::system_clock::time_point time_point = yb::date_formatter::get_date_from(sval, date_format);
-		
-		static_assert(sizeof(value) >= sizeof(time_point));
-		value = time_point;
-	}
-	
-	return true;
-
-}
 }
 
 namespace yb::from_cpp {
