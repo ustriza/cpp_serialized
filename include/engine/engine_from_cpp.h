@@ -66,6 +66,9 @@ private:
 		else if constexpr(std::is_same_v<T1, StorageTypeForItem>) {
 			return write_storage_value(value, cur_storage);
 		}
+		else if constexpr(std::is_same_v<T1, date_time_t>) {
+			return write_date_time(value, cur_storage);
+		}
 		else if constexpr(!is_allowed_type<T1>()) {
 			return meta_table_from_cpp(value, cur_storage);
 		}
@@ -216,6 +219,21 @@ private:
     static void write_storage_value(T1 &value, Storage& cur_node) {
 		cur_node.interface_assign_from(value);
 	}
+	
+	static void write_date_time(const date_time_t &value, Storage& cur_node) {
+		const std::string& date_format = cur_node.interface_get_date_format();
+		if (date_format.empty()) {
+			const auto tvalue = std::chrono::system_clock::to_time_t(value);
+			const auto svalue = yb::string_utils::val_to_string(tvalue);
+			
+			cur_node.interface_assign_from(svalue);
+		}
+		else {
+			const std::string svalue = yb::date_formatter::get_string_from(value, date_format);
+			cur_node.interface_assign_from(svalue);
+		}
+	}
+
 
 	template<class T1>
     static void write(const std::vector<T1> &value, Storage& cur_storage) {

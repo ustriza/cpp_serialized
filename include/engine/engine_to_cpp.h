@@ -281,7 +281,7 @@ private:
 		else if constexpr(std::is_same_v<T1, StorageTypeForItem>) {
 			return read_storage_value(value, cur_storage);
 		}
-		else if constexpr(std::is_same_v<T1, data_time_t>) {
+		else if constexpr(std::is_same_v<T1, date_time_t>) {
 			return read_date_time(value, cur_storage);
 		}
 		else if constexpr(!is_allowed_type<T1>()) {
@@ -586,8 +586,7 @@ private:
 		return true;
 	}
 	
-	template<typename T1>
-	bool read_date_time(T1 &value, const Storage &cur_storage) const {
+	static bool read_date_time(date_time_t &value, const Storage &cur_storage) {
 		if(cur_storage.interface_get_type() != Type::string_value) {
 			return false;
 		}
