@@ -268,8 +268,8 @@ private:
 	
 	//parse other types
 	template<class T1>
-	bool read(T1 &value, const Storage& cur_storage) {
-		using StorageTypeForItem = 
+	static bool read(T1 &value, const Storage& cur_storage) {
+		using StorageTypeForItem =
 		std::remove_pointer_t<std::invoke_result_t<decltype(Storage::template get_options_for_engine<OptionsForEngine::STORAGE_TYPE_FOR_ITEM>)>>;
 		
 		if constexpr(HAS_MEMBER(T1, meta_table)) {
@@ -295,7 +295,7 @@ private:
 	
 	
 	template<class T1>
-	bool read_array(T1 &value, const Storage &cur_storage) {
+	static bool read_array(T1 &value, const Storage &cur_storage) {
 		assert(cur_storage.interface_get_type() == Type::array_container || cur_storage.interface_get_type() == Type::null_value);
 		if(cur_storage.interface_get_type() != Type::array_container) {
 			return false;
@@ -330,7 +330,7 @@ private:
 	}
 	
 	template<class T1>
-	bool read_map(T1 &value, const Storage &cur_storage) {
+	static bool read_map(T1 &value, const Storage &cur_storage) {
 		assert(cur_storage.interface_get_type() == Type::object_container || cur_storage.interface_get_type() == Type::null_value);
 		if(cur_storage.interface_get_type() != Type::object_container) {
 			return false;
@@ -357,7 +357,7 @@ private:
 	}
 
 	template<class T1>
-	bool read_pair(T1 &value, const Storage &cur_storage) {
+	static bool read_pair(T1 &value, const Storage &cur_storage) {
 		assert(cur_storage.interface_get_type() == Type::array_container || cur_storage.interface_get_type() == Type::null_value);
 		if(cur_storage.interface_get_type() != Type::array_container) {
 			return false;
@@ -389,7 +389,7 @@ private:
 	}
 
 	template<typename T1, size_t tupleIndex, Const_iterator_concept Iterator>
-	constexpr bool each_read_tuple_item(T1& value, const Iterator& curNodeIterator, bool& success){
+	static constexpr bool each_read_tuple_item(T1& value, const Iterator& curNodeIterator, bool& success){
 		auto& tupleItem = std::get<tupleIndex>(value);
 		
 		const auto& jValue = std::decay_t<decltype(m_storage)>::interface_get_storage_from_iterator(curNodeIterator);
@@ -402,7 +402,7 @@ private:
 	}
 	
 	template<class T1, size_t Index = 0, size_t Size, Const_iterator_concept Iterator>
-	constexpr void for_each_read_tuple_static_index(T1& value, Iterator& curNodeIterator, bool& success) {
+	static constexpr void for_each_read_tuple_static_index(T1& value, Iterator& curNodeIterator, bool& success) {
 		if(!each_read_tuple_item<T1, Index>(value, curNodeIterator, success)) {
 			return;
 		}
@@ -416,7 +416,7 @@ private:
 
 	
 	template<class T1>
-	bool read_tuple(T1 &value, const Storage &cur_storage) {
+	static bool read_tuple(T1 &value, const Storage &cur_storage) {
 		assert(cur_storage.interface_get_type() == Type::array_container || cur_storage.interface_get_type() == Type::null_value);
 		if(cur_storage.interface_get_type() != Type::array_container) {
 			return false;
@@ -435,7 +435,7 @@ private:
 	}
 
 	template<typename T1, size_t tuple_index>
-	constexpr bool each_meta_table_item_pay_load(const Storage& storage_by_key, T1& value) {
+	static constexpr bool each_meta_table_item_pay_load(const Storage& storage_by_key, T1& value) {
 		constexpr auto& item = std::get<tuple_index>(T1::meta_table);
 		constexpr unsigned flags = std::get<yb::ANY_STL_METATABLE_ITEM_INDEX_FLAGS>(item);
 		constexpr bool is_container = (flags & yb::ANY_STL_METATABLE_ITEM_TYPE_CONTAINER_ITEM) != 0u;
@@ -495,7 +495,7 @@ private:
 	}
 
 	template<typename T1, size_t tuple_index>
-	constexpr bool each_meta_table_item(T1& value, const Storage &cur_storage, bool& success){
+	static constexpr bool each_meta_table_item(T1& value, const Storage &cur_storage, bool& success){
 		constexpr auto& item = std::get<tuple_index>(T1::meta_table);
 		using Tuple_type = std::decay_t<decltype(item)>;
 		constexpr size_t tuple_size{std::tuple_size_v<Tuple_type>};
@@ -538,7 +538,7 @@ private:
 	}
 
 	template<class T1, size_t Index = 0, size_t Size>
-	constexpr void for_each_static_index(T1& value, const Storage &cur_storage, bool& success) {
+	static constexpr void for_each_static_index(T1& value, const Storage &cur_storage, bool& success) {
 		if(!each_meta_table_item<T1, Index>(value, cur_storage, success)) {
 			return;
 		}
@@ -549,7 +549,7 @@ private:
 	}
 
 	template<class T1>
-	bool read_meta_table(T1 &value, const Storage &cur_storage) {
+	static bool read_meta_table(T1 &value, const Storage &cur_storage) {
 		bool success{true};
 		
 		for_each_static_index<T1, 0, std::tuple_size_v<decltype(T1::meta_table)>>(value, cur_storage, success);
@@ -564,7 +564,7 @@ private:
 	}
 
 	template<class T1>
-	bool read_enum(T1 &value, const Storage &cur_storage) {
+	static bool read_enum(T1 &value, const Storage &cur_storage) {
 		assert(cur_storage.interface_get_type() == Type::string_value || cur_storage.interface_get_type() == Type::null_value);
 		if(cur_storage.interface_get_type() != Type::string_value) {
 			return false;
@@ -581,7 +581,7 @@ private:
 	}
 
 	template<typename T1>
-	bool read_storage_value(T1 &value, const Storage& cur_node) {
+	static bool read_storage_value(T1 &value, const Storage& cur_node) {
 		value = cur_node.template interface_get_value<T1>();
 		return true;
 	}
@@ -610,52 +610,52 @@ private:
 
 	
 	template<class T1>
-	bool read(std::vector<T1> &value, const Storage& cur_storage) {
+	static bool read(std::vector<T1> &value, const Storage& cur_storage) {
 		return read_array(value, cur_storage);
 	}
 	
 	template<class T1>
-	bool read(std::list<T1> &value, const Storage& cur_storage) {
+	static bool read(std::list<T1> &value, const Storage& cur_storage) {
 		return read_array(value, cur_storage);
 	}
 	
 	template<class _Key, class _Compare, class _Allocator>
-	bool read(std::set<_Key, _Compare, _Allocator> &value, const Storage& cur_storage) {
+	static bool read(std::set<_Key, _Compare, _Allocator> &value, const Storage& cur_storage) {
 		return read_array(value, cur_storage);
 	}
 
 	template<class T1>
-	bool read(std::unordered_set<T1> &value, const Storage& cur_storage) {
+	static bool read(std::unordered_set<T1> &value, const Storage& cur_storage) {
 		return read_array(value, cur_storage);
 	}
 
 	template<class T1>
-	bool read(std::deque<T1> &value, const Storage& cur_storage) {
+	static bool read(std::deque<T1> &value, const Storage& cur_storage) {
 		return read_array(value, cur_storage);
 	}
 	
 	template <class _Key, class _Tp, class _Allocator>
-	bool read(std::map<_Key, _Tp, _Allocator> &value, const Storage& cur_storage) {
+	static bool read(std::map<_Key, _Tp, _Allocator> &value, const Storage& cur_storage) {
 		return read_map(value, cur_storage);
 	}
 	
 	template <class T1, class T2>
-	bool read(std::unordered_map<T1, T2> &value, const Storage& cur_storage) {
+	static bool read(std::unordered_map<T1, T2> &value, const Storage& cur_storage) {
 		return read_map(value, cur_storage);
 	}
 
 	template <class T1, class T2>
-	bool read(std::pair<T1, T2> &value, const Storage& cur_storage) {
+	static bool read(std::pair<T1, T2> &value, const Storage& cur_storage) {
 		return read_pair(value, cur_storage);
 	}
 
 	template <class ...T1>
-	bool read(std::tuple<T1...> &value, const Storage& cur_storage) {
+	static bool read(std::tuple<T1...> &value, const Storage& cur_storage) {
 		return read_tuple(value, cur_storage);
 	}
 
 	template<class T1, class T2>
-	bool read(std::pair<T1, T2> &value, const std::pair<const char*, const Storage*>& cur_it) {
+	static bool read(std::pair<T1, T2> &value, const std::pair<const char*, const Storage*>& cur_it) {
 		value.first = yb::string_utils::string_to_val<T1>(cur_it.first);
 		
 		return read(value.second, *cur_it.second);
