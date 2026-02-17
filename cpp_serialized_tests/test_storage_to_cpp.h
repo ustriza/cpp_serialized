@@ -183,7 +183,7 @@ public:
 		return m_map[tests::MapKey{key}];
 	}
 	
-	const void set_date_format(const std::string& value) {
+	void set_date_format(const std::string& value) {
 		m_date_format = value;
 	}
 
