@@ -680,6 +680,19 @@ TEST(stlToJson, writeTupleStringInt) {
 	EXPECT_EQ(json[1u].asInt(), 12345);
 }
 
+TEST(stlToJson, writeTimePoint) {
+	const time_t data {1234567890L};
+	std::chrono::time_point<std::chrono::system_clock> value = std::chrono::system_clock::from_time_t(data);
+	
+	Json::Value json;
+	yb::jsoncpp::Json_storage_adapter_from_cpp storage_adapter{json};
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
+	inst.write_to();
+	
+	ASSERT_EQ(json.isString(), true);
+	ASSERT_EQ(json.asString(), std::to_string(data));
+}
+
 struct tupleSerStructItem {
 	DEFINE_DATA(item1, int)
 	DEFINE_DATA(item2, std::string)
