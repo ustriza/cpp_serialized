@@ -111,7 +111,7 @@ public:
 	}
 	
 	const std::string& interface_get_date_format() const {
-		return {};//m_date_format;
+		return m_date_format;
 	}
 
 	//End if Interface implementation
@@ -125,6 +125,11 @@ public:
 	std::string& get_text() {
 		return m_buffer;
 	}
+	
+	void set_date_format(const std::string& value) {
+		m_date_format = value;
+	}
+
 private:
 	static constexpr int m_spaces_in_level{2};
 	static constexpr int m_spaces_after_key{1};
@@ -196,6 +201,9 @@ private:
 	void add_new_line() {
 		m_buffer += "\n";
 	}
+	
+	
+	std::string m_date_format;
 };
 #if __cplusplus >= 202002L
 static_assert(Storage_concept_from_cpp<TextStorage>);
