@@ -330,7 +330,6 @@ TEST(jsonToStlUtils, readTimePointDateFormat) {
 	auto adapter = yb::jsoncpp::Json_storage_adapter_to_cpp(curNode);
 	adapter.set_date_format("%Y-%m-%d %H:%M:%S");
 	
-	// Используем deserialize_to с настроенным адаптером
 	const bool result = yb::assist::deserialize_to(adapter, value);
 	
 	ASSERT_EQ(result, true);
