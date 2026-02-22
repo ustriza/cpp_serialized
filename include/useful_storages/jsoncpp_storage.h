@@ -208,7 +208,7 @@ public:
 	}
 	
 	const std::string& interface_get_date_format() const {
-		return {};//m_date_format;
+		return m_date_format;
 	}
 
 	//End if Interface implementation
@@ -244,8 +244,14 @@ public:
 	T1 asValue() const {
 		return m_json_storage.as<T1>();
 	}
+	
+	void set_date_format(const std::string& value) {
+		m_date_format = value;
+	}
+
 private:
 	Json::Value& m_json_storage;
+	std::string m_date_format;
 };
 
 } //end of namespace yb::jsoncpp
