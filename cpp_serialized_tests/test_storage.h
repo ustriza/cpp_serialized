@@ -126,7 +126,7 @@ public:
 	}
 	
 	const std::string& interface_get_date_format() const {
-		return {};//m_date_format;
+		return m_date_format;
 	}
 
 	//----End of Methods for Storage_concept_to_cpp
@@ -203,6 +203,10 @@ public:
 		return m_map[tests::MapKey{key}];
 	}
 	
+	void set_date_format(const std::string& value) {
+		m_date_format = value;
+	}
+
 
 private:
 	bool isString() const {
@@ -251,6 +255,7 @@ private:
 	}
 
 	Value_subtype m_storage_type{Value_subtype::NONE};
+	std::string m_date_format;
 };
 #if __cplusplus >= 202002L
 static_assert(Storage_concept_both<TestStorage>);

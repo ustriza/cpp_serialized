@@ -427,3 +427,33 @@ TEST(TestsBoth, readWriteDataGetterSetter) {
 		ASSERT_EQ(data.get_Item2(), "7890abc");
 	}
 }
+
+TEST(TestsBoth, readTimePointDateFormat) {
+	const time_t data {1762525027L};
+	
+	yb::both::TestStorage storage;
+	storage = "2025-11-07 14:17:07";
+	storage.set_date_format("%Y-%m-%d %H:%M:%S");
+	
+	std::chrono::time_point<std::chrono::system_clock> value;
+	
+	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
+	const bool success{deser.read_from()};
+	
+	ASSERT_EQ(success, true);
+	ASSERT_EQ(std::chrono::system_clock::to_time_t(value), data);
+}
+
+TEST(TestsBoth, writeTimePointDateFormat) {
+	const time_t data {1762525027L};
+	std::chrono::time_point<std::chrono::system_clock> value = std::chrono::system_clock::from_time_t(data);
+	
+	yb::both::TestStorage storage;
+	storage.set_date_format("%Y-%m-%d %H:%M:%S");
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	ASSERT_EQ(storage.interface_get_type(), yb::Type::string_value);
+	ASSERT_EQ(storage.interface_get_value<std::string>(), "2025-11-07 14:17:07");
+}
