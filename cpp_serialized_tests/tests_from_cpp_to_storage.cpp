@@ -510,6 +510,20 @@ TEST(TestsFromStlUtils, writeTimePoint) {
 	ASSERT_EQ(storage.asString(), std::to_string(data));
 }
 
+TEST(TestsFromStlUtils, writeTimePointDateFormat) {
+	const time_t data {1762525027L};
+	std::chrono::time_point<std::chrono::system_clock> value = std::chrono::system_clock::from_time_t(data);
+	
+	yb::from_cpp::TestStorage storage;
+	storage.set_date_format("%Y-%m-%d %H:%M:%S");
+
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	ASSERT_EQ(storage.isString(), true);
+	ASSERT_EQ(storage.asString(), "2025-11-07 14:17:07");
+}
+
 DEFINE_ENUM_STRING(myWriteEnum, ME_1, ME_2)
 
 TEST(TestsFromStl, writeEnum) {

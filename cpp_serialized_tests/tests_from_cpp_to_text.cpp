@@ -501,6 +501,19 @@ TEST(TestsStructToString, writeTimePoint) {
 	EXPECT_EQ(storage.get_text(), test_data);
 }
 
+TEST(TestsStructToString, writeTimePointDateFormat) {
+	const time_t data {1762525027L};
+	std::chrono::time_point<std::chrono::system_clock> value = std::chrono::system_clock::from_time_t(data);
+	
+	yb::text_from_cpp::TextStorage storage;
+	storage.set_date_format("%Y-%m-%d %H:%M:%S");
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	EXPECT_EQ(storage.get_text(), "\"2025-11-07 14:17:07\"");
+}
+
 TEST(TestsStructToString, writePairStringInt) {
 	std::pair<std::string, int> value {"key", 12345};
 	

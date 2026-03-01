@@ -51,6 +51,10 @@ public:
 		m_storage_type = Value_subtype::OBJECT;
 		return m_map[tests::MapKey{key}];
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return m_date_format;
+	}
 	//End if Interface implementation
 
 
@@ -137,6 +141,11 @@ public:
 	TestStorage& operator[](const tests::MapKey& key) {
 		return m_map[key];
 	}
+	
+	void set_date_format(const std::string& value) {
+		m_date_format = value;
+	}
+
 	//--------------------------------------
 private:
 	int getMaxArrayIndex() const {
@@ -160,6 +169,8 @@ private:
 	}
 
 	Value_subtype m_storage_type{Value_subtype::NONE};
+	
+	std::string m_date_format;
 };
 
 #if __cplusplus >= 202002L

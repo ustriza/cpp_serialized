@@ -525,6 +525,23 @@ TEST(TestsToStlUtils, readTimePoint) {
 	ASSERT_EQ(std::chrono::system_clock::to_time_t(value), data);
 }
 
+TEST(TestsToStlUtils, readTimePointDateFormat) {
+	const time_t data {1762525027L};
+	
+	yb::to_cpp::TestStorage storage;
+	storage = "2025-11-07 14:17:07";
+	storage.set_date_format("%Y-%m-%d %H:%M:%S");
+	
+	std::chrono::time_point<std::chrono::system_clock> value;
+	
+	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
+	const bool success{deser.read_from()};
+	
+	ASSERT_EQ(success, true);
+	ASSERT_EQ(std::chrono::system_clock::to_time_t(value), data);
+}
+
+
 TEST(TestsToStlUtils, readTimePointFail) {
 	std::chrono::time_point<std::chrono::system_clock> value;
 	yb::to_cpp::TestStorage storage;

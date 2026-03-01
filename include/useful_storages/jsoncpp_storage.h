@@ -113,6 +113,11 @@ public:
 	static Json_storage_adapter_to_cpp interface_get_storage_from_iterator(const Const_value_iterator& iter) {
 		return Json_storage_adapter_to_cpp{iter.get_json()};
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return m_date_format;
+	}
+
 	//----End of Methods for Storage_concept_to_cpp
 	
 		//For tests
@@ -120,6 +125,10 @@ public:
 	
 	const Json::Value& get_json_value() const {
 		return m_json_storage;
+	}
+	
+	void set_date_format(const std::string& value) {
+		m_date_format = value;
 	}
 
 private:
@@ -149,6 +158,7 @@ private:
 	}
 
 	const Json::Value& m_json_storage;
+	std::string m_date_format;
 };
 #if __cplusplus >= 202002L
 static_assert(Storage_concept_to_cpp<Json_storage_adapter_to_cpp>);
@@ -196,6 +206,11 @@ public:
 		assert(m_json_storage.type() == Json::ValueType::objectValue || m_json_storage.type() == Json::ValueType::nullValue);
 		return Json_storage_adapter_from_cpp{m_json_storage[yb::string_utils::val_to_string(key)]};
 	}
+	
+	const std::string& interface_get_date_format() const {
+		return m_date_format;
+	}
+
 	//End if Interface implementation
 	
 	Json_storage_adapter_from_cpp(Json::Value& storage): m_json_storage{storage}{}
@@ -229,8 +244,14 @@ public:
 	T1 asValue() const {
 		return m_json_storage.as<T1>();
 	}
+	
+	void set_date_format(const std::string& value) {
+		m_date_format = value;
+	}
+
 private:
 	Json::Value& m_json_storage;
+	std::string m_date_format;
 };
 
 } //end of namespace yb::jsoncpp

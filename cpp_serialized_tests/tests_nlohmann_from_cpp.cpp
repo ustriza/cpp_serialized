@@ -697,6 +697,34 @@ TEST(stlToNlohmann, writeTupleStringInt) {
 	EXPECT_EQ(json[1u].get<int>(), 12345);
 }
 
+TEST(stlToNlohmann, writeTimePoint) {
+	const time_t data {1234567890L};
+	std::chrono::time_point<std::chrono::system_clock> value = std::chrono::system_clock::from_time_t(data);
+	
+	nlohmann::json json;
+	yb::nlohmann::Json_storage_adapter_from_cpp storage_adapter{json};
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
+	inst.write_to();
+	
+	ASSERT_EQ(json.is_string(), true);
+	ASSERT_EQ(json.get<std::string>(), std::to_string(data));
+}
+
+TEST(stlToNlohmann, writeTimePointDateFormat) {
+	const time_t data {1762525027L};
+	std::chrono::time_point<std::chrono::system_clock> value = std::chrono::system_clock::from_time_t(data);
+	
+	nlohmann::json json;
+	yb::nlohmann::Json_storage_adapter_from_cpp storage_adapter{json};
+	storage_adapter.set_date_format("%Y-%m-%d %H:%M:%S");
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage_adapter);
+	inst.write_to();
+	
+	ASSERT_EQ(json.is_string(), true);
+	ASSERT_EQ(json.get<std::string>(), "2025-11-07 14:17:07");
+}
+
 struct tupleNLohmannSerStructItem {
 	DEFINE_DATA(item1, int)
 	DEFINE_DATA(item2, std::string)
