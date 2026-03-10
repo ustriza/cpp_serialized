@@ -595,8 +595,9 @@ private:
 		
 		const std::string& date_format = cur_storage.interface_get_date_format();
 		if (date_format.empty()) {
-			const auto ttval = yb::string_utils::string_to_val<time_t>(sval);
-			value = std::chrono::system_clock::from_time_t(ttval);
+			static_assert(sizeof(time_t) <= sizeof(yb::types::int64_t));
+			const auto ttval = yb::string_utils::string_to_val<yb::types::int64_t>(sval);
+			value = std::chrono::system_clock::from_time_t(static_cast<time_t>(ttval));
 		}
 		else {
 			const std::chrono::system_clock::time_point time_point = yb::date_formatter::get_date_from(sval, date_format);

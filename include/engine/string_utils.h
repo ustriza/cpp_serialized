@@ -9,27 +9,31 @@
 #include <set>
 #include <unordered_set>
 
+#include "engine_types.h"
+
 namespace yb::string_utils {
 
-template <class T>
+template <typename T, typename std::enable_if_t<yb::types::is_supported_int_type<T>(), int>* = nullptr>
 inline T string_to_val(const char* s) {
-	if constexpr(std::is_enum_v<T>) {
-		const auto result = yb_enum_from_string(s, T());
-		if(result.has_value()) {
-			return result.value();
-		}
-		return T(-1);
+	T value;
+	auto [ptr, ec] = std::from_chars(s, s + strlen(s), value);
+	if (ec == std::errc()) {
+		return value;
 	}
-	else {
-		T result = T();
-		std::istringstream ss(s);
-		ss >> result;
-		return result;
-	}
+	return 0;
 }
 
-template <>
-inline double string_to_val<double>(const char* s) {
+template <typename T, typename std::enable_if_t<std::is_enum_v<T>, int>* = nullptr>
+inline T string_to_val(const char* s) {
+	const auto result = yb_enum_from_string(s, T());
+	if(result.has_value()) {
+		return result.value();
+	}
+	return T(-1);
+}
+
+template <typename T, typename std::enable_if_t<std::is_floating_point_v<T>, int>* = nullptr>
+inline T string_to_val(const char* s) {
 	if (*s == '\0') {
 		return 0.0;
 	}
@@ -38,52 +42,17 @@ inline double string_to_val<double>(const char* s) {
 	return result;
 }
 
-template <>
-inline float string_to_val<float>(const char* s) {
-	return static_cast<float>(string_to_val<double>(s));
+template <typename T, typename std::enable_if_t<std::is_same_v<T, bool>, int>* = nullptr>
+inline bool string_to_val(const char* s) {
+	return std::string_view{s} == "true" || string_to_val<yb::types::int32_t>(s) != 0;
 }
 
-template <>
-inline int string_to_val<int>(const char* s) {
-	return atoi(s);
-}
-
-template <>
-inline unsigned int string_to_val<unsigned int>(const char* s) {
-	return static_cast<unsigned int>(strtoul(s, nullptr, 10));
-}
-
-template <>
-inline long string_to_val<long>(const char* s) {
-	return std::atol(s);
-}
-
-template <>
-inline long long string_to_val<long long>(const char* s) {
-	return std::atoll(s);
-}
-
-template <>
-inline unsigned long string_to_val<unsigned long>(const char* s) {
-	return strtoul(s, nullptr, 10);
-}
-
-template <>
-inline unsigned long long string_to_val<unsigned long long>(const char* s) {
-	return strtoull(s, nullptr, 10);
-}
-
-template <>
-inline bool string_to_val<bool>(const char* s) {
-	return std::string_view{s} == "true" || string_to_val<int>(s) != 0;
-}
-
-template <>
-inline std::string string_to_val<std::string>(const char* s) {
+template <typename T, typename std::enable_if_t<std::is_same_v<T, std::string>, int>* = nullptr>
+inline std::string string_to_val(const char* s) {
 	return std::string{s};
 }
 
-template <class T>
+template <typename T, typename std::enable_if_t<yb::types::is_supported_type<T>(), int>* = nullptr>
 inline auto string_to_val(const std::string& s) -> std::conditional_t<std::is_same_v<T, std::string>, const std::string&, T> {
 	if constexpr(std::is_same_v<T, std::string>) {
 		return s;
@@ -94,7 +63,7 @@ inline auto string_to_val(const std::string& s) -> std::conditional_t<std::is_sa
 }
 
 //------------------------------------
-template <class T>
+template <typename T>
 inline auto val_to_string(const T& value) -> std::conditional_t<std::is_same_v<T, std::string>, const std::string&, std::string> {
 	if constexpr(std::is_same_v<T, std::string>) {
 		return value;

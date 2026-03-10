@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		4767A0AA2AB9A0A6000AE2ED /* examples_README.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */; };
+		477A2FBA2B1F2ADC00515969 /* tests_date_formatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477A2FB92B1F2ADC00515969 /* tests_date_formatter.cpp */; };
 		47BE5FA62D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47BE5FA52D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp */; };
 		47BE5FA82D8E6111005821E4 /* tests_nlohmann_from_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47BE5FA72D8E6110005821E4 /* tests_nlohmann_from_cpp.cpp */; };
-		477A2FBA2B1F2ADC00515969 /* tests_date_formatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 477A2FB92B1F2ADC00515969 /* tests_date_formatter.cpp */; };
 		47E125F72AA7363500C79954 /* tests_assist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EA2AA7363500C79954 /* tests_assist.cpp */; };
 		47E125F82AA7363500C79954 /* tests_enum_str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EB2AA7363500C79954 /* tests_enum_str.cpp */; };
 		47E125F92AA7363500C79954 /* tests_from_cpp_to_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 47E125EE2AA7363500C79954 /* tests_from_cpp_to_text.cpp */; };
@@ -39,12 +39,13 @@
 
 /* Begin PBXFileReference section */
 		4767A0A92AB9A0A6000AE2ED /* examples_README.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = examples_README.cpp; sourceTree = "<group>"; };
+		477A2FB82B1E0AAC00515969 /* date_formatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date_formatter.h; sourceTree = "<group>"; };
+		477A2FB92B1F2ADC00515969 /* tests_date_formatter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tests_date_formatter.cpp; sourceTree = "<group>"; };
+		479CC7882F5F1C8A00D11FC0 /* engine_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = engine_types.h; sourceTree = "<group>"; };
 		47BE5FA42D8DEAB7005821E4 /* nlohmann_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nlohmann_storage.h; sourceTree = "<group>"; };
 		47BE5FA52D8DEB0E005821E4 /* tests_nlohmann_to_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tests_nlohmann_to_cpp.cpp; sourceTree = "<group>"; };
 		47BE5FA72D8E6110005821E4 /* tests_nlohmann_from_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tests_nlohmann_from_cpp.cpp; sourceTree = "<group>"; };
 		47BE5FA92D906C52005821E4 /* storage_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = storage_common.h; sourceTree = "<group>"; };
-		477A2FB82B1E0AAC00515969 /* date_formatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date_formatter.h; sourceTree = "<group>"; };
-		477A2FB92B1F2ADC00515969 /* tests_date_formatter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tests_date_formatter.cpp; sourceTree = "<group>"; };
 		47CDCD072A77ED5E00683DBB /* cpp_serialized */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cpp_serialized; sourceTree = BUILT_PRODUCTS_DIR; };
 		47CDCD1F2A77FDED00683DBB /* libgtest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgtest.a; path = ../../../../../../../../../usr/local/Cellar/googletest/1.13.0/lib/libgtest.a; sourceTree = "<group>"; };
 		47E125E92AA7363500C79954 /* test_storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_storage.h; sourceTree = "<group>"; };
@@ -170,6 +171,7 @@
 		47E1261B2AA7365C00C79954 /* engine */ = {
 			isa = PBXGroup;
 			children = (
+				479CC7882F5F1C8A00D11FC0 /* engine_types.h */,
 				47E126222AA7365C00C79954 /* engine_from_cpp.h */,
 				47E1261C2AA7365C00C79954 /* engine_to_cpp.h */,
 				47E1261D2AA7365C00C79954 /* access_assist.h */,
@@ -329,7 +331,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -389,7 +391,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
