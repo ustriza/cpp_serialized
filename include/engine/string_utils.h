@@ -32,13 +32,24 @@ inline T string_to_val(const char* s) {
 	return T(-1);
 }
 
-template <typename T, typename std::enable_if_t<std::is_floating_point_v<T>, int>* = nullptr>
-inline T string_to_val(const char* s) {
+template <typename T, typename std::enable_if_t<yb::types::is_supported_float_type<T>(), int>* = nullptr>
+inline float string_to_val(const char* s) {
 	if (*s == '\0') {
 		return 0.0;
 	}
 
-	const double result = atof(s);
+	char* end{};
+	T result;
+	if constexpr(std::is_same_v<T, yb::types::float_t>) {
+		result = std::strtof(s, &end);
+	}
+	else {
+		result = std::strtod(s, &end);
+	}
+	if (errno == ERANGE) {
+		return 0.0;
+	}
+	
 	return result;
 }
 
