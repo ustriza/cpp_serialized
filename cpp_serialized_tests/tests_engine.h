@@ -18,6 +18,7 @@
 
 #define EXPECT_EQ(A, B) if((A) != (B)) {Tests_engine::get_instance()->fire_error();}
 #define ASSERT_EQ(A, B) if((A) != (B)) {Tests_engine::get_instance()->fire_error(); return;}
+#define EXPECT_TRUE(A) if(!(A)) {Tests_engine::get_instance()->fire_error();}
 
 using Test_func_ptr = void (*)();
 class Tests_engine {

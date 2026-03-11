@@ -13,6 +13,12 @@
 
 namespace yb::string_utils {
 
+template<typename T>
+using is_char_array = std::conjunction<
+	std::is_array<T>,
+	std::is_same<std::remove_cv_t<std::remove_extent_t<T>>, char>
+>;
+
 template <typename T, typename std::enable_if_t<yb::types::is_supported_int_type<T>(), int>* = nullptr>
 inline T string_to_val(const char* s) {
 	T value;
@@ -33,7 +39,7 @@ inline T string_to_val(const char* s) {
 }
 
 template <typename T, typename std::enable_if_t<yb::types::is_supported_float_type<T>(), int>* = nullptr>
-inline float string_to_val(const char* s) {
+inline T string_to_val(const char* s) {
 	if (*s == '\0') {
 		return 0.0;
 	}
@@ -83,6 +89,9 @@ inline auto val_to_string(const T& value) -> std::conditional_t<std::is_same_v<T
 		return std::string(value);
 	}
 	else if constexpr(std::is_same_v<char, std::remove_cv_t<std::remove_pointer_t<T>>> || std::is_same_v<unsigned char, std::remove_cv_t<std::remove_pointer_t<T>>>) {
+		return std::string(value);
+	}
+	else if constexpr(yb::string_utils::is_char_array<T>::value) {
 		return std::string(value);
 	}
 	else if constexpr(std::is_same_v<T, bool>) {
