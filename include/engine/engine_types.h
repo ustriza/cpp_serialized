@@ -37,6 +37,16 @@ constexpr inline bool is_supported_type() {
 		|| std::is_enum_v<T>|| std::is_same_v<T, std::string>;
 }
 
+template<typename T>
+bool numbers_equal(T a, T b) {
+	return std::abs(a - b) <= std::numeric_limits<T>::epsilon();
+}
+
+template<typename T>
+T round(T value, int decimals) {
+	const T factor = std::pow(10.0, decimals);
+	return std::round(value * factor) / factor;
+}
 
 
 }

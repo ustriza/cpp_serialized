@@ -88,7 +88,7 @@ inline auto val_to_string(const T& value) -> std::conditional_t<std::is_same_v<T
 	else if constexpr(std::is_same_v<T, std::string_view>) {
 		return std::string(value);
 	}
-	else if constexpr(std::is_same_v<char, std::remove_cv_t<std::remove_pointer_t<T>>> || std::is_same_v<unsigned char, std::remove_cv_t<std::remove_pointer_t<T>>>) {
+	else if constexpr(std::is_pointer_v<T> && (std::is_same_v<char, std::remove_cv_t<std::remove_pointer_t<T>>> || std::is_same_v<unsigned char, std::remove_cv_t<std::remove_pointer_t<T>>>)) {
 		return std::string(value);
 	}
 	else if constexpr(yb::string_utils::is_char_array<T>::value) {

@@ -75,7 +75,7 @@ TEST(TestsFromStl, fromFloatMax_Test) {
 	inst.write_to();
 	
 	ASSERT_EQ(storage.isFloat(), true);
-	EXPECT_EQ(yb::numbers_equal(storage.asValue<float>(), std::numeric_limits<float>::max()), true);
+	EXPECT_EQ(yb::types::numbers_equal(storage.asValue<float>(), std::numeric_limits<float>::max()), true);
 }
 
 TEST(TestsFromStl, fromDoubleMax_Test) {
@@ -87,7 +87,7 @@ TEST(TestsFromStl, fromDoubleMax_Test) {
 	inst.write_to();
 	
 	ASSERT_EQ(storage.isFloat(), true);
-	EXPECT_EQ(yb::numbers_equal(storage.asValue<double>(), std::numeric_limits<double>::max()), true);
+	EXPECT_EQ(yb::types::numbers_equal(storage.asValue<double>(), std::numeric_limits<double>::max()), true);
 }
 
 TEST(TestsFromStl, fromVectorInt_Test) {

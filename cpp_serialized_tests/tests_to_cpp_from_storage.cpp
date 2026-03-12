@@ -16,6 +16,7 @@
 #include "tests_engine.h"
 #include "enum_string.h"
 #include "access_assist.h"
+#include "engine_types.h"
 
 TEST(TestsToStl, toInt_Test) {
 	int value{};
@@ -40,7 +41,7 @@ TEST(TestsToStl, toFloat_Test) {
 	
 	const bool success {deser.read_from()};
 	ASSERT_EQ(success, true);
-	EXPECT_EQ(yb::numbers_equal(value, 12345.55f), true);
+	EXPECT_EQ(yb::types::numbers_equal(value, 12345.55f), true);
 }
 
 TEST(TestsToStl, toFloatMax_Test) {
@@ -53,7 +54,7 @@ TEST(TestsToStl, toFloatMax_Test) {
 	
 	const bool success {deser.read_from()};
 	ASSERT_EQ(success, true);
-	EXPECT_EQ(yb::numbers_equal(value, std::numeric_limits<float>::max()), true);
+	EXPECT_EQ(yb::types::numbers_equal(value, std::numeric_limits<float>::max()), true);
 }
 
 TEST(TestsToStl, toDouble_Test) {
@@ -66,7 +67,7 @@ TEST(TestsToStl, toDouble_Test) {
 
 	const bool success {deser.read_from()};
 	ASSERT_EQ(success, true);
-	EXPECT_EQ(yb::numbers_equal(value, 12345.55), true);
+	EXPECT_EQ(yb::types::numbers_equal(value, 12345.55), true);
 }
 
 TEST(TestsToStl, toDoubleMax_Test) {
@@ -79,7 +80,7 @@ TEST(TestsToStl, toDoubleMax_Test) {
 	
 	const bool success {deser.read_from()};
 	ASSERT_EQ(success, true);
-	EXPECT_EQ(yb::numbers_equal(value, std::numeric_limits<double>::max()), true);
+	EXPECT_EQ(yb::types::numbers_equal(value, std::numeric_limits<double>::max()), true);
 }
 
 

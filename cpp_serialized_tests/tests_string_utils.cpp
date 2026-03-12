@@ -5,6 +5,8 @@
 //  Created by Yuri Barmin on 19.05.2021.
 //
 
+#include <type_traits>
+
 #include "cpp_serialized.h"
 #include "tests_engine.h"
 
@@ -52,44 +54,51 @@ TEST(string_utils, string_to_valBool) {
 	EXPECT_EQ(yb::string_utils::string_to_val<bool>("-123"), 1);
 }
 
-//TEST(string_utils, valToStringString) {
-//	static_assert(std::is_same_v<std::result_of_t<decltype(&yb::string_utils::valToString<std::string>)(const std::string&)>, const std::string&>);
-//	static_assert(std::is_same_v<std::result_of_t<decltype(&yb::string_utils::valToString<char*>)(char*)>,  std::string>);
-//
-//	EXPECT_EQ(yb::string_utils::valToString("12345"), "12345");
-//	
-//	const std::string inData = "67890";
-//	const std::string& outData = yb::string_utils::valToString(inData);
-//	
-//	EXPECT_EQ(outData, inData);
-//	ASSERT_EQ(&outData, &inData);
-//}
-//
-//TEST(string_utils, valToStringInt) {
-//	EXPECT_EQ(yb::string_utils::valToString(12345), "12345");
-//	EXPECT_EQ(yb::string_utils::valToString(-12345), "-12345");
-//}
-//
-//TEST(string_utils, valToStringChar) {
-//	EXPECT_EQ(yb::string_utils::valToString(char(123)), "123");
-//	EXPECT_EQ(yb::string_utils::valToString(char(-123)), "-123");
-//	EXPECT_EQ(yb::string_utils::valToString((unsigned char)123), "123");
-//}
-//
-//TEST(string_utils, valToStringBool) {
-//	EXPECT_EQ(yb::string_utils::valToString(true), "true");
-//	EXPECT_EQ(yb::string_utils::valToString(false), "false");
-//}
-//
-//TEST(string_utils, valToStringFloat) {
-//	EXPECT_EQ(yb::string_utils::valToString(12345.34f), "12345.34");
-//	EXPECT_EQ(yb::string_utils::valToString(-12345.58f), "-12345.58");
-//}
-//
-//TEST(string_utils, valToStringDouble) {
-//	EXPECT_EQ(yb::string_utils::valToString(12345.24), "12345.24");
-//	EXPECT_EQ(yb::string_utils::valToString(-12345.72), "-12345.72");
-//}
+TEST(string_utils, val_to_stringString) {
+	static_assert(std::is_same_v<
+		std::invoke_result_t<decltype(&yb::string_utils::val_to_string<std::string>), const std::string&>,
+		const std::string&
+	>);
+			
+	static_assert(std::is_same_v<
+		std::invoke_result_t<decltype(&yb::string_utils::val_to_string<char*>), char*>,
+		std::string
+	>);
+	
+	EXPECT_EQ(yb::string_utils::val_to_string("12345"), "12345");
+	
+	const std::string inData = "67890";
+	const std::string& outData = yb::string_utils::val_to_string(inData);
+	
+	EXPECT_EQ(outData, inData);
+	ASSERT_EQ(&outData, &inData);
+}
+
+TEST(string_utils, val_to_stringInt) {
+	EXPECT_EQ(yb::string_utils::val_to_string(12345), "12345");
+	EXPECT_EQ(yb::string_utils::val_to_string(-12345), "-12345");
+}
+
+TEST(string_utils, val_to_stringChar) {
+	EXPECT_EQ(yb::string_utils::val_to_string(char(123)), "123");
+	EXPECT_EQ(yb::string_utils::val_to_string(char(-123)), "-123");
+	EXPECT_EQ(yb::string_utils::val_to_string((unsigned char)123), "123");
+}
+
+TEST(string_utils, val_to_stringBool) {
+	EXPECT_EQ(yb::string_utils::val_to_string(true), "true");
+	EXPECT_EQ(yb::string_utils::val_to_string(false), "false");
+}
+
+TEST(string_utils, val_to_stringFloat) {
+	EXPECT_EQ(yb::string_utils::val_to_string(12345.34f), "12345.339844");
+	EXPECT_EQ(yb::string_utils::val_to_string(-12345.58f), "-12345.580078");
+}
+
+TEST(string_utils, val_to_stringDouble) {
+	EXPECT_EQ(yb::string_utils::val_to_string(12345.24), "12345.240000");
+	EXPECT_EQ(yb::string_utils::val_to_string(-12345.72), "-12345.720000");
+}
 
 TEST(string_utils, staticToLower) {
 	constexpr char chA = yb::string_utils::staticToLower('A');
@@ -244,10 +253,3 @@ TEST(string_utils, joinStringIntVector) {
 	
 	ASSERT_EQ(result, "1:100;2:200;3:300");
 }
-
-//TEST(string_utils, valToStringItemIdType) {
-//	const cp::itemsModule::itemIdType idType{12356756};
-//	const std::string result = common::utilsModule::valToString(idType);
-//
-//	ASSERT_EQ(result, "12356756");
-//}
