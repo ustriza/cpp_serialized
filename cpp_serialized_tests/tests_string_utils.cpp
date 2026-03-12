@@ -13,11 +13,6 @@
 #include "string_utils.h"
 #include "enum_string.h"
 
-template<typename T>
-bool numbers_equal(T a, T b) {
-	return std::abs(a - b) <= std::numeric_limits<T>::epsilon();
-}
-
 TEST(string_utils, string_to_valString) {
 	EXPECT_EQ(yb::string_utils::string_to_val<std::string>("12345"), "12345");
 	
