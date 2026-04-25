@@ -53,13 +53,10 @@ public:
 	//----Methods for Storage_concept_to_cpp
 	template<typename T1>
 	T1 interface_get_value() const {
-		if constexpr(std::is_same_v<T1, int>) {
-			return std::get<int>(m_value.value());
+		if constexpr(yb::types::is_supported_int_type<T1>()) {
+			return std::get<T1>(m_value.value());
 		}
-		else if constexpr(std::is_same_v<T1, unsigned int>) {
-			return std::get<unsigned int>(m_value.value());
-		}
-		else if constexpr(std::is_same_v<T1, float> || std::is_same_v<T1, double>) {
+		else if constexpr(yb::types::is_supported_float_type<T1>()) {
 			if(isInt()) {
 				return static_cast<T1>(std::get<int>(m_value.value()));
 			}

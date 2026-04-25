@@ -609,7 +609,6 @@ private:
 		return true;
 	}
 
-	
 	template<class T1>
 	static bool read(std::vector<T1> &value, const Storage& cur_storage) {
 		return read_array(value, cur_storage);

@@ -15,7 +15,7 @@
 namespace yb::both {
 
 class TestStorage {
-	using Value_type = std::variant<int, unsigned int, float, std::string, bool>;
+	using Value_type = std::variant<yb::types::int64_t, yb::types::uint64_t, yb::types::int32_t, yb::types::uint32_t, yb::types::int64_t, yb::types::float_t, std::string, bool>;
 	using Map = std::map<tests::MapKey, TestStorage>;
 	
 	std::optional<Value_type> m_value;
@@ -55,17 +55,11 @@ public:
 
 	template<typename T1>
 	T1 interface_get_value() const {
-		if constexpr(std::is_same_v<T1, int>) {
-			return std::get<int>(m_value.value());
-		}
-		else if constexpr(std::is_same_v<T1, unsigned int>) {
-			return std::get<unsigned int>(m_value.value());
-		}
-		else if constexpr(std::is_same_v<T1, float>) {
-			return std::get<float>(m_value.value());
-		}
-		else if constexpr(std::is_same_v<T1, bool>) {
-			return std::get<bool>(m_value.value());
+		if constexpr(
+			yb::types::is_supported_int_type<T1>() ||
+			yb::types::is_supported_float_type<T1>() ||
+			std::is_same_v<T1, bool>) {
+			return std::get<T1>(m_value.value());
 		}
 		else {
 			return std::get<std::string>(m_value.value());
