@@ -192,10 +192,10 @@ private:
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<std::string>(m_value.value());
 	}
 	bool isInt() const {
-		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<int>(m_value.value());
+		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && (std::holds_alternative<yb::types::int32_t>(m_value.value()) || std::holds_alternative<yb::types::int64_t>(m_value.value()));
 	}
 	bool isUInt() const {
-		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<unsigned int>(m_value.value());
+		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && (std::holds_alternative<yb::types::uint32_t>(m_value.value()) || std::holds_alternative<yb::types::uint64_t>(m_value.value()));
 	}
 	bool isFloat() const {
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && (std::holds_alternative<float>(m_value.value()) || std::holds_alternative<double>(m_value.value()));

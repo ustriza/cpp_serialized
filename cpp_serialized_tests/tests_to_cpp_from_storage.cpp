@@ -546,7 +546,7 @@ TEST(TestsToStlUtils, readTimePointDateFormat) {
 TEST(TestsToStlUtils, readTimePointFail) {
 	std::chrono::time_point<std::chrono::system_clock> value;
 	yb::to_cpp::TestStorage storage;
-	storage = 98989333LL; //Wrong data type. Must be string.
+	storage = "98989333"; //Wrong data type. Must be int64_t.
 	
 	auto deser = yb::to_cpp::storage_to_cpp_instance(value, storage);
 	const bool success{deser.read_from()};
