@@ -338,7 +338,7 @@ TEST(jsonToStlUtils, readTimePointDateFormat) {
 
 TEST(jsonToStlUtils, timePointFromJsonFail) {
 	std::chrono::time_point<std::chrono::system_clock> value;
-	Json::Value curNode = 98989333; //wrong data type
+	Json::Value curNode = "98989333"; //wrong data type
 	
 	const auto result = yb::assist::deserialize_to(yb::jsoncpp::Json_storage_adapter_to_cpp(curNode), value);
 

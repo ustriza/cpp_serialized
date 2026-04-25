@@ -515,7 +515,7 @@ TEST(TestsToStlUtils, readTimePoint) {
 	const time_t data {1234567890L};
 	
 	yb::to_cpp::TestStorage storage;
-	storage = std::to_string(data);
+	storage = data;
 
 	std::chrono::time_point<std::chrono::system_clock> value;
 

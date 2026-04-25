@@ -326,7 +326,7 @@ TEST(nlohmannToStlUtils, timePointFromJson) {
 	const time_t data {1234567890L};
 	
 	std::chrono::time_point<std::chrono::system_clock> value;
-	nlohmann::json curNode = std::to_string(data);
+	nlohmann::json curNode = data;
 	
 	const auto result = yb::assist::deserialize_to(yb::nlohmann::Json_storage_adapter_to_cpp(curNode), value);
 
@@ -351,7 +351,7 @@ TEST(nlohmannToStlUtils, readTimePointDateFormat) {
 
 TEST(nlohmannToStlUtils, timePointFromJsonFail) {
 	std::chrono::time_point<std::chrono::system_clock> value;
-	nlohmann::json curNode = 98989333; //wrong data type
+	nlohmann::json curNode = "98989333"; //wrong data type
 	
 	const auto result = yb::assist::deserialize_to(yb::nlohmann::Json_storage_adapter_to_cpp(curNode), value);
 
