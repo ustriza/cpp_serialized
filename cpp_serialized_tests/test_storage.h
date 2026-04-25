@@ -15,7 +15,7 @@
 namespace yb::both {
 
 class TestStorage {
-	using Value_type = std::variant<yb::types::int64_t, yb::types::uint64_t, yb::types::int32_t, yb::types::uint32_t, yb::types::float_t, std::string, bool>;
+	using Value_type = std::variant<yb::types::int64_t, yb::types::uint64_t, yb::types::int32_t, yb::types::uint32_t, yb::types::float_t, yb::types::double_t, std::string, bool>;
 	using Map = std::map<tests::MapKey, TestStorage>;
 	
 	std::optional<Value_type> m_value;
