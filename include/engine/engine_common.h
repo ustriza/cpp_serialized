@@ -12,6 +12,8 @@
 #include <vector>
 #include <chrono>
 
+#include "engine_types.h"
+
 #define YB_STATIC_STRING(X) yb::string_utils::Static_string<sizeof(X)>{X}
 
 #if __cplusplus >= 202002L //C++ 20
@@ -209,19 +211,7 @@ enum class Type {null_value, int_value, uint_value, float_value, string_value, b
 
 template<typename T>
 constexpr inline bool is_allowed_type() {
-	return
-	std::is_same_v<T, std::string> ||
-	
-	std::is_same_v<T, int> ||
-	std::is_same_v<T, unsigned> ||
-	std::is_same_v<T, long> ||
-	std::is_same_v<T, long long> ||
-	std::is_same_v<T, unsigned long> ||
-	
-	std::is_same_v<T, float> ||
-	std::is_same_v<T, double> ||
-	
-	std::is_same_v<T, bool>;
+	return yb::types::is_supported_type<T>();
 }
 
 constexpr unsigned ANY_STL_METATABLE_ITEM_INDEX_FLAGS    = 0;

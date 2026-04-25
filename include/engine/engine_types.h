@@ -34,7 +34,8 @@ constexpr inline bool is_supported_float_type() {
 template<typename T>
 constexpr inline bool is_supported_type() {
 	return is_supported_int_type<T>() || is_supported_float_type<T>()
-		|| std::is_enum_v<T>|| std::is_same_v<T, std::string>;
+		|| std::is_enum_v<T>|| std::is_same_v<T, std::string>
+		|| std::is_same_v<T, bool>;
 }
 
 template<typename T>

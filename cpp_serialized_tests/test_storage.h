@@ -15,7 +15,7 @@
 namespace yb::both {
 
 class TestStorage {
-	using Value_type = std::variant<yb::types::int64_t, yb::types::uint64_t, yb::types::int32_t, yb::types::uint32_t, yb::types::int64_t, yb::types::float_t, std::string, bool>;
+	using Value_type = std::variant<yb::types::int64_t, yb::types::uint64_t, yb::types::int32_t, yb::types::uint32_t, yb::types::float_t, std::string, bool>;
 	using Map = std::map<tests::MapKey, TestStorage>;
 	
 	std::optional<Value_type> m_value;
@@ -207,10 +207,10 @@ private:
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<std::string>(m_value.value());
 	}
 	bool isInt() const {
-		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<int>(m_value.value());
+		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && (std::holds_alternative<yb::types::int32_t>(m_value.value()) || std::holds_alternative<yb::types::int64_t>(m_value.value()));
 	}
 	bool isUInt() const {
-		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<unsigned int>(m_value.value());
+		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && (std::holds_alternative<yb::types::uint32_t>(m_value.value()) || std::holds_alternative<yb::types::uint64_t>(m_value.value()));
 	}
 	bool isFloat() const {
 		return m_storage_type == Value_subtype::SCALAR && m_value.has_value() && std::holds_alternative<float>(m_value.value());

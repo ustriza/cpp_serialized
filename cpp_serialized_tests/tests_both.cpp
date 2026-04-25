@@ -457,3 +457,27 @@ TEST(TestsBoth, writeTimePointDateFormat) {
 	ASSERT_EQ(storage.interface_get_type(), yb::Type::string_value);
 	ASSERT_EQ(storage.interface_get_value<std::string>(), "2025-11-07 14:17:07");
 }
+
+TEST(TestsBoth, writeInt64) {
+	const yb::types::int64_t value {1762525027L};
+	
+	yb::both::TestStorage storage;
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	ASSERT_EQ(storage.interface_get_type(), yb::Type::int_value);
+	ASSERT_EQ(storage.interface_get_value<yb::types::int64_t>(), value);
+}
+
+TEST(TestsBoth, writeUInt64) {
+	const yb::types::uint64_t value {1762525027L};
+	
+	yb::both::TestStorage storage;
+	
+	auto inst = yb::from_cpp::cpp_to_storage_instance(value, storage);
+	inst.write_to();
+	
+	ASSERT_EQ(storage.interface_get_type(), yb::Type::uint_value);
+	ASSERT_EQ(storage.interface_get_value<yb::types::uint64_t>(), value);
+}
