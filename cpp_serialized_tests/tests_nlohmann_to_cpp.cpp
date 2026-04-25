@@ -531,3 +531,27 @@ TEST(nlohmannToStl, readStruct0) {
 	EXPECT_EQ(value.item, 12345);
 	EXPECT_EQ(value.item2, 56789);
 }
+
+TEST(nlohmannToStl, int32FromJson) {
+	const int32_t data {std::numeric_limits<int32_t>::max()};
+	
+	nlohmann::json curNode = data;
+	int32_t value;
+	
+	const auto result = yb::assist::deserialize_to(yb::nlohmann::Json_storage_adapter_to_cpp(curNode), value);
+	
+	ASSERT_EQ(result, true);
+	ASSERT_EQ(value, data);
+}
+
+TEST(nlohmannToStl, int64FromJson) {
+	const int64_t data {std::numeric_limits<int64_t>::max()};
+	
+	nlohmann::json curNode = data;
+	int64_t value;
+	
+	const auto result = yb::assist::deserialize_to(yb::nlohmann::Json_storage_adapter_to_cpp(curNode), value);
+	
+	ASSERT_EQ(result, true);
+	ASSERT_EQ(value, data);
+}

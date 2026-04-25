@@ -313,7 +313,7 @@ TEST(jsonToStlUtils, timePointFromJson) {
 	const time_t data {1234567890L};
 	
 	std::chrono::time_point<std::chrono::system_clock> value;
-	Json::Value curNode = std::to_string(data);
+	Json::Value curNode = static_cast<int64_t>(data);
 	
 	const auto result = yb::assist::deserialize_to(yb::jsoncpp::Json_storage_adapter_to_cpp(curNode), value);
 
@@ -490,3 +490,26 @@ TEST(jsonToStl, readStruct0) {
 	EXPECT_EQ(value.item2, 56789);
 }
 
+TEST(jsonToStlUtils, int32FromJson) {
+	const int32_t data {std::numeric_limits<int32_t>::max()};
+
+	Json::Value curNode = data;
+	int32_t value;
+	
+	const auto result = yb::assist::deserialize_to(yb::jsoncpp::Json_storage_adapter_to_cpp(curNode), value);
+	
+	ASSERT_EQ(result, true);
+	ASSERT_EQ(value, data);
+}
+
+TEST(jsonToStlUtils, int64FromJson) {
+	const int64_t data {std::numeric_limits<int64_t>::max()};
+	
+	Json::Value curNode = data;
+	int64_t value;
+	
+	const auto result = yb::assist::deserialize_to(yb::jsoncpp::Json_storage_adapter_to_cpp(curNode), value);
+	
+	ASSERT_EQ(result, true);
+	ASSERT_EQ(value, data);
+}
