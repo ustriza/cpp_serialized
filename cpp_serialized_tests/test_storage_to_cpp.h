@@ -7,6 +7,7 @@
 #pragma once
 
 #include "engine_to_cpp.h"
+#include "engine_types.h"
 #include "test_storage_common.h"
 
 namespace yb::to_cpp {
@@ -134,8 +135,10 @@ public:
 	//For tests
 	TestStorage() = default;
 	
-	TestStorage(int value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
-	TestStorage(unsigned int value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
+	TestStorage(yb::types::int32_t value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
+	TestStorage(yb::types::uint32_t value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
+	TestStorage(yb::types::int64_t value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
+	TestStorage(yb::types::uint64_t value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(float value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(double value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
 	TestStorage(bool value): m_value(value), m_storage_type(Value_subtype::SCALAR){};
